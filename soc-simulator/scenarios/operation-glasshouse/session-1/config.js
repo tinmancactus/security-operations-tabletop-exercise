@@ -1,0 +1,41 @@
+export default {
+  id: 'operation-glasshouse-s1',
+  title: 'Operation Glasshouse',
+  subtitle: 'Session 1: Static',
+  
+  duration: 3600, // 60 minutes in seconds
+  tokens: 12,
+  
+  company: {
+    name: 'XYZ Pay',
+    industry: 'Buy Now Pay Later (BNPL)',
+    location: 'Adelaide, Australia',
+    employees: 150
+  },
+  
+  briefing: {
+    title: 'Welcome to the SOC',
+    date: 'Monday, 14 October 2024',
+    shift: 'Day Shift (08:00 - 16:00 ACDT)',
+    content: `You are a Security Operations Centre (SOC) team at XYZ Pay, a Buy Now Pay Later fintech company based in Adelaide.
+
+It's Monday morning. You've just started your shift and are taking over from the night team.
+
+Your job is to monitor security alerts, investigate suspicious activity, and escalate incidents appropriately. You have limited time and resources—choose your actions wisely.
+
+**Your team has 12 action tokens.** Each investigation, escalation, or action costs tokens. You cannot do everything, so prioritise what matters most.
+
+Some events will occur automatically as time passes. Watch the clock.
+
+Good luck.`
+  },
+  
+  roles: [
+    { id: 'alert-analyst', name: 'Alert Analyst', focus: 'SIEM alerts, log analysis' },
+    { id: 'ticket-handler', name: 'Ticket Handler', focus: 'Service tickets, employee communications' },
+    { id: 'intel-analyst', name: 'Intel Analyst', focus: 'Threat intelligence, IOC research' },
+    { id: 'coordinator', name: 'Incident Coordinator', focus: 'Timeline, documentation' },
+    { id: 'escalation-lead', name: 'Escalation Lead', focus: 'NPC communication' },
+    { id: 'infra-liaison', name: 'Infrastructure Liaison', focus: 'Technical actions' }
+  ]
+}
