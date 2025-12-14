@@ -3,7 +3,7 @@ export default [
     id: 'EV-5',
     title: 'Liam Interview',
     category: 'Interview',
-    content: `EMPLOYEE INTERVIEW: LIAM FITZGERALD (Detailed)
+    content: `EMPLOYEE INTERVIEW: LIAM FITZGERALD
 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
 
 Interview conducted: Monday, 14 October 2024
@@ -38,9 +38,7 @@ LIAM: "No, he just said thanks and hung up. Should I be
 ANALYST NOTES:
 Pattern consistent with MFA bypass via social engineering. 
 Attacker likely had Liam's password already and used vishing 
-to obtain MFA code.
-
-RECOMMEND: Check Liam's account for suspicious activity.`
+to obtain MFA code.`
   },
   {
     id: 'EV-6',
@@ -72,9 +70,7 @@ with Procurement confirms XYZ has active contract (signed
 VERDICT: FALSE POSITIVE
 
 Legitimate email from contracted vendor. Jenny likely forgot 
-she signed up during onboarding.
-
-RECOMMEND: Close ticket, inform Jenny email is safe.`
+she signed up during onboarding.`
   },
   {
     id: 'EV-7',
@@ -109,8 +105,7 @@ CREDENTIAL STUFFING PATTERN (customer-portal):
 
 ───────────────────────────────────────────────────────
 ASSESSMENT: Suspicious. Possible account compromise.
-Does NOT match credential stuffing pattern.
-RECOMMEND: Investigate user, check post-auth activity.`
+Does NOT match credential stuffing pattern.`
   },
   {
     id: 'EV-8',
