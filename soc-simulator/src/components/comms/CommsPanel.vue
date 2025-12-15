@@ -174,7 +174,7 @@ const checksCount = computed(() => assessmentChecks.value.filter(c => c).length)
     <!-- Header -->
     <div class="mb-4">
       <h2 class="text-xl font-semibold text-soc-text">Communications</h2>
-      <p class="text-sm text-soc-muted">Message NPCs to escalate or request support</p>
+      <p class="text-sm text-soc-muted">Message XYZ Pay staff</p>
     </div>
     
     <div class="flex-1 flex gap-4 overflow-hidden">
@@ -397,7 +397,7 @@ const checksCount = computed(() => assessmentChecks.value.filter(c => c).length)
               </button>
             </div>
             <p class="text-xs text-soc-muted mt-2">
-              Press Enter to send. You'll complete a self-assessment before the message is delivered.
+              Press Enter to send.
             </p>
           </div>
         </template>

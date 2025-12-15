@@ -146,7 +146,6 @@ function handleAction(action) {
     
     if (action.unlocksEvidence) {
       evidenceStore.unlockEvidence(action.unlocksEvidence)
-      gameStore.setView('evidence')
     }
   }
 }

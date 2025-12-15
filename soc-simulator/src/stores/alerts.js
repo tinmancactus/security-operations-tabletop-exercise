@@ -53,7 +53,7 @@ export const useAlertsStore = defineStore('alerts', () => {
       visibleAlertIds.value.push(alertId)
       const alert = allAlerts.value.find(a => a.id === alertId)
       if (alert) {
-        gameStore.addNotification(`New alert: ${alert.title}`, 'warning')
+        gameStore.addNotification(`New alert: ${alert.title}`, 'warning', 'siem')
         gameStore.logAction(`New SIEM alert: ${alert.title}`, 'event')
       }
       saveState()

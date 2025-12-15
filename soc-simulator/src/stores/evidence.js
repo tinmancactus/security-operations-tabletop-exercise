@@ -30,7 +30,7 @@ export const useEvidenceStore = defineStore('evidence', () => {
       const evidence = allEvidence.value.find(e => e.id === evidenceId)
       if (evidence) {
         gameStore.logAction(`Unlocked evidence: ${evidence.title}`, 'evidence')
-        gameStore.addNotification(`Evidence unlocked: ${evidence.title}`, 'success')
+        gameStore.addNotification(`Evidence unlocked: ${evidence.title}`, 'success', 'evidence', { evidenceId })
       }
       saveState()
     }

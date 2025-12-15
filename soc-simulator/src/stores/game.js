@@ -95,19 +95,37 @@ export const useGameStore = defineStore('game', () => {
     saveState()
   }
 
-  function addNotification(message, type = 'info') {
+  function addNotification(message, type = 'info', navigateTo = null, data = null) {
     const notification = {
       id: Date.now(),
       message,
-      type
+      type,
+      navigateTo, // view name to navigate to when clicked (e.g., 'comms', 'siem', 'evidence')
+      data // additional data (e.g., { evidenceId: 'EV-1' })
     }
     notifications.value.push(notification)
+    // No auto-timeout - notifications persist until dismissed or clicked
+  }
+
+  function dismissNotification(id) {
+    const idx = notifications.value.findIndex(n => n.id === id)
+    if (idx !== -1) notifications.value.splice(idx, 1)
+  }
+
+  function handleNotificationClick(notification, stores = {}) {
+    // Handle deep-linking for specific notification types
+    if (notification.navigateTo === 'evidence' && notification.data?.evidenceId && stores.evidenceStore) {
+      stores.evidenceStore.selectEvidence(notification.data.evidenceId)
+    }
     
-    // Auto-remove after 4 seconds
-    setTimeout(() => {
-      const idx = notifications.value.findIndex(n => n.id === notification.id)
-      if (idx !== -1) notifications.value.splice(idx, 1)
-    }, 4000)
+    if (notification.navigateTo === 'comms' && notification.data?.npcId && stores.commsStore) {
+      stores.commsStore.setActiveChannel(notification.data.npcId)
+    }
+    
+    if (notification.navigateTo) {
+      setView(notification.navigateTo)
+    }
+    dismissNotification(notification.id)
   }
 
   function setView(view) {
@@ -158,6 +176,7 @@ export const useGameStore = defineStore('game', () => {
     tokens.value = scenario.value?.config.tokens || 12
     actionLog.value = []
     currentView.value = 'siem'
+    notifications.value = [] // Clear all notifications on reset
   }
 
   // Secret console commands for facilitators/testing
@@ -247,6 +266,8 @@ export const useGameStore = defineStore('game', () => {
     spendTokens,
     logAction,
     addNotification,
+    dismissNotification,
+    handleNotificationClick,
     setView,
     saveState,
     loadState,

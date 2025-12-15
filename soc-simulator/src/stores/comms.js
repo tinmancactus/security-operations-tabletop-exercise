@@ -50,7 +50,7 @@ export const useCommsStore = defineStore('comms', () => {
         const delay = npc.initialMessage.delay || 0
         setTimeout(() => {
           receiveMessage(npcId, npc.initialMessage.content, true)
-          gameStore.addNotification(`New message from ${npc.name}`, 'info')
+          gameStore.addNotification(`New message from ${npc.name}`, 'info', 'comms', { npcId })
         }, delay)
       }
     })
@@ -108,7 +108,7 @@ export const useCommsStore = defineStore('comms', () => {
     }
     
     if (!isSystemEvent) {
-      gameStore.addNotification(`New message from ${npc?.name}`, 'info')
+      gameStore.addNotification(`New message from ${npc?.name}`, 'info', 'comms', { npcId })
     }
     
     saveState()
@@ -216,7 +216,7 @@ export const useCommsStore = defineStore('comms', () => {
       
       setNpcStatus('rachel', 'awaiting-response')
       receiveMessage('rachel', rachel.accountDisableMessage.content, false)
-      gameStore.addNotification('New message from Rachel Torres', 'info')
+      // Note: receiveMessage already adds a notification when isSystemEvent is false
     }, delay)
   }
 
