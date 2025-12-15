@@ -1,16 +1,21 @@
 <script setup>
 import { ref, computed } from 'vue'
 import { useGameStore } from '../../stores/game'
+import { useEvidenceStore } from '../../stores/evidence'
 import { 
   AlertTriangle, 
   ShieldAlert, 
   ShieldCheck, 
   HelpCircle,
   Search,
-  SearchX
+  SearchX,
+  Coins
 } from 'lucide-vue-next'
 
 const gameStore = useGameStore()
+const evidenceStore = useEvidenceStore()
+
+const completedActions = ref(new Set())
 
 const threatIntel = computed(() => gameStore.scenario?.threatintel || {})
 
@@ -123,6 +128,32 @@ const suggestions = computed(() => {
     .filter(s => s.toLowerCase().includes(query))
     .slice(0, 5)
 })
+
+function handleAction(action) {
+  if (completedActions.value.has(action.id)) {
+    gameStore.addNotification('Action already completed', 'info')
+    return
+  }
+  
+  if (action.cost > gameStore.tokens) {
+    gameStore.addNotification(`Not enough tokens! Need ${action.cost}, have ${gameStore.tokens}`, 'warning')
+    return
+  }
+  
+  if (gameStore.spendTokens(action.cost, action.label)) {
+    completedActions.value.add(action.id)
+    gameStore.logAction(`Intel Action: ${action.label}`, 'action', action)
+    
+    if (action.unlocksEvidence) {
+      evidenceStore.unlockEvidence(action.unlocksEvidence)
+      gameStore.setView('evidence')
+    }
+  }
+}
+
+function isActionCompleted(actionId) {
+  return completedActions.value.has(actionId)
+}
 </script>
 
 <template>
@@ -318,6 +349,37 @@ const suggestions = computed(() => {
               >
                 {{ campaign }}
               </div>
+            </div>
+          </div>
+          
+          <!-- Actions -->
+          <div v-if="selectedResult.actions?.length > 0">
+            <h3 class="text-sm font-semibold text-soc-muted uppercase mb-2">Available Actions</h3>
+            <div class="space-y-2">
+              <button
+                v-for="action in selectedResult.actions"
+                :key="action.id"
+                @click="handleAction(action)"
+                :disabled="isActionCompleted(action.id)"
+                class="w-full text-left px-4 py-3 rounded border transition"
+                :class="isActionCompleted(action.id) 
+                  ? 'bg-soc-bg border-soc-border opacity-50 cursor-not-allowed' 
+                  : 'bg-soc-raised border-soc-border hover:border-soc-accent cursor-pointer'"
+              >
+                <div class="flex items-center justify-between">
+                  <div>
+                    <div class="font-medium text-soc-text">
+                      {{ action.label }}
+                      <span v-if="isActionCompleted(action.id)" class="text-soc-success ml-2">✓ Completed</span>
+                    </div>
+                    <div class="text-sm text-soc-muted">{{ action.description }}</div>
+                  </div>
+                  <div v-if="!isActionCompleted(action.id)" class="flex items-center gap-1 text-soc-accent">
+                    <Coins class="w-4 h-4" />
+                    <span class="font-medium">{{ action.cost }}</span>
+                  </div>
+                </div>
+              </button>
             </div>
           </div>
         </div>

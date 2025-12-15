@@ -18,7 +18,16 @@ export default {
       reports: 1247,
       summary: 'Known Tor exit node frequently associated with credential stuffing campaigns and automated scanning activity. High volume of authentication attempts across multiple sectors.',
       relatedCampaigns: ['Credential Harvesting Wave Q3 2024'],
-      recommendation: 'Block at perimeter. Do not consider logins from this IP as legitimate.'
+      recommendation: 'Block at perimeter. Do not consider logins from this IP as legitimate.',
+      actions: [
+        {
+          id: 'research-credential-stuffing',
+          label: 'Research threat landscape',
+          cost: 1,
+          description: 'Pull threat intelligence brief on credential stuffing campaigns targeting AU fintech',
+          unlocksEvidence: 'EV-8'
+        }
+      ]
     },
     '91.240.118.29': {
       type: 'ip',

@@ -169,34 +169,4 @@ No file downloads. No email sent.
 ASSESSMENT: Likely attacker performing internal recon 
 after gaining access via compromised credentials.`
   },
-  {
-    id: 'EV-10',
-    title: 'IP Reputation Report',
-    category: 'Threat Intel',
-    content: `IP REPUTATION REPORT
-━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
-
-Query IP: 103.42.91.17
-Query Date: Monday, 14 October 2024
-
-GEOLOCATION:
-• Country: Indonesia
-• City: Jakarta
-• ISP: PT Telekomunikasi Indonesia
-• Type: Commercial VPN endpoint
-
-REPUTATION SCORES:
-• AbuseIPDB: 47% confidence malicious (23 reports)
-• VirusTotal: 3/87 vendors flag as suspicious
-• Shodan: Open ports 22, 80, 443, 1194 (VPN)
-
-HISTORICAL ACTIVITY:
-• Associated with VPN service "PrivacyShield"
-• Previously seen in: credential stuffing, account takeover
-• No direct attribution to specific threat actor
-
-───────────────────────────────────────────────────────
-ASSESSMENT: Suspicious. Commonly used for anonymisation.
-Consistent with attacker hiding true location.`
-  }
 ]
