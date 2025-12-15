@@ -11,6 +11,7 @@ export const useCommsStore = defineStore('comms', () => {
   const activeChannelId = ref(null)
   const escalationCounts = ref({}) // npcId -> count
   const unreadCounts = ref({}) // npcId -> count
+  const npcStatus = ref({}) // npcId -> status overrides (e.g., 'dnd', 'awaiting-response', 'resolved')
 
   // Computed
   const activeChannel = computed(() => {
@@ -158,7 +159,8 @@ export const useCommsStore = defineStore('comms', () => {
       channels: channels.value,
       activeChannelId: activeChannelId.value,
       escalationCounts: escalationCounts.value,
-      unreadCounts: unreadCounts.value
+      unreadCounts: unreadCounts.value,
+      npcStatus: npcStatus.value
     }))
   }
 
@@ -170,6 +172,7 @@ export const useCommsStore = defineStore('comms', () => {
       activeChannelId.value = state.activeChannelId
       escalationCounts.value = state.escalationCounts || {}
       unreadCounts.value = state.unreadCounts || {}
+      npcStatus.value = state.npcStatus || {}
       return true
     }
     return false
@@ -181,6 +184,56 @@ export const useCommsStore = defineStore('comms', () => {
     activeChannelId.value = null
     escalationCounts.value = {}
     unreadCounts.value = {}
+    npcStatus.value = {}
+  }
+
+  function setNpcStatus(npcId, status) {
+    npcStatus.value[npcId] = status
+    saveState()
+  }
+
+  function getNpcStatus(npcId) {
+    return npcStatus.value[npcId] || npcs.value[npcId]?.status || null
+  }
+
+  function isNpcAvailable(npcId) {
+    const status = getNpcStatus(npcId)
+    // Available if status is 'awaiting-response' OR if no special status and npc.available is true
+    if (status === 'awaiting-response') return true
+    if (status === 'dnd' || status === 'resolved') return false
+    return npcs.value[npcId]?.available ?? true
+  }
+
+  function triggerRachelAccountDisable() {
+    const rachel = npcs.value['rachel']
+    if (!rachel || getNpcStatus('rachel') !== 'dnd') return
+    
+    const delay = rachel.accountDisableMessage?.delay || 60000
+    
+    setTimeout(() => {
+      // Only proceed if still in dnd status (player hasn't reset)
+      if (getNpcStatus('rachel') !== 'dnd') return
+      
+      setNpcStatus('rachel', 'awaiting-response')
+      receiveMessage('rachel', rachel.accountDisableMessage.content, false)
+      gameStore.addNotification('New message from Rachel Torres', 'info')
+    }, delay)
+  }
+
+  function handleRachelResponse(playerMessage) {
+    const rachel = npcs.value['rachel']
+    if (!rachel) return
+    
+    // Send player's message
+    sendMessage('rachel', playerMessage)
+    gameStore.logAction('Responded to Rachel Torres regarding account disable', 'comms', { content: playerMessage })
+    
+    // Rachel responds after a short delay
+    setTimeout(() => {
+      receiveMessage('rachel', rachel.accountDisableResponse)
+      // Set status back to resolved (DND)
+      setNpcStatus('rachel', 'resolved')
+    }, 2000)
   }
 
   return {
@@ -189,6 +242,7 @@ export const useCommsStore = defineStore('comms', () => {
     activeChannelId,
     escalationCounts,
     unreadCounts,
+    npcStatus,
     activeChannel,
     totalUnread,
     loadNPCs,
@@ -202,6 +256,11 @@ export const useCommsStore = defineStore('comms', () => {
     getResponseTier,
     saveState,
     loadState,
-    clearState
+    clearState,
+    setNpcStatus,
+    getNpcStatus,
+    isNpcAvailable,
+    triggerRachelAccountDisable,
+    handleRachelResponse
   }
 })

@@ -10,6 +10,7 @@ const messageInput = ref('')
 const messagesContainer = ref(null)
 const showAssessment = ref(false)
 const assessmentChecks = ref([false, false, false, false, false])
+const showRachelConfirm = ref(false)
 
 const npcList = computed(() => {
   return Object.values(commsStore.npcs)
@@ -38,8 +39,22 @@ function sendMessage() {
     return
   }
   
+  // Check NPC availability using store method
+  if (!commsStore.isNpcAvailable(npcId)) {
+    // Show DND message for unavailable NPCs
+    gameStore.addNotification(`${npc.name} is not available right now`, 'warning')
+    return
+  }
+  
+  // Special handling for Rachel's one-time response
+  const rachelStatus = commsStore.getNpcStatus('rachel')
+  if (npcId === 'rachel' && rachelStatus === 'awaiting-response') {
+    showRachelConfirm.value = true
+    return
+  }
+  
   // If NPC is unavailable (e.g., Alex out of office), skip assessment and auto-reply
-  if (!npc.available) {
+  if (!npc.available && rachelStatus !== 'awaiting-response') {
     sendAutoReply()
     return
   }
@@ -117,6 +132,20 @@ function submitWithAssessment() {
 function cancelAssessment() {
   showAssessment.value = false
   assessmentChecks.value = [false, false, false, false, false]
+}
+
+function confirmRachelResponse() {
+  const content = messageInput.value.trim()
+  if (!content) return
+  
+  commsStore.handleRachelResponse(content)
+  messageInput.value = ''
+  showRachelConfirm.value = false
+  scrollToBottom()
+}
+
+function cancelRachelConfirm() {
+  showRachelConfirm.value = false
 }
 
 function scrollToBottom() {
@@ -201,7 +230,25 @@ const checksCount = computed(() => assessmentChecks.value.filter(c => c).length)
                 <div class="font-medium text-soc-text flex items-center gap-2">
                   {{ commsStore.activeChannel.npc.name }}
                   <span 
-                    v-if="!commsStore.activeChannel.npc.available"
+                    v-if="commsStore.getNpcStatus(commsStore.activeChannelId) === 'dnd'"
+                    class="text-xs px-2 py-0.5 rounded bg-soc-warning/30 text-soc-warning"
+                  >
+                    Do Not Disturb
+                  </span>
+                  <span 
+                    v-else-if="commsStore.getNpcStatus(commsStore.activeChannelId) === 'resolved'"
+                    class="text-xs px-2 py-0.5 rounded bg-soc-muted/30 text-soc-muted"
+                  >
+                    Conversation Ended
+                  </span>
+                  <span 
+                    v-else-if="commsStore.getNpcStatus(commsStore.activeChannelId) === 'awaiting-response'"
+                    class="text-xs px-2 py-0.5 rounded bg-soc-accent/30 text-soc-accent"
+                  >
+                    Awaiting Your Response
+                  </span>
+                  <span 
+                    v-else-if="!commsStore.activeChannel.npc.available"
                     class="text-xs px-2 py-0.5 rounded bg-soc-muted/30 text-soc-muted"
                   >
                     Offline
@@ -211,7 +258,16 @@ const checksCount = computed(() => assessmentChecks.value.filter(c => c).length)
               </div>
             </div>
             <div class="text-sm text-soc-muted">
-              <template v-if="!commsStore.activeChannel.npc.available">
+              <template v-if="commsStore.getNpcStatus(commsStore.activeChannelId) === 'dnd'">
+                <span class="text-soc-warning">Do Not Disturb</span>
+              </template>
+              <template v-else-if="commsStore.getNpcStatus(commsStore.activeChannelId) === 'resolved'">
+                <span class="text-soc-muted">Conversation complete</span>
+              </template>
+              <template v-else-if="commsStore.getNpcStatus(commsStore.activeChannelId) === 'awaiting-response'">
+                <span class="text-soc-accent">Response requested (one-time)</span>
+              </template>
+              <template v-else-if="!commsStore.activeChannel.npc.available">
                 <span class="text-soc-warning">Auto-reply enabled</span>
               </template>
               <template v-else>
@@ -294,8 +350,36 @@ const checksCount = computed(() => assessmentChecks.value.filter(c => c).length)
             </div>
           </div>
           
+          <!-- Rachel Confirmation Modal -->
+          <div v-if="showRachelConfirm" class="p-4 border-t border-soc-border bg-soc-raised">
+            <div class="bg-soc-surface border-2 border-soc-warning rounded-lg p-4">
+              <h3 class="text-lg font-semibold text-soc-warning mb-3">Confirm Response to Rachel</h3>
+              <p class="text-sm text-soc-muted mb-4">
+                You can only respond to Rachel <strong>once</strong>. Your response will be logged and included in the final report.
+              </p>
+              <div class="bg-soc-bg border border-soc-border rounded p-3 mb-4">
+                <div class="text-xs text-soc-muted mb-1">Your message:</div>
+                <div class="text-sm text-soc-text whitespace-pre-wrap">{{ messageInput }}</div>
+              </div>
+              <div class="flex gap-2 justify-end">
+                <button 
+                  @click="cancelRachelConfirm"
+                  class="px-4 py-2 bg-soc-raised border border-soc-border rounded hover:bg-soc-border transition"
+                >
+                  Continue Writing
+                </button>
+                <button 
+                  @click="confirmRachelResponse"
+                  class="px-4 py-2 bg-soc-warning text-black font-semibold rounded hover:bg-yellow-400 transition"
+                >
+                  Send Response
+                </button>
+              </div>
+            </div>
+          </div>
+          
           <!-- Input -->
-          <div v-else class="p-3 border-t border-soc-border">
+          <div v-else-if="!showAssessment" class="p-3 border-t border-soc-border">
             <div class="flex gap-2">
               <textarea
                 v-model="messageInput"

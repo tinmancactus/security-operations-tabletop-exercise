@@ -2,12 +2,14 @@
 import { useAlertsStore } from '../../stores/alerts'
 import { useGameStore } from '../../stores/game'
 import { useEvidenceStore } from '../../stores/evidence'
+import { useCommsStore } from '../../stores/comms'
 import AlertCard from './AlertCard.vue'
 import AlertDetail from './AlertDetail.vue'
 
 const alertsStore = useAlertsStore()
 const gameStore = useGameStore()
 const evidenceStore = useEvidenceStore()
+const commsStore = useCommsStore()
 
 function handleAction(action) {
   // Check if action already completed
@@ -33,6 +35,8 @@ function handleAction(action) {
     if (action.id === 'disable-liam') {
       gameStore.addNotification('Account liam.fitzgerald has been disabled', 'success')
       gameStore.logAction('Disabled account: liam.fitzgerald@xyzpay.com.au', 'containment')
+      // Trigger Rachel's follow-up message after delay
+      commsStore.triggerRachelAccountDisable()
     }
     
     if (action.isBlockIP && action.ip) {
