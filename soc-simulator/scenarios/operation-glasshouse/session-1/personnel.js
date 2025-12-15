@@ -291,19 +291,19 @@ export default {
   },
 
   // Employees (Social Engineering Victims)
-  'liam-fitzgerald': {
-    id: 'liam-fitzgerald',
-    name: 'Liam Fitzgerald',
+  'jodie-williams': {
+    id: 'jodie-williams',
+    name: 'Jodie Williams',
     role: 'Customer Support Team Lead',
     department: 'Customer Support',
-    email: 'liam.fitzgerald@xyzpay.com.au',
+    email: 'jodie.williams@xyzpay.com.au',
     phone: '08 8XXX 3001',
-    avatar: '👨‍💻',
-    image: `${IMG_PATH}/liam.jpg`,
+    avatar: '�‍�',
+    image: `${IMG_PATH}/jodie.jpg`,
     reportsTo: null, // Reports to CS Manager (not in org chart)
     location: 'Level 2, Adelaide HQ',
-    startDate: '2021-04-01',
-    bio: 'Leads the customer support team. Helpful and trusting - perhaps too trusting.',
+    startDate: '2020-08-01',
+    bio: 'Leads the customer support team. Experienced manager who keeps the team running smoothly.',
     calendar: [
       { day: 'Monday', entries: [
         { time: '09:00', duration: 60, title: 'CS Team Standup', location: 'Support Floor' },
@@ -323,6 +323,44 @@ export default {
       ]},
       { day: 'Friday', entries: [
         { time: '09:00', duration: 60, title: 'CS Team Standup', location: 'Support Floor' },
+        { time: '15:00', duration: 60, title: 'Weekly Wrap', location: 'Support Floor' },
+      ]},
+    ]
+  },
+
+  'liam-fitzgerald': {
+    id: 'liam-fitzgerald',
+    name: 'Liam Fitzgerald',
+    role: 'Customer Support Officer',
+    department: 'Customer Support',
+    email: 'liam.fitzgerald@xyzpay.com.au',
+    phone: '08 8XXX 3002',
+    avatar: '👨‍💻',
+    image: `${IMG_PATH}/liam.jpg`,
+    reportsTo: 'jodie-williams',
+    location: 'Level 2, Adelaide HQ',
+    startDate: '2021-04-01',
+    bio: 'Customer support officer. Helpful and trusting - perhaps too trusting.',
+    calendar: [
+      { day: 'Monday', entries: [
+        { time: '09:00', duration: 60, title: 'CS Team Standup', location: 'Support Floor' },
+        { time: '10:00', duration: 420, title: 'Support Queue', location: 'Support Floor' },
+      ]},
+      { day: 'Tuesday', entries: [
+        { time: '09:00', duration: 60, title: 'CS Team Standup', location: 'Support Floor' },
+        { time: '10:00', duration: 420, title: 'Support Queue', location: 'Support Floor' },
+      ]},
+      { day: 'Wednesday', entries: [
+        { time: '09:00', duration: 60, title: 'CS Team Standup', location: 'Support Floor' },
+        { time: '10:00', duration: 420, title: 'Support Queue', location: 'Support Floor' },
+      ]},
+      { day: 'Thursday', entries: [
+        { time: '09:00', duration: 60, title: 'CS Team Standup', location: 'Support Floor' },
+        { time: '10:00', duration: 420, title: 'Support Queue', location: 'Support Floor' },
+      ]},
+      { day: 'Friday', entries: [
+        { time: '09:00', duration: 60, title: 'CS Team Standup', location: 'Support Floor' },
+        { time: '10:00', duration: 360, title: 'Support Queue', location: 'Support Floor' },
         { time: '15:00', duration: 60, title: 'Weekly Wrap', location: 'Support Floor' },
       ]},
     ]
