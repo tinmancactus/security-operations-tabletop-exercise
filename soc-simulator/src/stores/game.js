@@ -160,6 +160,69 @@ export const useGameStore = defineStore('game', () => {
     currentView.value = 'siem'
   }
 
+  // Secret console commands for facilitators/testing
+  function _setTime(seconds) {
+    if (typeof seconds !== 'number' || seconds < 0) {
+      console.error('Usage: soc.setTime(seconds) - e.g., soc.setTime(1800) for 30 minutes')
+      return
+    }
+    timeRemaining.value = seconds
+    saveState()
+    console.log(`⏱️ Time set to ${Math.floor(seconds / 60)}:${(seconds % 60).toString().padStart(2, '0')}`)
+  }
+
+  function _addTime(seconds) {
+    if (typeof seconds !== 'number') {
+      console.error('Usage: soc.addTime(seconds) - e.g., soc.addTime(300) to add 5 minutes')
+      return
+    }
+    timeRemaining.value = Math.max(0, timeRemaining.value + seconds)
+    saveState()
+    console.log(`⏱️ Time ${seconds >= 0 ? 'added' : 'removed'}: now ${formattedTime.value}`)
+  }
+
+  function _setTokens(amount) {
+    if (typeof amount !== 'number' || amount < 0) {
+      console.error('Usage: soc.setTokens(amount) - e.g., soc.setTokens(20)')
+      return
+    }
+    tokens.value = amount
+    saveState()
+    console.log(`🪙 Tokens set to ${amount}`)
+  }
+
+  function _addTokens(amount) {
+    if (typeof amount !== 'number') {
+      console.error('Usage: soc.addTokens(amount) - e.g., soc.addTokens(5)')
+      return
+    }
+    tokens.value = Math.max(0, tokens.value + amount)
+    saveState()
+    console.log(`🪙 Tokens ${amount >= 0 ? 'added' : 'removed'}: now ${tokens.value}`)
+  }
+
+  function _status() {
+    console.log(`\n🎮 SOC Simulator Status\n${'─'.repeat(30)}`)
+    console.log(`⏱️ Time: ${formattedTime.value} (${timeRemaining.value}s remaining)`)
+    console.log(`🪙 Tokens: ${tokens.value}`)
+    console.log(`▶️ Running: ${isRunning.value}`)
+    console.log(`\n📋 Commands:\n  soc.setTime(seconds)\n  soc.addTime(seconds)\n  soc.setTokens(amount)\n  soc.addTokens(amount)\n  soc.pause()\n  soc.resume()\n  soc.status()`)
+  }
+
+  // Expose console commands on window object
+  if (typeof window !== 'undefined') {
+    window.soc = {
+      setTime: _setTime,
+      addTime: _addTime,
+      setTokens: _setTokens,
+      addTokens: _addTokens,
+      pause: pauseTimer,
+      resume: startTimer,
+      status: _status,
+      help: () => _status()
+    }
+  }
+
   return {
     // State
     scenario,
