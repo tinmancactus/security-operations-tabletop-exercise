@@ -10,12 +10,20 @@ const gameStore = useGameStore()
 const evidenceStore = useEvidenceStore()
 
 function handleAction(action) {
+  // Check if action already completed
+  if (alertsStore.isActionCompleted(action.id)) {
+    gameStore.addNotification('Action already completed', 'info')
+    return
+  }
+  
   if (action.cost > gameStore.tokens) {
     gameStore.addNotification(`Not enough tokens! Need ${action.cost}, have ${gameStore.tokens}`, 'warning')
     return
   }
   
   if (gameStore.spendTokens(action.cost, action.label)) {
+    // Mark action as completed
+    alertsStore.completeAction(action.id)
     gameStore.logAction(`SIEM Action: ${action.label}`, 'action', action)
     
     if (action.unlocksEvidence) {

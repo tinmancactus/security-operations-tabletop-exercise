@@ -36,6 +36,11 @@ const allActions = computed(() => {
 })
 
 function isActionCompleted(action) {
+  // Check if this specific action has been completed
+  if (alertsStore.isActionCompleted(action.id)) {
+    return true
+  }
+  // Also check blocked IPs for dynamic block actions
   if (action.isBlockIP && action.ip) {
     return alertsStore.isIPBlocked(action.ip)
   }

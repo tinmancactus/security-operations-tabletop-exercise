@@ -11,6 +11,7 @@ export const useAlertsStore = defineStore('alerts', () => {
   const selectedAlertId = ref(null)
   const filter = ref('all') // all, critical, high, medium, low
   const blockedIPs = ref([]) // Track blocked IPs (one-time action)
+  const completedActions = ref([]) // Track completed action IDs
 
   // Computed
   const visibleAlerts = computed(() => {
@@ -71,7 +72,8 @@ export const useAlertsStore = defineStore('alerts', () => {
     localStorage.setItem('soc-sim-alerts', JSON.stringify({
       visibleAlertIds: visibleAlertIds.value,
       selectedAlertId: selectedAlertId.value,
-      blockedIPs: blockedIPs.value
+      blockedIPs: blockedIPs.value,
+      completedActions: completedActions.value
     }))
   }
 
@@ -82,6 +84,7 @@ export const useAlertsStore = defineStore('alerts', () => {
       visibleAlertIds.value = state.visibleAlertIds || []
       selectedAlertId.value = state.selectedAlertId
       blockedIPs.value = state.blockedIPs || []
+      completedActions.value = state.completedActions || []
       return true
     }
     return false
@@ -93,6 +96,7 @@ export const useAlertsStore = defineStore('alerts', () => {
     selectedAlertId.value = null
     filter.value = 'all'
     blockedIPs.value = []
+    completedActions.value = []
   }
 
   function blockIP(ip) {
@@ -104,6 +108,17 @@ export const useAlertsStore = defineStore('alerts', () => {
 
   function isIPBlocked(ip) {
     return blockedIPs.value.includes(ip)
+  }
+
+  function completeAction(actionId) {
+    if (!completedActions.value.includes(actionId)) {
+      completedActions.value.push(actionId)
+      saveState()
+    }
+  }
+
+  function isActionCompleted(actionId) {
+    return completedActions.value.includes(actionId)
   }
 
   return {
@@ -123,6 +138,8 @@ export const useAlertsStore = defineStore('alerts', () => {
     loadState,
     clearState,
     blockIP,
-    isIPBlocked
+    isIPBlocked,
+    completeAction,
+    isActionCompleted
   }
 })
