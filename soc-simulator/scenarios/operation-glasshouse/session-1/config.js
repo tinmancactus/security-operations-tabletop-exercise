@@ -28,14 +28,5 @@ Your job is to monitor security alerts, investigate suspicious activity, and esc
 Some events will occur automatically as time passes. Watch the clock.
 
 Good luck.`
-  },
-  
-  roles: [
-    { id: 'alert-analyst', name: 'Alert Analyst', focus: 'SIEM alerts, log analysis' },
-    { id: 'ticket-handler', name: 'Ticket Handler', focus: 'Service tickets, employee communications' },
-    { id: 'intel-analyst', name: 'Intel Analyst', focus: 'Threat intelligence, IOC research' },
-    { id: 'coordinator', name: 'Incident Coordinator', focus: 'Timeline, documentation' },
-    { id: 'escalation-lead', name: 'Escalation Lead', focus: 'NPC communication' },
-    { id: 'infra-liaison', name: 'Infrastructure Liaison', focus: 'Technical actions' }
-  ]
+  }
 }

@@ -74,14 +74,6 @@ function newGame() {
           {{ scenario.config.briefing.content }}
         </div>
         
-        <h4 class="text-sm font-semibold text-soc-warning mb-2">Team Roles</h4>
-        <ul class="text-sm text-soc-muted space-y-1 mb-6">
-          <li v-for="role in scenario.config.roles" :key="role.id" class="flex">
-            <span class="text-soc-accent mr-2">→</span>
-            <span><strong>{{ role.name }}</strong> — {{ role.focus }}</span>
-          </li>
-        </ul>
-        
         <button 
           @click="startSession"
           class="w-full bg-soc-accent text-black font-semibold py-4 px-6 rounded-lg text-lg hover:bg-blue-400 transition"

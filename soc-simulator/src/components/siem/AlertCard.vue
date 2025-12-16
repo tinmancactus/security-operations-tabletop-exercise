@@ -53,10 +53,5 @@ function formatTime(timestamp) {
       <p v-if="alert.target">Target: {{ alert.target }}</p>
     </div>
     
-    <!-- Cliffhanger indicator -->
-    <div v-if="alert.isCliffhanger" class="mt-2 text-xs text-soc-danger font-semibold animate-pulse flex items-center gap-1">
-      <AlertTriangle class="w-4 h-4" />
-      CRITICAL — REQUIRES IMMEDIATE ATTENTION
-    </div>
   </div>
 </template>

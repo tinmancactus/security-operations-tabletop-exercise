@@ -48,12 +48,14 @@ export const useAlertsStore = defineStore('alerts', () => {
       .map(a => a.id)
   }
 
-  function showAlert(alertId) {
+  function showAlert(alertId, skipNotification = false) {
     if (!visibleAlertIds.value.includes(alertId)) {
       visibleAlertIds.value.push(alertId)
       const alert = allAlerts.value.find(a => a.id === alertId)
       if (alert) {
-        gameStore.addNotification(`New alert: ${alert.title}`, 'warning', 'siem')
+        if (!skipNotification) {
+          gameStore.addNotification(`New alert: ${alert.title}`, 'warning', 'siem')
+        }
         gameStore.logAction(`New SIEM alert: ${alert.title}`, 'event')
       }
       saveState()
@@ -121,6 +123,33 @@ export const useAlertsStore = defineStore('alerts', () => {
     return completedActions.value.includes(actionId)
   }
 
+  function checkScheduledAlerts(elapsedSeconds) {
+    // Check for alerts that should become visible based on elapsed time
+    allAlerts.value.forEach(alert => {
+      if (alert.visibleAt && alert.visibleAt > 0 && !visibleAlertIds.value.includes(alert.id)) {
+        if (elapsedSeconds >= alert.visibleAt) {
+          showAlertWithEffects(alert)
+        }
+      }
+    })
+  }
+
+  function showAlertWithEffects(alert) {
+    // Show the alert, skip default notification if custom one is specified
+    const hasCustomNotification = !!alert.notification
+    showAlert(alert.id, hasCustomNotification)
+    
+    // Handle custom notification if specified
+    if (alert.notification) {
+      gameStore.addNotification(alert.notification.message, alert.notification.type, 'siem')
+    }
+    
+    // Handle pauseTimer for cliffhanger alerts
+    if (alert.pauseTimer) {
+      gameStore.pauseTimer()
+    }
+  }
+
   return {
     allAlerts,
     visibleAlertIds,
@@ -140,6 +169,7 @@ export const useAlertsStore = defineStore('alerts', () => {
     blockIP,
     isIPBlocked,
     completeAction,
-    isActionCompleted
+    isActionCompleted,
+    checkScheduledAlerts
   }
 })

@@ -133,8 +133,16 @@ export const useGameStore = defineStore('game', () => {
   }
 
   function checkTimedEvents() {
-    // This will be called by the timer to check for scenario events
-    // Implemented in the scenario loader
+    // Calculate elapsed time
+    const duration = scenario.value?.config?.duration || 3600
+    const elapsed = duration - timeRemaining.value
+    
+    // Check for scheduled alerts
+    // Import inside function to avoid circular dependency
+    import('./alerts').then(({ useAlertsStore }) => {
+      const alertsStore = useAlertsStore()
+      alertsStore.checkScheduledAlerts(elapsed)
+    })
   }
 
   function saveState() {
@@ -187,6 +195,7 @@ export const useGameStore = defineStore('game', () => {
     }
     timeRemaining.value = seconds
     saveState()
+    checkTimedEvents() // Check for scheduled events after time change
     console.log(`⏱️ Time set to ${Math.floor(seconds / 60)}:${(seconds % 60).toString().padStart(2, '0')}`)
   }
 
@@ -197,6 +206,7 @@ export const useGameStore = defineStore('game', () => {
     }
     timeRemaining.value = Math.max(0, timeRemaining.value + seconds)
     saveState()
+    checkTimedEvents() // Check for scheduled events after time change
     console.log(`⏱️ Time ${seconds >= 0 ? 'added' : 'removed'}: now ${formattedTime.value}`)
   }
 
