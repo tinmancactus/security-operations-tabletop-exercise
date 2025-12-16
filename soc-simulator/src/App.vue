@@ -84,7 +84,8 @@ function triggerEvent(event) {
 
 function handleStart() {
   showResumePrompt.value = false
-  // Send initial messages from NPCs (e.g., shift handover)
+  // Load pre-existing message history, then send initial messages
+  commsStore.loadMessageHistory()
   commsStore.sendInitialMessages()
 }
 
@@ -97,7 +98,8 @@ function handleResume() {
 function handleNewGame() {
   resetSession()
   gameStore.startSession()
-  // Send initial messages from NPCs (e.g., shift handover)
+  // Load pre-existing message history, then send initial messages
+  commsStore.loadMessageHistory()
   commsStore.sendInitialMessages()
 }
 

@@ -43,6 +43,27 @@ export const useCommsStore = defineStore('comms', () => {
     })
   }
 
+  function loadMessageHistory() {
+    // Load pre-existing message history for NPCs (shown as past conversations)
+    Object.entries(npcs.value).forEach(([npcId, npc]) => {
+      if (npc.messageHistory && channels.value[npcId]?.length === 0) {
+        npc.messageHistory.forEach(msg => {
+          const message = {
+            id: msg.id || Date.now() + Math.random(),
+            timestamp: msg.timestamp,
+            gameTime: msg.gameTime || 'Earlier',
+            from: msg.from, // 'npc' or 'player'
+            content: msg.content,
+            npcId,
+            npcName: npc.name,
+            isHistory: true // Mark as historical message
+          }
+          channels.value[npcId].push(message)
+        })
+      }
+    })
+  }
+
   function sendInitialMessages() {
     // Send any initial messages from NPCs (e.g., shift handover)
     Object.entries(npcs.value).forEach(([npcId, npc]) => {
@@ -246,6 +267,7 @@ export const useCommsStore = defineStore('comms', () => {
     activeChannel,
     totalUnread,
     loadNPCs,
+    loadMessageHistory,
     sendInitialMessages,
     setActiveChannel,
     sendMessage,

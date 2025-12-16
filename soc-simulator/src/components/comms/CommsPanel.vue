@@ -2,6 +2,7 @@
 import { ref, computed, nextTick, watch } from 'vue'
 import { useCommsStore } from '../../stores/comms'
 import { useGameStore } from '../../stores/game'
+import { BellOff, Clock } from 'lucide-vue-next'
 
 const commsStore = useCommsStore()
 const gameStore = useGameStore()
@@ -14,6 +15,23 @@ const showRachelConfirm = ref(false)
 
 const npcList = computed(() => {
   return Object.values(commsStore.npcs)
+})
+
+// Check if current NPC can receive messages
+const canMessageCurrentNpc = computed(() => {
+  if (!commsStore.activeChannelId) return false
+  const npc = commsStore.npcs[commsStore.activeChannelId]
+  if (!npc) return false
+  
+  // Rachel's special case - can message when awaiting response
+  const rachelStatus = commsStore.getNpcStatus('rachel')
+  if (commsStore.activeChannelId === 'rachel' && rachelStatus === 'awaiting-response') {
+    return true
+  }
+  
+  // Check messaging mode - 'busy' blocks messaging, others allow it
+  const mode = npc.messagingMode || 'busy'
+  return mode !== 'busy'
 })
 
 function selectChannel(npcId) {
@@ -31,18 +49,11 @@ function sendMessage() {
   
   const npcId = commsStore.activeChannelId
   const npc = commsStore.npcs[npcId]
-  const cost = commsStore.getEscalationCost(npcId)
+  const mode = npc.messagingMode || 'busy'
   
-  // Check tokens
-  if (cost > 0 && gameStore.tokens < cost) {
-    gameStore.addNotification(`Not enough tokens! Need ${cost}, have ${gameStore.tokens}`, 'warning')
-    return
-  }
-  
-  // Check NPC availability using store method
-  if (!commsStore.isNpcAvailable(npcId)) {
-    // Show DND message for unavailable NPCs
-    gameStore.addNotification(`${npc.name} is not available right now`, 'warning')
+  // Check if NPC is busy (cannot message at all)
+  if (mode === 'busy') {
+    gameStore.addNotification(`${npc.name} is busy right now`, 'warning')
     return
   }
   
@@ -53,14 +64,24 @@ function sendMessage() {
     return
   }
   
-  // If NPC is unavailable (e.g., Alex out of office), skip assessment and auto-reply
-  if (!npc.available && rachelStatus !== 'awaiting-response') {
-    sendAutoReply()
+  // Check tokens for escalation mode
+  const cost = commsStore.getEscalationCost(npcId)
+  if (mode === 'escalation' && cost > 0 && gameStore.tokens < cost) {
+    gameStore.addNotification(`Not enough tokens! Need ${cost}, have ${gameStore.tokens}`, 'warning')
     return
   }
   
-  // Show self-assessment for available NPCs
-  showAssessment.value = true
+  // Handle based on messaging mode
+  if (mode === 'auto-reply') {
+    // Alex - send message and get auto-reply
+    sendAutoReply()
+  } else if (mode === 'dnd') {
+    // James - send message but no response
+    sendDndMessage()
+  } else if (mode === 'escalation') {
+    // Priya - show self-assessment
+    showAssessment.value = true
+  }
 }
 
 function sendAutoReply() {
@@ -75,7 +96,7 @@ function sendAutoReply() {
   const response = npc.responses.weak
   
   // Log the message
-  gameStore.logAction(`Sent message to ${npc.name} (unavailable)`, 'comms', { content })
+  gameStore.logAction(`Sent message to ${npc.name} (offline)`, 'comms', { content })
   
   // Deliver auto-reply after a short delay
   setTimeout(() => {
@@ -84,6 +105,22 @@ function sendAutoReply() {
   }, 500)
   
   // Reset
+  messageInput.value = ''
+  scrollToBottom()
+}
+
+function sendDndMessage() {
+  const npcId = commsStore.activeChannelId
+  const npc = commsStore.npcs[npcId]
+  const content = messageInput.value.trim()
+  
+  // Send player message (no token cost)
+  commsStore.sendMessage(npcId, content)
+  
+  // Log the message
+  gameStore.logAction(`Sent message to ${npc.name} (DND - no response)`, 'comms', { content })
+  
+  // Reset - no response will come
   messageInput.value = ''
   scrollToBottom()
 }
@@ -190,13 +227,26 @@ const checksCount = computed(() => assessmentChecks.value.filter(c => c).length)
             : 'bg-soc-surface border-soc-border hover:border-soc-accent/50'"
         >
           <div class="flex items-center gap-2">
-            <img 
-              v-if="npc.image" 
-              :src="npc.image" 
-              :alt="npc.name"
-              class="w-10 h-10 rounded-full object-cover"
-            />
-            <span v-else class="text-xl">{{ npc.avatar }}</span>
+            <div class="relative">
+              <img 
+                v-if="npc.image" 
+                :src="npc.image" 
+                :alt="npc.name"
+                class="w-10 h-10 rounded-full object-cover"
+              />
+              <span v-else class="text-xl">{{ npc.avatar }}</span>
+              <!-- Status indicator dot -->
+              <span 
+                class="absolute -bottom-0.5 -right-0.5 w-3 h-3 rounded-full border-2 border-soc-surface"
+                :class="{
+                  'bg-green-500': npc.messagingMode === 'escalation',
+                  'bg-gray-500': npc.messagingMode === 'auto-reply',
+                  'bg-yellow-500': npc.messagingMode === 'dnd',
+                  'bg-red-500': !npc.messagingMode || npc.messagingMode === 'busy'
+                }"
+                :title="npc.messagingMode === 'escalation' ? 'Online' : npc.messagingMode === 'auto-reply' ? 'Offline' : npc.messagingMode === 'dnd' ? 'Do Not Disturb' : 'Busy'"
+              ></span>
+            </div>
             <div>
               <div class="font-medium text-sm text-soc-text">{{ npc.name }}</div>
               <div class="text-xs text-soc-muted">{{ npc.role }}</div>
@@ -230,10 +280,10 @@ const checksCount = computed(() => assessmentChecks.value.filter(c => c).length)
                 <div class="font-medium text-soc-text flex items-center gap-2">
                   {{ commsStore.activeChannel.npc.name }}
                   <span 
-                    v-if="commsStore.getNpcStatus(commsStore.activeChannelId) === 'dnd'"
-                    class="text-xs px-2 py-0.5 rounded bg-soc-warning/30 text-soc-warning"
+                    v-if="commsStore.getNpcStatus(commsStore.activeChannelId) === 'awaiting-response'"
+                    class="text-xs px-2 py-0.5 rounded bg-soc-accent/30 text-soc-accent"
                   >
-                    Do Not Disturb
+                    Awaiting Your Response
                   </span>
                   <span 
                     v-else-if="commsStore.getNpcStatus(commsStore.activeChannelId) === 'resolved'"
@@ -242,39 +292,48 @@ const checksCount = computed(() => assessmentChecks.value.filter(c => c).length)
                     Conversation Ended
                   </span>
                   <span 
-                    v-else-if="commsStore.getNpcStatus(commsStore.activeChannelId) === 'awaiting-response'"
-                    class="text-xs px-2 py-0.5 rounded bg-soc-accent/30 text-soc-accent"
-                  >
-                    Awaiting Your Response
-                  </span>
-                  <span 
-                    v-else-if="!commsStore.activeChannel.npc.available"
-                    class="text-xs px-2 py-0.5 rounded bg-soc-muted/30 text-soc-muted"
+                    v-else-if="commsStore.activeChannel.npc.messagingMode === 'auto-reply'"
+                    class="text-xs px-2 py-0.5 rounded bg-gray-500/30 text-gray-400"
                   >
                     Offline
+                  </span>
+                  <span 
+                    v-else-if="commsStore.activeChannel.npc.messagingMode === 'dnd'"
+                    class="text-xs px-2 py-0.5 rounded bg-yellow-500/30 text-yellow-400"
+                  >
+                    Do Not Disturb
+                  </span>
+                  <span 
+                    v-else-if="!commsStore.activeChannel.npc.messagingMode || commsStore.activeChannel.npc.messagingMode === 'busy'"
+                    class="text-xs px-2 py-0.5 rounded bg-red-500/30 text-red-400"
+                  >
+                    Busy
                   </span>
                 </div>
                 <div class="text-xs text-soc-muted">{{ commsStore.activeChannel.npc.role }}</div>
               </div>
             </div>
             <div class="text-sm text-soc-muted">
-              <template v-if="commsStore.getNpcStatus(commsStore.activeChannelId) === 'dnd'">
-                <span class="text-soc-warning">Do Not Disturb</span>
+              <template v-if="commsStore.getNpcStatus(commsStore.activeChannelId) === 'awaiting-response'">
+                <span class="text-soc-accent">Response requested (one-time)</span>
               </template>
               <template v-else-if="commsStore.getNpcStatus(commsStore.activeChannelId) === 'resolved'">
                 <span class="text-soc-muted">Conversation complete</span>
               </template>
-              <template v-else-if="commsStore.getNpcStatus(commsStore.activeChannelId) === 'awaiting-response'">
-                <span class="text-soc-accent">Response requested (one-time)</span>
-              </template>
-              <template v-else-if="!commsStore.activeChannel.npc.available">
-                <span class="text-soc-warning">Auto-reply enabled</span>
-              </template>
-              <template v-else>
+              <template v-else-if="commsStore.activeChannel.npc.messagingMode === 'escalation'">
                 Escalation cost: 
                 <span :class="commsStore.getEscalationCost(commsStore.activeChannelId) === 0 ? 'text-soc-success' : 'text-soc-accent'">
                   {{ getEscalationCostText(commsStore.activeChannelId) }}
                 </span>
+              </template>
+              <template v-else-if="commsStore.activeChannel.npc.messagingMode === 'auto-reply'">
+                <span class="text-gray-400">Auto-reply enabled</span>
+              </template>
+              <template v-else-if="commsStore.activeChannel.npc.messagingMode === 'dnd'">
+                <span class="text-yellow-400">Do Not Disturb</span>
+              </template>
+              <template v-else>
+                <span class="text-red-400">Cannot message</span>
               </template>
             </div>
           </div>
@@ -378,8 +437,8 @@ const checksCount = computed(() => assessmentChecks.value.filter(c => c).length)
             </div>
           </div>
           
-          <!-- Input -->
-          <div v-else-if="!showAssessment" class="p-3 border-t border-soc-border">
+          <!-- Input - only show if NPC can receive messages -->
+          <div v-else-if="!showAssessment && canMessageCurrentNpc" class="p-3 border-t border-soc-border">
             <div class="flex gap-2">
               <textarea
                 v-model="messageInput"
@@ -399,6 +458,14 @@ const checksCount = computed(() => assessmentChecks.value.filter(c => c).length)
             <p class="text-xs text-soc-muted mt-2">
               Press Enter to send.
             </p>
+          </div>
+          
+          <!-- Busy indicator - show when NPC cannot receive messages -->
+          <div v-else-if="!showAssessment && !canMessageCurrentNpc" class="p-3 border-t border-soc-border">
+            <div class="flex items-center justify-center gap-2 py-4 text-red-400">
+              <Clock class="w-5 h-5" />
+              <span class="text-sm">{{ commsStore.npcs[commsStore.activeChannelId]?.name }} is busy</span>
+            </div>
           </div>
         </template>
         

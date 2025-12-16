@@ -8,7 +8,54 @@ export default {
     avatar: '👩‍💼',
     image: `${IMG_PATH}/priya.jpg`,
     available: true,
+    messagingMode: 'escalation', // 'escalation' = scoring/rubric, 'auto-reply' = out of office, 'dnd' = no messaging
     escalationCost: { first: 2, followUp: 0 },
+    
+    messageHistory: [
+      {
+        id: 'priya-hist-1',
+        timestamp: '2024-10-09T09:00:00+10:30',
+        gameTime: 'Wed 9:00am',
+        from: 'npc',
+        content: `Morning. Did you see the news about the PayFlex breach? 50,000 customer records exposed.
+
+Board is asking questions. Marcus wants us to review our detection coverage for similar attack patterns. Can you pull together a summary of our current alerting for credential-based attacks?
+
+No rush - end of week is fine.`
+      },
+      {
+        id: 'priya-hist-2',
+        timestamp: '2024-10-09T09:15:00+10:30',
+        gameTime: 'Wed 9:15am',
+        from: 'player',
+        content: `Will do. I saw the article - sounds like they got in through a compromised vendor account?`
+      },
+      {
+        id: 'priya-hist-3',
+        timestamp: '2024-10-09T09:18:00+10:30',
+        gameTime: 'Wed 9:18am',
+        from: 'npc',
+        content: `That's what the initial reports say. Third-party risk is a blind spot for a lot of companies. We're not immune.
+
+Let me know if you need access to any additional threat intel sources for the review.`
+      },
+      {
+        id: 'priya-hist-4',
+        timestamp: '2024-10-11T11:30:00+10:30',
+        gameTime: 'Fri 11:30am',
+        from: 'npc',
+        content: `Heads up - I'll be in a leadership offsite Monday morning until about 11am. Should be reachable by message but might be slow to respond.
+
+James is around if anything urgent comes up. Otherwise just document and I'll review when I'm back.`
+      },
+      {
+        id: 'priya-hist-5',
+        timestamp: '2024-10-11T11:35:00+10:30',
+        gameTime: 'Fri 11:35am',
+        from: 'player',
+        content: `Got it, thanks for the heads up.`
+      }
+    ],
     
     responseRubric: [
       { 
@@ -88,15 +135,306 @@ Credential stuffing is business as usual. If something's different, spell it out
     }
   },
   
+  james: {
+    id: 'james',
+    name: 'James Okoro',
+    role: 'Senior IR Analyst (Tier 3)',
+    avatar: '🔒',
+    image: `${IMG_PATH}/james.jpg`,
+    available: false,
+    messagingMode: 'dnd',
+    escalationCost: { first: 2, followUp: 1 },
+    
+    messageHistory: [
+      {
+        id: 'james-hist-1',
+        timestamp: '2024-10-07T09:15:00+10:30',
+        gameTime: 'Mon 9:15am',
+        from: 'npc',
+        content: `hey, you around? need a second pair of eyes on something`
+      },
+      {
+        id: 'james-hist-2',
+        timestamp: '2024-10-07T09:16:00+10:30',
+        gameTime: 'Mon 9:16am',
+        from: 'player',
+        content: `Yeah, what's up?`
+      },
+      {
+        id: 'james-hist-3',
+        timestamp: '2024-10-07T09:18:00+10:30',
+        gameTime: 'Mon 9:18am',
+        from: 'npc',
+        content: `false alarm, figured it out. was just some weird edge case in the waf logs. thanks anyway 👍`
+      },
+      {
+        id: 'james-hist-4',
+        timestamp: '2024-10-07T16:42:00+10:30',
+        gameTime: 'Mon 4:42pm',
+        from: 'npc',
+        content: `fyi i'm not going to get to that siem tuning this week. marcus wants me focused on the security uplift stuff for the board presentation. fml 🫠`
+      },
+      {
+        id: 'james-hist-5',
+        timestamp: '2024-10-07T16:45:00+10:30',
+        gameTime: 'Mon 4:45pm',
+        from: 'player',
+        content: `No worries, I know you're swamped. Good luck with the board stuff.`
+      },
+      {
+        id: 'james-hist-6',
+        timestamp: '2024-10-07T16:47:00+10:30',
+        gameTime: 'Mon 4:47pm',
+        from: 'npc',
+        content: `lol thanks. gonna need it -__-`
+      },
+      {
+        id: 'james-hist-7',
+        timestamp: '2024-10-11T16:47:00+10:30',
+        gameTime: 'Fri 4:47pm',
+        from: 'npc',
+        content: `you coming for drinks tonight? few of us heading to nola after work`
+      },
+      {
+        id: 'james-hist-8',
+        timestamp: '2024-10-11T16:50:00+10:30',
+        gameTime: 'Fri 4:50pm',
+        from: 'player',
+        content: `Maybe next time, got plans tonight.`
+      },
+      {
+        id: 'james-hist-9',
+        timestamp: '2024-10-11T16:51:00+10:30',
+        gameTime: 'Fri 4:51pm',
+        from: 'npc',
+        content: `no worries, have a good weekend`
+      }
+    ],
+    
+    responseRubric: [
+      { id: 'technical-detail', keywords: ['ip', 'hash', 'ioc', 'log', 'payload', 'c2', 'malware', 'lateral'], points: 1 },
+      { id: 'specific-question', keywords: ['can you', 'could you', 'what do you think', 'is this', 'does this look'], points: 1 },
+      { id: 'evidence-reference', keywords: ['evidence', 'alert', 'ticket', 'found', 'discovered', 'noticed'], points: 1 }
+    ],
+    
+    responses: {
+      strong: {
+        minScore: 2,
+        title: 'Engaged Response',
+        content: `yeah i can take a look. send me the details and i'll dig into it.
+
+if it's urgent ping me directly, otherwise i'll get to it when i'm done with this board deck bs`
+      },
+      partial: {
+        minScore: 1,
+        title: 'Brief Response',
+        content: `bit swamped rn with the security uplift stuff. can you give me the tldr?
+
+if it's not urgent it might have to wait til tomorrow`
+      },
+      weak: {
+        minScore: 0,
+        title: 'Dismissive Response',
+        content: `sorry mate, drowning over here. unless it's actively on fire can it wait?
+
+escalate to priya if you need someone now`
+      }
+    }
+  },
+
+  marcus: {
+    id: 'marcus',
+    name: 'Marcus Chen',
+    role: 'CISO',
+    avatar: '👔',
+    image: `${IMG_PATH}/marcus.jpg`,
+    available: false,
+    messagingMode: 'busy', // In meetings most of the day
+    escalationCost: { first: 3, followUp: 1 },
+    
+    messageHistory: [
+      {
+        id: 'marcus-hist-1',
+        timestamp: '2024-10-10T14:30:00+10:30',
+        gameTime: 'Thu 2:30pm',
+        from: 'npc',
+        content: `Quick note - thanks for handling that phishing report yesterday. Good catch on the lookalike domain.
+
+I've mentioned to the board that our detection capabilities are improving. Keep up the good work.`
+      },
+      {
+        id: 'marcus-hist-2',
+        timestamp: '2024-10-10T14:35:00+10:30',
+        gameTime: 'Thu 2:35pm',
+        from: 'player',
+        content: `Thanks Marcus, appreciate the feedback.`
+      },
+      {
+        id: 'marcus-hist-3',
+        timestamp: '2024-10-10T14:36:00+10:30',
+        gameTime: 'Thu 2:36pm',
+        from: 'npc',
+        content: `FYI I'll be in board meetings most of Monday. Priya's your first point of contact. Only interrupt me if something's critical.`
+      }
+    ],
+    
+    responseRubric: [
+      { id: 'executive-summary', keywords: ['summary', 'impact', 'risk', 'business', 'customers', 'data'], points: 1 },
+      { id: 'severity-assessment', keywords: ['critical', 'high', 'severity', 'urgent', 'priority'], points: 1 },
+      { id: 'recommendation', keywords: ['recommend', 'suggest', 'propose', 'should', 'action'], points: 1 }
+    ],
+    
+    responses: {
+      strong: {
+        minScore: 2,
+        title: 'CISO Response',
+        content: `Thanks for the escalation. I'm stepping out of my meeting to address this.
+
+Continue your investigation and keep Priya updated. I'll brief the executive team and get back to you within the hour.
+
+Do NOT take any containment actions that could impact business operations without my explicit approval.`
+      },
+      partial: {
+        minScore: 1,
+        title: 'CISO Response',
+        content: `I'm in back-to-back meetings today. Is this something Priya can handle?
+
+If you genuinely need CISO-level decision making, send me a one-paragraph summary with:
+1. What's happening
+2. Business impact
+3. What you need from me
+
+Otherwise, work with Priya.`
+      },
+      weak: {
+        minScore: 0,
+        title: 'CISO Response',
+        content: `I'm not clear why this needs my attention right now. Please work with Priya on triage.
+
+Escalate to me only when you have:
+- Confirmed incident (not just suspicious activity)
+- Clear business impact
+- Specific decision you need from me
+
+Thanks.`
+      }
+    }
+  },
+
+  sandra: {
+    id: 'sandra',
+    name: 'Sandra Leigh',
+    role: 'CFO',
+    avatar: '💼',
+    image: `${IMG_PATH}/sandra.jpg`,
+    available: false,
+    messagingMode: 'busy',
+    escalationCost: { first: 0, followUp: 0 },
+    
+    messageHistory: [
+      {
+        id: 'sandra-hist-1',
+        timestamp: '2024-10-08T11:20:00+10:30',
+        gameTime: 'Tue 11:20am',
+        from: 'npc',
+        content: `Hey 😊
+
+Quick favour - we're getting a card for David's birthday next week. Can you sign it when you get a chance? It's on my desk.
+
+SL`
+      },
+      {
+        id: 'sandra-hist-2',
+        timestamp: '2024-10-08T11:45:00+10:30',
+        gameTime: 'Tue 11:45am',
+        from: 'player',
+        content: `Sure, I'll swing by this afternoon.`
+      },
+      {
+        id: 'sandra-hist-3',
+        timestamp: '2024-10-08T11:46:00+10:30',
+        gameTime: 'Tue 11:46am',
+        from: 'npc',
+        content: `Thanks! 😊`
+      },
+      {
+        id: 'sandra-hist-4',
+        timestamp: '2024-10-09T15:30:00+10:30',
+        gameTime: 'Wed 3:30pm',
+        from: 'npc',
+        content: `Hey 😊
+
+Thanks so much for helping me with that MFA thing last week. I know I was being difficult about it but I do understand why it matters now. The video you sent explaining the SIM swap attacks was eye-opening!
+
+Anyway, just wanted to say thanks for being patient with me.
+
+SL`
+      },
+      {
+        id: 'sandra-hist-5',
+        timestamp: '2024-10-09T15:45:00+10:30',
+        gameTime: 'Wed 3:45pm',
+        from: 'player',
+        content: `No problem at all, happy to help. Let me know if you have any other questions about it.`
+      },
+      {
+        id: 'sandra-hist-6',
+        timestamp: '2024-10-09T15:47:00+10:30',
+        gameTime: 'Wed 3:47pm',
+        from: 'npc',
+        content: `Will do!`
+      }
+    ],
+    
+    responseRubric: [],
+    
+    responses: {
+      strong: {
+        minScore: 0,
+        title: 'CFO Response',
+        content: `Hey 😊
+
+Thanks for reaching out. I'm not sure this is something I can help with directly - security matters should go through Marcus or Priya.
+
+Is there something specific you need from Finance?
+
+SL`
+      },
+      partial: {
+        minScore: 0,
+        title: 'CFO Response',
+        content: `Hey 😊
+
+Thanks for reaching out. I'm not sure this is something I can help with directly - security matters should go through Marcus or Priya.
+
+Is there something specific you need from Finance?
+
+SL`
+      },
+      weak: {
+        minScore: 0,
+        title: 'CFO Response',
+        content: `Hey 😊
+
+Thanks for reaching out. I'm not sure this is something I can help with directly - security matters should go through Marcus or Priya.
+
+Is there something specific you need from Finance?
+
+SL`
+      }
+    }
+  },
+
   rachel: {
     id: 'rachel',
     name: 'Rachel Torres',
     role: 'Infrastructure Lead',
     avatar: '👩‍🔧',
     image: `${IMG_PATH}/rachel.jpg`,
-    available: false, // Starts as Do Not Disturb - becomes available only after disable-liam action
+    available: false,
+    messagingMode: 'busy', // Becomes available only after disable-liam action
     status: 'dnd', // 'dnd', 'awaiting-response', 'resolved'
-    escalationCost: { first: 0, followUp: 0 }, // Free when she initiates contact
+    escalationCost: { first: 0, followUp: 0 },
     
     // Special message sent when player disables Liam's account
     accountDisableMessage: {
@@ -160,10 +498,11 @@ What system or IP are we talking about? What do you want me to do?`
   alex: {
     id: 'alex',
     name: 'Alex Anderson',
-    role: 'SOC Analyst (Night Shift)',
+    role: 'SOC Analyst',
     avatar: '🌙',
     image: `${IMG_PATH}/alex.jpg`,
-    available: false, // Out of office
+    available: false,
+    messagingMode: 'auto-reply', // Out of office with auto-response
     escalationCost: { first: 0, followUp: 0 },
     
     // Initial message sent at session start
