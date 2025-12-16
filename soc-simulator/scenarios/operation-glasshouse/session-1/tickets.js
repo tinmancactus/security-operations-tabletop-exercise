@@ -1,4 +1,90 @@
 export default [
+  // ============================================
+  // NOISE TICKETS - SOC-appropriate security reports
+  // ============================================
+  {
+    id: 'TKT-4469',
+    priority: 'low',
+    status: 'open',
+    category: 'Security — Phishing Report',
+    visibleAt: 300, // 5 min into session
+    from: {
+      name: 'Andrew Walsh',
+      email: 'andrew.walsh@xyzpay.com.au',
+      department: 'Sales'
+    },
+    subject: 'Suspicious email from "DocuSign"',
+    submitted: '2024-10-14T08:05:00+10:30',
+    sla: '24 hours',
+    content: `Hi Security team,
+
+I got an email this morning that looks like it's from DocuSign asking me to sign a contract. I don't remember any contracts pending so I thought I'd check before clicking anything.
+
+Subject line was "Action Required: Contract #4892 awaiting your signature"
+
+Is this legit or should I delete it?
+
+Thanks,
+Andrew`,
+    actions: []
+  },
+  {
+    id: 'TKT-4470',
+    priority: 'low',
+    status: 'open',
+    category: 'Security — Access Review',
+    visibleAt: 600, // 10 min into session
+    from: {
+      name: 'Sophie Turner',
+      email: 'sophie.turner@xyzpay.com.au',
+      department: 'Legal'
+    },
+    subject: 'Request to unblock website - contractpodai.com',
+    submitted: '2024-10-11T15:40:00+10:30',
+    sla: '48 hours',
+    content: `Hi Security,
+
+I'm trying to access contractpodai.com for our new contract management system but it's being blocked by the web filter. Legal has approved this tool and we need it for the Q4 contract review cycle.
+
+Can you please review and whitelist this site?
+
+Thanks,
+Sophie`,
+    actions: []
+  },
+  
+  // ============================================
+  // NOISE TICKETS - Appear during session
+  // ============================================
+  {
+    id: 'TKT-4473',
+    priority: 'low',
+    status: 'open',
+    category: 'Security — General Inquiry',
+    visibleAt: 1200, // 20 min into session
+    from: {
+      name: 'Ben Harrison',
+      email: 'ben.harrison@xyzpay.com.au',
+      department: 'Engineering'
+    },
+    subject: 'Think my account might be compromised?',
+    submitted: '2024-10-14T09:22:00+10:30',
+    sla: '4 hours',
+    content: `Hi Security,
+
+I just checked my account activity and I'm seeing logins from a device I don't recognise - something called "Ben's iPhone" but I have an Android phone?
+
+Wait... actually I think that might be my old work phone from before I switched. Can you confirm? Just want to make sure no one else is in my account.
+
+Sorry if this is a false alarm!
+
+Ben`,
+    actions: []
+  },
+  
+  // ============================================
+  // STORY TICKETS - Key investigation items
+  // ============================================
   {
     id: 'TKT-4471',
     priority: 'low',

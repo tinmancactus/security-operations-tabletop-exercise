@@ -7,6 +7,7 @@ export const useTicketsStore = defineStore('tickets', () => {
   
   // State
   const allTickets = ref([])
+  const visibleTicketIds = ref([])
   const selectedTicketId = ref(null)
   const ticketNotes = ref({}) // ticketId -> notes string
   const completedActions = ref([]) // action IDs that have been taken
@@ -14,10 +15,12 @@ export const useTicketsStore = defineStore('tickets', () => {
 
   // Computed
   const visibleTickets = computed(() => {
-    return allTickets.value.sort((a, b) => {
-      const priorityOrder = { critical: 0, high: 1, medium: 2, low: 3 }
-      return priorityOrder[a.priority] - priorityOrder[b.priority]
-    })
+    return allTickets.value
+      .filter(t => visibleTicketIds.value.includes(t.id))
+      .sort((a, b) => {
+        const priorityOrder = { critical: 0, high: 1, medium: 2, low: 3 }
+        return priorityOrder[a.priority] - priorityOrder[b.priority]
+      })
   })
 
   const selectedTicket = computed(() => {
@@ -27,6 +30,33 @@ export const useTicketsStore = defineStore('tickets', () => {
   // Actions
   function loadTickets(tickets) {
     allTickets.value = tickets
+    // Show tickets that are visible at start (visibleAt = 0 or undefined)
+    visibleTicketIds.value = tickets
+      .filter(t => !t.visibleAt || t.visibleAt === 0)
+      .map(t => t.id)
+  }
+
+  function showTicket(ticketId) {
+    if (!visibleTicketIds.value.includes(ticketId)) {
+      visibleTicketIds.value.push(ticketId)
+      const ticket = allTickets.value.find(t => t.id === ticketId)
+      if (ticket) {
+        gameStore.addNotification(`New ticket: ${ticket.subject}`, 'info', 'tickets')
+        gameStore.logAction(`New service ticket: ${ticket.subject}`, 'event')
+      }
+      saveState()
+    }
+  }
+
+  function checkScheduledTickets(elapsedSeconds) {
+    // Check for tickets that should become visible based on elapsed time
+    allTickets.value.forEach(ticket => {
+      if (ticket.visibleAt && ticket.visibleAt > 0 && !visibleTicketIds.value.includes(ticket.id)) {
+        if (elapsedSeconds >= ticket.visibleAt) {
+          showTicket(ticket.id)
+        }
+      }
+    })
   }
 
   function selectTicket(ticketId) {
@@ -91,6 +121,7 @@ export const useTicketsStore = defineStore('tickets', () => {
 
   function saveState() {
     localStorage.setItem('soc-sim-tickets', JSON.stringify({
+      visibleTicketIds: visibleTicketIds.value,
       selectedTicketId: selectedTicketId.value,
       ticketNotes: ticketNotes.value,
       completedActions: completedActions.value,
@@ -102,6 +133,7 @@ export const useTicketsStore = defineStore('tickets', () => {
     const saved = localStorage.getItem('soc-sim-tickets')
     if (saved) {
       const state = JSON.parse(saved)
+      visibleTicketIds.value = state.visibleTicketIds || []
       selectedTicketId.value = state.selectedTicketId
       ticketNotes.value = state.ticketNotes || {}
       completedActions.value = state.completedActions || []
@@ -113,6 +145,7 @@ export const useTicketsStore = defineStore('tickets', () => {
 
   function clearState() {
     localStorage.removeItem('soc-sim-tickets')
+    visibleTicketIds.value = []
     selectedTicketId.value = null
     ticketNotes.value = {}
     completedActions.value = []
@@ -121,6 +154,7 @@ export const useTicketsStore = defineStore('tickets', () => {
 
   return {
     allTickets,
+    visibleTicketIds,
     selectedTicketId,
     ticketNotes,
     completedActions,
@@ -128,6 +162,8 @@ export const useTicketsStore = defineStore('tickets', () => {
     visibleTickets,
     selectedTicket,
     loadTickets,
+    showTicket,
+    checkScheduledTickets,
     selectTicket,
     addNote,
     setNotes,

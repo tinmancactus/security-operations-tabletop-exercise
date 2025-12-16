@@ -143,6 +143,12 @@ export const useGameStore = defineStore('game', () => {
       const alertsStore = useAlertsStore()
       alertsStore.checkScheduledAlerts(elapsed)
     })
+    
+    // Check for scheduled tickets
+    import('./tickets').then(({ useTicketsStore }) => {
+      const ticketsStore = useTicketsStore()
+      ticketsStore.checkScheduledTickets(elapsed)
+    })
   }
 
   function saveState() {
