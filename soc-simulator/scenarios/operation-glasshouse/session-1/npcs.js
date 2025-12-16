@@ -5,7 +5,6 @@ export default {
     id: 'priya',
     name: 'Priya Sharma',
     role: 'SOC Manager',
-    avatar: '👩‍💼',
     image: `${IMG_PATH}/priya.jpg`,
     available: true,
     messagingMode: 'escalation', // 'escalation' = scoring/rubric, 'auto-reply' = out of office, 'dnd' = no messaging
@@ -19,34 +18,28 @@ export default {
         from: 'npc',
         content: `Morning. Did you see the news about the PayFlex breach? 50,000 customer records exposed.
 
-Board is asking questions. Marcus wants us to review our detection coverage for similar attack patterns. Can you pull together a summary of our current alerting for credential-based attacks?
-
-No rush - end of week is fine.`
+Board is asking questions. Marcus wants us to review our detection coverage for similar attack patterns.`
       },
       {
         id: 'priya-hist-2',
         timestamp: '2024-10-09T09:15:00+10:30',
         gameTime: 'Wed 9:15am',
         from: 'player',
-        content: `Will do. I saw the article - sounds like they got in through a compromised vendor account?`
+        content: `Yeah, I saw the article - sounds like they got in through a compromised vendor account?`
       },
       {
         id: 'priya-hist-3',
         timestamp: '2024-10-09T09:18:00+10:30',
         gameTime: 'Wed 9:18am',
         from: 'npc',
-        content: `That's what the initial reports say. Third-party risk is a blind spot for a lot of companies. We're not immune.
-
-Let me know if you need access to any additional threat intel sources for the review.`
+        content: `That's what the initial reports say. Third-party risk is a blind spot for a lot of companies. We're not immune.`
       },
       {
         id: 'priya-hist-4',
         timestamp: '2024-10-11T11:30:00+10:30',
         gameTime: 'Fri 11:30am',
         from: 'npc',
-        content: `Heads up - I'll be in a leadership offsite Monday morning until about 11am. Should be reachable by message but might be slow to respond.
-
-James is around if anything urgent comes up. Otherwise just document and I'll review when I'm back.`
+        content: `Heads up - I'll be in and out of meetings Monday morning until about 11am. Should be reachable by message but might be slow to respond.`
       },
       {
         id: 'priya-hist-5',
@@ -103,9 +96,7 @@ I'm authorising you to:
 • Check if other employees got similar calls
 • Prepare containment options (but wait—I'll brief Marcus first)
 
-I'll brief Marcus at 10:30. Update me every 15 min. Here's James's mobile if you need Tier 3 urgently: 0412 XXX XXX
-
-Keep me posted.`
+I'll brief Marcus at 10:30. Keep me posted of any developments.`
       },
       partial: { 
         minScore: 2, 
@@ -117,9 +108,7 @@ Can you clarify:
 • What's the timeline of events?
 • What's your severity assessment and why?
 
-I've got meetings until 11. Send an update when you have more.
-
-(Note: Follow-up escalation is free—you can message me again when you have more details.)`
+I've got meetings until 11. Send an update when you have more.`
       },
       weak: { 
         minScore: 0, 
@@ -128,9 +117,7 @@ I've got meetings until 11. Send an update when you have more.
 
 Is this an incident or just suspicious activity? What's the impact? I need specifics—affected systems, IOCs, timeline—before I can justify pulling anyone off other work.
 
-Credential stuffing is business as usual. If something's different, spell it out clearly. Document what you have and come back with something concrete.
-
-(Note: Follow-up escalation is free—you can message me again when you have more details.)`
+Credential stuffing is business as usual. If something's different, spell it out clearly. Document what you have and come back with something concrete.`
       }
     }
   },
@@ -139,7 +126,6 @@ Credential stuffing is business as usual. If something's different, spell it out
     id: 'james',
     name: 'James Okoro',
     role: 'Senior IR Analyst (Tier 3)',
-    avatar: '🔒',
     image: `${IMG_PATH}/james.jpg`,
     available: false,
     messagingMode: 'dnd',
@@ -186,7 +172,7 @@ Credential stuffing is business as usual. If something's different, spell it out
         timestamp: '2024-10-07T16:47:00+10:30',
         gameTime: 'Mon 4:47pm',
         from: 'npc',
-        content: `lol thanks. gonna need it -__-`
+        content: `lol thanks. gonna need it`
       },
       {
         id: 'james-hist-7',
@@ -209,44 +195,13 @@ Credential stuffing is business as usual. If something's different, spell it out
         from: 'npc',
         content: `no worries, have a good weekend`
       }
-    ],
-    
-    responseRubric: [
-      { id: 'technical-detail', keywords: ['ip', 'hash', 'ioc', 'log', 'payload', 'c2', 'malware', 'lateral'], points: 1 },
-      { id: 'specific-question', keywords: ['can you', 'could you', 'what do you think', 'is this', 'does this look'], points: 1 },
-      { id: 'evidence-reference', keywords: ['evidence', 'alert', 'ticket', 'found', 'discovered', 'noticed'], points: 1 }
-    ],
-    
-    responses: {
-      strong: {
-        minScore: 2,
-        title: 'Engaged Response',
-        content: `yeah i can take a look. send me the details and i'll dig into it.
-
-if it's urgent ping me directly, otherwise i'll get to it when i'm done with this board deck bs`
-      },
-      partial: {
-        minScore: 1,
-        title: 'Brief Response',
-        content: `bit swamped rn with the security uplift stuff. can you give me the tldr?
-
-if it's not urgent it might have to wait til tomorrow`
-      },
-      weak: {
-        minScore: 0,
-        title: 'Dismissive Response',
-        content: `sorry mate, drowning over here. unless it's actively on fire can it wait?
-
-escalate to priya if you need someone now`
-      }
-    }
+    ]
   },
 
   marcus: {
     id: 'marcus',
     name: 'Marcus Chen',
     role: 'CISO',
-    avatar: '👔',
     image: `${IMG_PATH}/marcus.jpg`,
     available: false,
     messagingMode: 'busy', // In meetings most of the day
@@ -276,56 +231,13 @@ I've mentioned to the board that our detection capabilities are improving. Keep 
         from: 'npc',
         content: `FYI I'll be in board meetings most of Monday. Priya's your first point of contact. Only interrupt me if something's critical.`
       }
-    ],
-    
-    responseRubric: [
-      { id: 'executive-summary', keywords: ['summary', 'impact', 'risk', 'business', 'customers', 'data'], points: 1 },
-      { id: 'severity-assessment', keywords: ['critical', 'high', 'severity', 'urgent', 'priority'], points: 1 },
-      { id: 'recommendation', keywords: ['recommend', 'suggest', 'propose', 'should', 'action'], points: 1 }
-    ],
-    
-    responses: {
-      strong: {
-        minScore: 2,
-        title: 'CISO Response',
-        content: `Thanks for the escalation. I'm stepping out of my meeting to address this.
-
-Continue your investigation and keep Priya updated. I'll brief the executive team and get back to you within the hour.
-
-Do NOT take any containment actions that could impact business operations without my explicit approval.`
-      },
-      partial: {
-        minScore: 1,
-        title: 'CISO Response',
-        content: `I'm in back-to-back meetings today. Is this something Priya can handle?
-
-If you genuinely need CISO-level decision making, send me a one-paragraph summary with:
-1. What's happening
-2. Business impact
-3. What you need from me
-
-Otherwise, work with Priya.`
-      },
-      weak: {
-        minScore: 0,
-        title: 'CISO Response',
-        content: `I'm not clear why this needs my attention right now. Please work with Priya on triage.
-
-Escalate to me only when you have:
-- Confirmed incident (not just suspicious activity)
-- Clear business impact
-- Specific decision you need from me
-
-Thanks.`
-      }
-    }
+    ]
   },
 
   sandra: {
     id: 'sandra',
     name: 'Sandra Leigh',
     role: 'CFO',
-    avatar: '💼',
     image: `${IMG_PATH}/sandra.jpg`,
     available: false,
     messagingMode: 'busy',
@@ -384,52 +296,13 @@ SL`
         from: 'npc',
         content: `Will do!`
       }
-    ],
-    
-    responseRubric: [],
-    
-    responses: {
-      strong: {
-        minScore: 0,
-        title: 'CFO Response',
-        content: `Hey 😊
-
-Thanks for reaching out. I'm not sure this is something I can help with directly - security matters should go through Marcus or Priya.
-
-Is there something specific you need from Finance?
-
-SL`
-      },
-      partial: {
-        minScore: 0,
-        title: 'CFO Response',
-        content: `Hey 😊
-
-Thanks for reaching out. I'm not sure this is something I can help with directly - security matters should go through Marcus or Priya.
-
-Is there something specific you need from Finance?
-
-SL`
-      },
-      weak: {
-        minScore: 0,
-        title: 'CFO Response',
-        content: `Hey 😊
-
-Thanks for reaching out. I'm not sure this is something I can help with directly - security matters should go through Marcus or Priya.
-
-Is there something specific you need from Finance?
-
-SL`
-      }
-    }
+    ]
   },
 
   rachel: {
     id: 'rachel',
     name: 'Rachel Torres',
     role: 'Infrastructure Lead',
-    avatar: '👩‍🔧',
     image: `${IMG_PATH}/rachel.jpg`,
     available: false,
     messagingMode: 'busy', // Becomes available only after disable-liam action
@@ -451,55 +324,13 @@ She's asking when he'll be able to get back in.`
 
 I won't re-enable the account without checking with you first.
 
-Good luck with the investigation.`,
-    
-    responseRubric: [
-      { id: 'specific-ip', keywords: ['185.220', '91.240', '194.26', '103.42', 'ip address'], points: 1 },
-      { id: 'specific-action', keywords: ['block', 'firewall', 'disable', 'isolate'], points: 1 },
-      { id: 'has-justification', keywords: ['because', 'due to', 'evidence', 'attack', 'malicious'], points: 1 }
-    ],
-    
-    responses: {
-      strong: {
-        minScore: 3,
-        title: 'Action Confirmed',
-        content: `Got it. I'll implement that change now.
-
-Just to confirm what I'm doing:
-[Action will be implemented based on request]
-
-This will take effect within 5 minutes. I'll ping you when it's done.
-
-Note: If this causes any business impact, I'll need you to document the justification for the change request.`
-      },
-      partial: {
-        minScore: 1,
-        title: 'Need More Details',
-        content: `Got your ticket. What exactly do you need? We're mid-patching cycle so I need to know if this is urgent.
-
-For emergency changes I need:
-1. Specific systems/IPs affected
-2. What action you want
-3. Business justification
-4. SOC Manager approval
-
-Let me know and I'll prioritise.`
-      },
-      weak: {
-        minScore: 0,
-        title: 'Unclear Request',
-        content: `I'm not sure what you're asking for here. Can you be more specific?
-
-What system or IP are we talking about? What do you want me to do?`
-      }
-    }
+Good luck with the investigation.`
   },
 
   alex: {
     id: 'alex',
     name: 'Alex Anderson',
     role: 'SOC Analyst',
-    avatar: '🌙',
     image: `${IMG_PATH}/alex.jpg`,
     available: false,
     messagingMode: 'auto-reply', // Out of office with auto-response
@@ -534,43 +365,13 @@ Catch you tonight!
 - Alex`
     },
     
-    responseRubric: [], // No scoring needed
-    
-    responses: {
-      // All responses are the same - out of office
-      strong: {
-        minScore: 0,
-        title: 'Out of Office',
-        content: `Thanks for your message. I'm currently offline after night shift and will be back online at 22:00 tonight.
+    // Auto-reply message for out of office
+    autoReply: `Thanks for your message. I'm currently offline after night shift and will be back online at 22:00 tonight.
 
 For urgent matters, please contact:
-• Priya Sharma (SOC Manager) - available now
-• James Okoro (Tier 3) - for active incidents
+• Priya Sharma (SOC Manager)
+• James Okoro (Tier 3)
 
 This is an automated response.`
-      },
-      partial: {
-        minScore: 0,
-        title: 'Out of Office',
-        content: `Thanks for your message. I'm currently offline after night shift and will be back online at 22:00 tonight.
-
-For urgent matters, please contact:
-• Priya Sharma (SOC Manager) - available now
-• James Okoro (Tier 3) - for active incidents
-
-This is an automated response.`
-      },
-      weak: {
-        minScore: 0,
-        title: 'Out of Office',
-        content: `Thanks for your message. I'm currently offline after night shift and will be back online at 22:00 tonight.
-
-For urgent matters, please contact:
-• Priya Sharma (SOC Manager) - available now
-• James Okoro (Tier 3) - for active incidents
-
-This is an automated response.`
-      }
-    }
   }
 }

@@ -92,15 +92,12 @@ function sendAutoReply() {
   // Send player message (no token cost for unavailable NPCs)
   commsStore.sendMessage(npcId, content)
   
-  // Get auto-reply (use 'weak' tier which has the out-of-office message)
-  const response = npc.responses.weak
-  
   // Log the message
   gameStore.logAction(`Sent message to ${npc.name} (offline)`, 'comms', { content })
   
   // Deliver auto-reply after a short delay
   setTimeout(() => {
-    commsStore.receiveMessage(npcId, response.content)
+    commsStore.receiveMessage(npcId, npc.autoReply)
     scrollToBottom()
   }, 500)
   
@@ -216,7 +213,7 @@ const checksCount = computed(() => assessmentChecks.value.filter(c => c).length)
     
     <div class="flex-1 flex gap-4 overflow-hidden">
       <!-- Channel List -->
-      <div class="w-48 space-y-2">
+      <div class="w-64 space-y-2">
         <button
           v-for="npc in npcList"
           :key="npc.id"
@@ -443,7 +440,7 @@ const checksCount = computed(() => assessmentChecks.value.filter(c => c).length)
               <textarea
                 v-model="messageInput"
                 @keydown.enter.exact.prevent="sendMessage"
-                placeholder="Type your escalation message..."
+                placeholder="Type your message..."
                 rows="3"
                 class="flex-1 bg-soc-bg border border-soc-border rounded px-3 py-2 text-sm resize-none focus:outline-none focus:border-soc-accent"
               />

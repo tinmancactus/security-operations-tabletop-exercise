@@ -149,23 +149,6 @@ export const useCommsStore = defineStore('comms', () => {
     saveState()
   }
 
-  function scoreMessage(npcId, content) {
-    const npc = npcs.value[npcId]
-    if (!npc?.responseRubric) return 0
-    
-    const lowerContent = content.toLowerCase()
-    let score = 0
-    
-    npc.responseRubric.forEach(criterion => {
-      const hasMatch = criterion.keywords.some(kw => lowerContent.includes(kw.toLowerCase()))
-      if (hasMatch) {
-        score += criterion.points
-      }
-    })
-    
-    return score
-  }
-
   function getResponseTier(npcId, score) {
     const npc = npcs.value[npcId]
     if (!npc?.responses) return 'weak'
@@ -274,7 +257,6 @@ export const useCommsStore = defineStore('comms', () => {
     receiveMessage,
     getEscalationCost,
     incrementEscalation,
-    scoreMessage,
     getResponseTier,
     saveState,
     loadState,
