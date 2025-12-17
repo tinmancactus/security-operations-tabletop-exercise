@@ -447,6 +447,7 @@ Device: Unknown (not in asset inventory)`,
       }
     ]
   },
+  // H-0012: Two versions - show one OR the other based on whether IP was blocked
   {
     id: 'H-0012',
     severity: 'critical',
@@ -457,6 +458,7 @@ Device: Unknown (not in asset inventory)`,
     user: 'liam.fitzgerald@xyzpay.com.au',
     status: 'open',
     visibleAt: 3300, // Appears at 05:00 remaining (cliffhanger)
+    showUnlessIPBlocked: '103.42.91.17', // Only show if this IP is NOT blocked
     isCliffhanger: true,
     notification: {
       message: '🚨 CRITICAL ALERT: Sensitive data access detected',
@@ -475,14 +477,39 @@ Source IP: 103.42.91.17 (Indonesia)
 ⚠️ Access occurred outside business hours pattern
 ⚠️ Source IP flagged as suspicious
 
-This alert requires immediate investigation.
+This alert requires immediate investigation.`,
+    actions: []
+  },
+  {
+    id: 'H-0013',
+    severity: 'critical',
+    title: 'Sensitive data access detected',
+    timestamp: '2024-10-14T09:55:00+10:30',
+    source: '185.234.72.88',
+    target: 'CUSTOMER_DATABASE',
+    user: 'liam.fitzgerald@xyzpay.com.au',
+    status: 'open',
+    visibleAt: 3300, // Same timing as H-0012
+    showIfIPBlocked: '103.42.91.17', // Only show if this IP IS blocked
+    isCliffhanger: true,
+    notification: {
+      message: '🚨 CRITICAL ALERT: Sensitive data access detected',
+      type: 'danger'
+    },
+    details: `⚠️ CRITICAL ALERT
 
-━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+Sensitive data access detected.
 
-SESSION 1 ENDS HERE.
+User: liam.fitzgerald@xyzpay.com.au
+Action: Accessed CUSTOMER_DATABASE (prod)
+Records viewed: 2,847
+Source IP: 185.234.72.88 (Russia)
 
-Complete your Triage Report with the information you've gathered. 
-The incident continues in Session 2.`,
+⚠️ This user does not normally access this system
+⚠️ Access occurred outside business hours pattern
+⚠️ Source IP flagged as suspicious
+
+This alert requires immediate investigation.`,
     actions: []
   }
 ]

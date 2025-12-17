@@ -128,6 +128,14 @@ export const useAlertsStore = defineStore('alerts', () => {
     allAlerts.value.forEach(alert => {
       if (alert.visibleAt && alert.visibleAt > 0 && !visibleAlertIds.value.includes(alert.id)) {
         if (elapsedSeconds >= alert.visibleAt) {
+          // Check conditional visibility based on IP blocking
+          if (alert.showIfIPBlocked && !isIPBlocked(alert.showIfIPBlocked)) {
+            return // Don't show - requires IP to be blocked but it isn't
+          }
+          if (alert.showUnlessIPBlocked && isIPBlocked(alert.showUnlessIPBlocked)) {
+            return // Don't show - requires IP to NOT be blocked but it is
+          }
+          
           showAlertWithEffects(alert)
         }
       }
