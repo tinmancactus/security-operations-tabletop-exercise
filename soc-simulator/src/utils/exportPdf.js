@@ -8,12 +8,14 @@ export function generateSessionReport(gameStore, alertsStore, ticketsStore, comm
   const channels = commsStore.channels
   const npcs = commsStore.npcs
   const ticketNotes = ticketsStore.ticketNotes
+  const alertNotes = alertsStore.alertNotes
   const allTickets = ticketsStore.allTickets
+  const allAlerts = alertsStore.allAlerts
   const unlockedEvidence = evidenceStore.unlockedEvidence
   const actionLog = gameStore.actionLog
   
   // Build timeline data structure
-  const timeline = buildTimeline(actionLog, channels, npcs, ticketNotes, allTickets, unlockedEvidence)
+  const timeline = buildTimeline(actionLog, channels, npcs, ticketNotes, alertNotes, allTickets, allAlerts, unlockedEvidence)
   
   // Build HTML content
   const html = `
@@ -85,7 +87,7 @@ export function generateSessionReport(gameStore, alertsStore, ticketsStore, comm
   return html2pdf().set(opt).from(container).save()
 }
 
-function buildTimeline(actionLog, channels, npcs, ticketNotes, allTickets, unlockedEvidence) {
+function buildTimeline(actionLog, channels, npcs, ticketNotes, alertNotes, allTickets, allAlerts, unlockedEvidence) {
   // Create a map of evidence by ID for quick lookup
   const evidenceMap = {}
   unlockedEvidence.forEach(ev => { evidenceMap[ev.id] = ev })
@@ -105,6 +107,7 @@ function buildTimeline(actionLog, channels, npcs, ticketNotes, allTickets, unloc
   const usedMessageIds = new Set()
   const usedEvidenceIds = new Set()
   const usedNoteTicketIds = new Set()
+  const usedNoteAlertIds = new Set()
   
   chronologicalLog.forEach(entry => {
     const timelineEntry = {
@@ -155,20 +158,42 @@ function buildTimeline(actionLog, channels, npcs, ticketNotes, allTickets, unloc
       }
     }
     
-    // Check if this is a note action - attach the note content
-    if (entry.type === 'note' && entry.message.includes('Added note to ticket')) {
+    // Check if this is a ticket note action - attach the note content
+    if (entry.type === 'note' && entry.message.includes('ticket')) {
       const ticketIdMatch = entry.message.match(/ticket (TKT-\d+)/)
       if (ticketIdMatch) {
         const ticketId = ticketIdMatch[1]
         if (ticketNotes[ticketId] && !usedNoteTicketIds.has(ticketId)) {
           const ticket = allTickets.find(t => t.id === ticketId)
+          // Format notes array into readable text
+          const notesText = formatNotesArray(ticketNotes[ticketId])
           timelineEntry.attachments.push({
-            type: 'note',
+            type: 'ticket-note',
             ticketId,
             ticketSubject: ticket?.subject || 'Unknown',
-            content: ticketNotes[ticketId]
+            content: notesText
           })
           usedNoteTicketIds.add(ticketId)
+        }
+      }
+    }
+    
+    // Check if this is an alert note action - attach the note content
+    if (entry.type === 'note' && entry.message.includes('alert')) {
+      const alertIdMatch = entry.message.match(/alert ([A-Z]-\d+)/)
+      if (alertIdMatch) {
+        const alertId = alertIdMatch[1]
+        if (alertNotes[alertId] && !usedNoteAlertIds.has(alertId)) {
+          const alert = allAlerts.find(a => a.id === alertId)
+          // Format notes array into readable text
+          const notesText = formatNotesArray(alertNotes[alertId])
+          timelineEntry.attachments.push({
+            type: 'alert-note',
+            alertId,
+            alertTitle: alert?.title || 'Unknown',
+            content: notesText
+          })
+          usedNoteAlertIds.add(alertId)
         }
       }
     }
@@ -251,10 +276,17 @@ function renderTimelineEntry(entry) {
             <div style="font-size: 12px; white-space: pre-wrap;">${escapeHtml(att.content)}</div>
           </div>
         `
-      } else if (att.type === 'note') {
+      } else if (att.type === 'ticket-note') {
         html += `
           <div style="background: #faf5ff; border-left: 3px solid #a855f7; padding: 10px 12px; margin-bottom: 10px; border-radius: 0 4px 4px 0;">
-            <div style="font-size: 11px; color: #6b21a8; margin-bottom: 4px;">Note on ${escapeHtml(att.ticketId)} (${escapeHtml(att.ticketSubject)}):</div>
+            <div style="font-size: 11px; color: #6b21a8; margin-bottom: 4px;">📝 Notes on ${escapeHtml(att.ticketId)} (${escapeHtml(att.ticketSubject)}):</div>
+            <div style="font-size: 12px; white-space: pre-wrap;">${escapeHtml(att.content)}</div>
+          </div>
+        `
+      } else if (att.type === 'alert-note') {
+        html += `
+          <div style="background: #fef3c7; border-left: 3px solid #f59e0b; padding: 10px 12px; margin-bottom: 10px; border-radius: 0 4px 4px 0;">
+            <div style="font-size: 11px; color: #92400e; margin-bottom: 4px;">📝 Notes on ${escapeHtml(att.alertId)} (${escapeHtml(att.alertTitle)}):</div>
             <div style="font-size: 12px; white-space: pre-wrap;">${escapeHtml(att.content)}</div>
           </div>
         `
@@ -266,6 +298,14 @@ function renderTimelineEntry(entry) {
   
   html += `</div>`
   return html
+}
+
+function formatNotesArray(notes) {
+  if (!notes || !Array.isArray(notes)) return ''
+  return notes.map(note => {
+    const time = new Date(note.timestamp).toLocaleTimeString('en-AU', { hour: '2-digit', minute: '2-digit' })
+    return `[${time}] ${note.text}`
+  }).join('\n')
 }
 
 function escapeHtml(text) {

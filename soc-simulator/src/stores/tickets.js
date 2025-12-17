@@ -9,7 +9,7 @@ export const useTicketsStore = defineStore('tickets', () => {
   const allTickets = ref([])
   const visibleTicketIds = ref([])
   const selectedTicketId = ref(null)
-  const ticketNotes = ref({}) // ticketId -> notes string
+  const ticketNotes = ref({}) // ticketId -> array of { id, text, timestamp }
   const completedActions = ref([]) // action IDs that have been taken
   const closedTickets = ref([]) // ticket IDs that have been closed
 
@@ -83,11 +83,39 @@ export const useTicketsStore = defineStore('tickets', () => {
 
   function addNote(ticketId, note) {
     if (!ticketNotes.value[ticketId]) {
-      ticketNotes.value[ticketId] = ''
+      ticketNotes.value[ticketId] = []
     }
-    ticketNotes.value[ticketId] += (ticketNotes.value[ticketId] ? '\n' : '') + note
+    ticketNotes.value[ticketId].push({
+      id: Date.now().toString(),
+      text: note,
+      timestamp: new Date().toISOString()
+    })
     gameStore.logAction(`Added note to ticket ${ticketId}`, 'note')
     saveState()
+  }
+
+  function updateNote(ticketId, noteId, newText) {
+    const notes = ticketNotes.value[ticketId]
+    if (notes) {
+      const note = notes.find(n => n.id === noteId)
+      if (note) {
+        note.text = newText
+        gameStore.logAction(`Updated note on ticket ${ticketId}`, 'note')
+        saveState()
+      }
+    }
+  }
+
+  function deleteNote(ticketId, noteId) {
+    const notes = ticketNotes.value[ticketId]
+    if (notes) {
+      const index = notes.findIndex(n => n.id === noteId)
+      if (index !== -1) {
+        notes.splice(index, 1)
+        gameStore.logAction(`Deleted note from ticket ${ticketId}`, 'note')
+        saveState()
+      }
+    }
   }
 
   function setNotes(ticketId, notes) {
@@ -184,6 +212,8 @@ export const useTicketsStore = defineStore('tickets', () => {
     checkScheduledTickets,
     selectTicket,
     addNote,
+    updateNote,
+    deleteNote,
     setNotes,
     isActionCompleted,
     completeAction,

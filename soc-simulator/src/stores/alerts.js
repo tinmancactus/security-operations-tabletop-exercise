@@ -12,6 +12,7 @@ export const useAlertsStore = defineStore('alerts', () => {
   const filter = ref('all') // all, critical, high, medium, low
   const blockedIPs = ref([]) // Track blocked IPs (one-time action)
   const completedActions = ref([]) // Track completed action IDs
+  const alertNotes = ref({}) // alertId -> array of { id, text, timestamp }
 
   // Computed
   const visibleAlerts = computed(() => {
@@ -75,7 +76,8 @@ export const useAlertsStore = defineStore('alerts', () => {
       visibleAlertIds: visibleAlertIds.value,
       selectedAlertId: selectedAlertId.value,
       blockedIPs: blockedIPs.value,
-      completedActions: completedActions.value
+      completedActions: completedActions.value,
+      alertNotes: alertNotes.value
     }))
   }
 
@@ -87,6 +89,7 @@ export const useAlertsStore = defineStore('alerts', () => {
       selectedAlertId.value = state.selectedAlertId
       blockedIPs.value = state.blockedIPs || []
       completedActions.value = state.completedActions || []
+      alertNotes.value = state.alertNotes || {}
       return true
     }
     return false
@@ -99,6 +102,7 @@ export const useAlertsStore = defineStore('alerts', () => {
     filter.value = 'all'
     blockedIPs.value = []
     completedActions.value = []
+    alertNotes.value = {}
   }
 
   function blockIP(ip) {
@@ -110,6 +114,43 @@ export const useAlertsStore = defineStore('alerts', () => {
 
   function isIPBlocked(ip) {
     return blockedIPs.value.includes(ip)
+  }
+
+  function addNote(alertId, note) {
+    if (!alertNotes.value[alertId]) {
+      alertNotes.value[alertId] = []
+    }
+    alertNotes.value[alertId].push({
+      id: Date.now().toString(),
+      text: note,
+      timestamp: new Date().toISOString()
+    })
+    gameStore.logAction(`Added note to alert ${alertId}`, 'note')
+    saveState()
+  }
+
+  function updateNote(alertId, noteId, newText) {
+    const notes = alertNotes.value[alertId]
+    if (notes) {
+      const note = notes.find(n => n.id === noteId)
+      if (note) {
+        note.text = newText
+        gameStore.logAction(`Updated note on alert ${alertId}`, 'note')
+        saveState()
+      }
+    }
+  }
+
+  function deleteNote(alertId, noteId) {
+    const notes = alertNotes.value[alertId]
+    if (notes) {
+      const index = notes.findIndex(n => n.id === noteId)
+      if (index !== -1) {
+        notes.splice(index, 1)
+        gameStore.logAction(`Deleted note from alert ${alertId}`, 'note')
+        saveState()
+      }
+    }
   }
 
   function completeAction(actionId) {
@@ -164,6 +205,7 @@ export const useAlertsStore = defineStore('alerts', () => {
     selectedAlertId,
     filter,
     blockedIPs,
+    alertNotes,
     visibleAlerts,
     selectedAlert,
     alertCounts,
@@ -176,6 +218,9 @@ export const useAlertsStore = defineStore('alerts', () => {
     clearState,
     blockIP,
     isIPBlocked,
+    addNote,
+    updateNote,
+    deleteNote,
     completeAction,
     isActionCompleted,
     checkScheduledAlerts
