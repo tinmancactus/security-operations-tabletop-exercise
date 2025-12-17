@@ -410,7 +410,7 @@ Recommend: Close as user error.`,
     id: 'M-2489',
     severity: 'medium',
     title: 'Unusual login pattern detected',
-    timestamp: '2024-10-14T08:34:00+10:30',
+    timestamp: '2024-10-14T08:20:00+10:30',
     source: '103.42.91.17',
     target: 'internal-sso',
     user: 'liam.fitzgerald@xyzpay.com.au',
@@ -452,7 +452,7 @@ Device: Unknown (not in asset inventory)`,
     id: 'H-0012',
     severity: 'critical',
     title: 'Sensitive data access detected',
-    timestamp: '2024-10-14T09:55:00+10:30',
+    timestamp: '2024-10-14T08:55:00+10:30',
     source: '103.42.91.17',
     target: 'CUSTOMER_DATABASE',
     user: 'liam.fitzgerald@xyzpay.com.au',
@@ -472,6 +472,7 @@ User: liam.fitzgerald@xyzpay.com.au
 Action: Accessed CUSTOMER_DATABASE (prod)
 Records viewed: 2,847
 Source IP: 103.42.91.17 (Indonesia)
+Access time: 2024-10-14 08:34:12 ACDT
 
 ⚠️ This user does not normally access this system
 ⚠️ Access occurred outside business hours pattern
@@ -484,7 +485,7 @@ This alert requires immediate investigation.`,
     id: 'H-0013',
     severity: 'critical',
     title: 'Sensitive data access detected',
-    timestamp: '2024-10-14T09:55:00+10:30',
+    timestamp: '2024-10-14T08:55:00+10:30',
     source: '185.234.72.88',
     target: 'CUSTOMER_DATABASE',
     user: 'liam.fitzgerald@xyzpay.com.au',
@@ -504,10 +505,13 @@ User: liam.fitzgerald@xyzpay.com.au
 Action: Accessed CUSTOMER_DATABASE (prod)
 Records viewed: 2,847
 Source IP: 185.234.72.88 (Russia)
+Access time: 2024-10-14 08:34:12 ACDT
 
 ⚠️ This user does not normally access this system
 ⚠️ Access occurred outside business hours pattern
 ⚠️ Source IP flagged as suspicious
+
+Note: Detection delay due to SIEM correlation processing.
 
 This alert requires immediate investigation.`,
     actions: []
