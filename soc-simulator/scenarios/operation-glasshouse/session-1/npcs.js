@@ -8,7 +8,7 @@ export default {
     image: `${IMG_PATH}/priya.jpg`,
     available: true,
     messagingMode: 'escalation', // 'escalation' = scoring/rubric, 'auto-reply' = out of office, 'dnd' = no messaging
-    escalationCost: { first: 2, followUp: 0 },
+    escalationCost: { first: 0, followUp: 0 },
     
     messageHistory: [
       {

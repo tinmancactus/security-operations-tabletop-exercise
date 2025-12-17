@@ -200,7 +200,7 @@ watch(() => commsStore.activeChannel?.messages.length, scrollToBottom)
 
 const assessmentCriteria = [
   'Names a specific user account of concern',
-  'References key evidence (MFA bypass, suspicious login, interview findings)',
+  'References key evidence',
   'Describes a timeline of events',
   'Proposes a specific action OR asks a specific question',
   'Includes severity assessment with justification'
@@ -324,10 +324,15 @@ const checksCount = computed(() => assessmentChecks.value.filter(c => c).length)
                 <span class="text-soc-muted">Conversation complete</span>
               </template>
               <template v-else-if="commsStore.activeChannel.npc.messagingMode === 'escalation'">
-                Escalation cost: 
-                <span :class="commsStore.getEscalationCost(commsStore.activeChannelId) === 0 ? 'text-soc-success' : 'text-soc-accent'">
-                  {{ getEscalationCostText(commsStore.activeChannelId) }}
-                </span>
+                <template v-if="commsStore.getEscalationCost(commsStore.activeChannelId) === 0">
+                  <span class="text-soc-success">Message to escalate</span>
+                </template>
+                <template v-else>
+                  Escalation cost: 
+                  <span class="text-soc-accent">
+                    {{ getEscalationCostText(commsStore.activeChannelId) }}
+                  </span>
+                </template>
               </template>
               <template v-else-if="commsStore.activeChannel.npc.messagingMode === 'auto-reply'">
                 <span class="text-gray-400">Auto-reply enabled</span>
