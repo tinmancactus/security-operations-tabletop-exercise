@@ -6,7 +6,7 @@ export default [
     triggerAt: 2400, // 20:00 remaining (40 min elapsed)
     type: 'message',
     npcId: 'priya',
-    content: `Hey team, quick check-in. Anything interesting this morning? Marcus asked me for a status update—apparently the board is nervous after that competitor breach last month. Let me know if there's anything I should flag.`,
+    content: `Hey team, I hope everything is going well this morning. The board seem a bit nervous about the recent competitor breaches. Don't hestitate to escalate any matters with me if anything important comes up.`,
     notification: {
       message: 'New message from Priya Sharma',
       type: 'info'

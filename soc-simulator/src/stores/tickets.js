@@ -30,9 +30,9 @@ export const useTicketsStore = defineStore('tickets', () => {
   // Actions
   function loadTickets(tickets) {
     allTickets.value = tickets
-    // Show tickets that are visible at start (visibleAt = 0 or undefined)
+    // Show tickets that are visible at start (visibleAt = 0 or undefined, and not action-triggered)
     visibleTicketIds.value = tickets
-      .filter(t => !t.visibleAt || t.visibleAt === 0)
+      .filter(t => (!t.visibleAt || t.visibleAt === 0) && !t.triggeredBy)
       .map(t => t.id)
   }
 

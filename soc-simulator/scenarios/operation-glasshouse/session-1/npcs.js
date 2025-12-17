@@ -91,12 +91,7 @@ Board is asking questions. Marcus wants us to review our detection coverage for 
 
 The MFA bypass pattern is concerning—looks like coordinated social engineering, not opportunistic stuffing. They called Liam directly, suggesting prior recon.
 
-I'm authorising you to:
-• Continue deep investigation on Liam's account
-• Check if other employees got similar calls
-• Prepare containment options (but wait—I'll brief Marcus first)
-
-I'll brief Marcus at 10:30. Keep me posted of any developments.`
+I'll brief Marcus ASAP. Send through any developments, but don't expect a response - there's a lot going on right now.'`
       },
       partial: { 
         minScore: 2, 
