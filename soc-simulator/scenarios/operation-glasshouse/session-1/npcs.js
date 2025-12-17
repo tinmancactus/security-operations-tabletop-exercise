@@ -336,8 +336,8 @@ Good luck with the investigation.`
       delay: 0, // Immediate
       content: `Morning team! Shift handover notes below. I'm heading home to sleep - back online tonight.
 
-OVERNIGHT SUMMARY (22:00 - 06:00)
-================================
+OVERNIGHT SUMMARY (22:00 - 08:00)
+=================================
 
 CREDENTIAL STUFFING (ongoing)
 - Customer portal seeing continued brute force attempts
@@ -347,8 +347,8 @@ CREDENTIAL STUFFING (ongoing)
 - Created alert M-2471 for tracking
 
 SERVICE TICKETS
-- TKT-4471: Liam F from Customer Support logged a ticket about a "weird call from IT" - sounds like possible vishing attempt? Might be worth a follow-up.
-- TKT-4472: Jenny M reported a suspicious email - I had a quick look, seems like legit marketing but flagged for review.
+- TKT-4471: Anika P from Finance logged a ticket yesterday arvo about a suspicious call claiming to be IT Support. I haven't followed up as she doesn't start until 08:00. Worth investigating.
+- TKT-4468: Jenny M reported a suspicious email Friday - had a quick look, seems like legit marketing but flagged for review.
 
 SYSTEMS
 - All green. Backups completed 06:00.

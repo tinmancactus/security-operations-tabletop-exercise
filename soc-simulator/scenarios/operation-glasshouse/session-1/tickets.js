@@ -44,7 +44,7 @@ Andrew`,
     sla: '48 hours',
     content: `Hi Security,
 
-I'm trying to access contractpodai.com for our new contract management system but it's being blocked by the web filter. Legal has approved this tool and we need it for the Q4 contract review cycle.
+I'm trying to access contractpodai.com for our new contract management system but it's being blocked by the web filter. Legal has approved this tool and we need it for the Q4 contract review cycle, which I'll need to start working next week.
 
 Can you please review and whitelist this site?
 
@@ -68,13 +68,13 @@ Sophie`,
       department: 'Engineering'
     },
     subject: 'Think my account might be compromised?',
-    submitted: '2024-10-14T09:22:00+10:30',
+    submitted: '2024-10-14T08:20:00+10:30',
     sla: '4 hours',
     content: `Hi Security,
 
 I just checked my account activity and I'm seeing logins from a device I don't recognise - something called "Ben's iPhone" but I have an Android phone?
 
-Wait... actually I think that might be my old work phone from before I switched. Can you confirm? Just want to make sure no one else is in my account.
+I think that might be my old work phone from before I switched. Can you confirm? Just want to make sure no one else is in my account.
 
 Sorry if this is a false alarm!
 
@@ -89,18 +89,58 @@ Ben`,
     id: 'TKT-4471',
     priority: 'low',
     status: 'open',
+    category: 'Security — Vishing Report',
+    from: {
+      name: 'Anika Patel',
+      email: 'anika.patel@xyzpay.com.au',
+      department: 'Finance'
+    },
+    subject: 'Suspicious call yesterday (Sunday)',
+    submitted: '2024-10-13T10:17:00+10:30',
+    sla: '48 hours',
+    content: `Hi Security,
+
+I got a strange call on my work phone today (Sunday 13/10). Someone claiming to be from IT Support said there was an issue with my account and asked me to verify my identity.
+
+It seemed a bit suspicious to me, so I hung up and didn't get a call back.
+
+Probably nothing, but wanted to flag it just in case.
+
+Thanks,
+Anika`,
+    actions: [
+      {
+        id: 'interview-anika',
+        label: 'Interview Anika',
+        cost: 1,
+        description: 'Quick interview about the suspicious call',
+        unlocksEvidence: 'EV-10'
+      }
+    ]
+  },
+  {
+    id: 'TKT-4472',
+    priority: 'low',
+    status: 'open',
     category: 'Security — General Inquiry',
+    visibleAt: 240, // 4 min into session
+    notification: {
+      message: 'New service ticket from Liam Fitzgerald',
+      type: 'info'
+    },
     from: {
       name: 'Liam Fitzgerald',
       email: 'liam.fitzgerald@xyzpay.com.au',
       department: 'Customer Support'
     },
-    subject: 'Weird call from IT department',
-    submitted: '2024-10-13T16:42:00+10:30',
+    subject: 'Weird call from IT this morning?',
+    submitted: '2024-10-14T08:15:00+10:30',
     sla: '48 hours',
     content: `Hi,
 
-Got a call from IT support this morning asking me to verify something. Seemed legit but wanted to flag it just in case. Not urgent, just thought I'd mention it.
+Got a call from IT support this morning asking me to verify something. Seemed legit at the time but now I'm second-guessing myself. Something feels a bit off about it.
+
+Probably nothing, just thought I'd mention it.
 
 Thanks,
 Liam`,
@@ -184,25 +224,25 @@ Jenny`,
     triggeredBy: 'disable-liam', // Only shown after this action
     triggerDelaySeconds: 600, // 10 minutes of game time after action
     from: {
-      name: 'Anika Patel',
-      email: 'anika.patel@xyzpay.com.au',
+      name: 'David Chen',
+      email: 'david.chen@xyzpay.com.au',
       department: 'Finance'
     },
     subject: 'Suspicious call from "IT Support"',
-    submitted: '2024-10-14T09:45:00+10:30',
+    submitted: '2024-10-14T08:45:00+10:30',
     sla: '4 hours',
     content: `Hi Security,
 
-I just received a strange call from someone claiming to be from IT Support. The number was blocked/withheld.
+I just got a strange call from someone claiming to be from IT Support. The number was blocked/withheld.
 
-They said there was an issue with my account and asked me to verify my identity by reading out a one-time code that would be sent to my phone. I thought this sounded suspicious - we've had training about this kind of thing after the last time this happened - so I told them I'd call IT back directly and hung up.
+They said there was a security issue with my account and asked me to verify my identity by reading out a one-time code that would be sent to my phone. This sounded exactly like the vishing attacks we were warned about in training, so I told them I'd call the IT helpdesk directly and hung up.
 
 No code ever came through to my phone.
 
-Just wanted to flag this in case it's something you need to know about.
+Wanted to flag this immediately given the security training we've had.
 
 Thanks,
-Anika`,
+David`,
     actions: []
   }
 ]

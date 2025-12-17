@@ -12,9 +12,10 @@ Method: Phone call to Customer Support desk
 SOC: "Hi Liam, following up on your ticket about a weird 
       call from IT. Can you tell us more?"
 
-LIAM: "Oh yeah. I got a call Sunday morning—maybe 10am? The 
-       guy said he was from IT support doing a security audit. 
-       He was really professional, knew my name and everything."
+LIAM: "Oh yeah. I got a call this morning—maybe quarter to 8? 
+       The guy said he was from IT support doing a security 
+       audit. He was really professional, knew my name and 
+       everything."
 
 SOC: "What did he ask you to do?"
 
@@ -93,7 +94,7 @@ CREDENTIAL STUFFING PATTERN (customer-portal):
 
 ⚠️  ANOMALY DETECTED (internal-sso):
 
-• Sunday, 13 October 2024, 10:14 ACDT
+• Monday, 14 October 2024, 07:52 ACDT
 • User: liam.fitzgerald@xyzpay.com.au
 • Event: Successful MFA authentication
 • Source IP: 103.42.91.17
@@ -101,7 +102,7 @@ CREDENTIAL STUFFING PATTERN (customer-portal):
 • Device: Unknown (not in asset inventory)
 
 • Liam's usual pattern: Adelaide, corporate laptop
-• This login: Foreign IP, unknown device, Sunday morning
+• This login: Foreign IP, unknown device, early morning
 
 ───────────────────────────────────────────────────────
 ASSESSMENT: Suspicious. Possible account compromise.
@@ -145,28 +146,71 @@ vigilant for targeted attacks using different vectors
     content: `USER ACTIVITY: LIAM.FITZGERALD
 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
 
-Period: Sunday 13 October 2024, 10:14-11:30 ACDT
+Period: Monday 14 October 2024, 07:52-08:30 ACDT
 Source: Internal SSO + Application Logs
 
-10:14 — SSO Login (MFA success) from 103.42.91.17
-10:16 — Accessed: Employee Directory
-10:18 — Accessed: Internal Wiki (searched: "org chart")
-10:23 — Accessed: HR Portal (viewed own profile)
-10:31 — Accessed: Finance Team contact list
-10:45 — Accessed: IT Support documentation
-10:52 — Accessed: Executive Assistant contact details
-11:15 — Session idle timeout
-11:30 — Session ended
+07:52 — SSO Login (MFA success) from 103.42.91.17
+07:54 — Accessed: Employee Directory
+07:56 — Accessed: Internal Wiki (searched: "org chart")
+08:01 — Accessed: HR Portal (viewed own profile)
+08:09 — Accessed: Finance Team contact list
+08:15 — Accessed: IT Support documentation
+08:22 — Accessed: Executive Assistant contact details
+08:28 — Accessed: Customer Database (query executed)
+08:30 — Session ongoing...
 
 ───────────────────────────────────────────────────────
 ANALYSIS:
 Activity suggests reconnaissance—browsing directories and 
 contact info rather than normal Customer Support tasks.
 
-No customer data access during this session.
-No file downloads. No email sent.
+⚠️  Customer database access at 08:28 is HIGHLY UNUSUAL 
+for a Customer Support role. Liam does not have business 
+need for direct database queries.
 
 ASSESSMENT: Likely attacker performing internal recon 
-after gaining access via compromised credentials.`
+after gaining access via compromised credentials. Session 
+still active - immediate action recommended.`
+  },
+  {
+    id: 'EV-10',
+    title: 'Anika Interview',
+    category: 'Interview',
+    content: `EMPLOYEE INTERVIEW: ANIKA PATEL
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+Interview conducted: Monday, 14 October 2024
+Method: Quick phone call to Finance
+
+SOC: "Hi Anika, following up on your ticket about the 
+      suspicious call on Sunday. Can you tell us more?"
+
+ANIKA: "Sure. I got a call on my work phone around 10am 
+        Sunday. I don't usually work weekends so I thought 
+        it must be urgent."
+
+SOC: "What did the caller say?"
+
+ANIKA: "He said he was from IT Support and there was an 
+        issue with my account. Asked me to verify my identity 
+        by reading a code that would be sent to my phone."
+
+SOC: "What made you suspicious?"
+
+ANIKA: "A few things. First, I thought it was odd that IT 
+        would be working on a Sunday. Second, we had that 
+        security training last month about exactly this kind 
+        of thing."
+
+SOC: "What did you do?"
+
+ANIKA: "I said I'd call the IT helpdesk directly to verify, 
+        and hung up. No code ever came through to my phone, 
+        so I assume they gave up when I didn't play along."
+
+───────────────────────────────────────────────────────
+ANALYST NOTES:
+Failed vishing attempt. Anika's suspicion prevented 
+compromise. The attacker likely moved on to other targets.`
   },
 ]

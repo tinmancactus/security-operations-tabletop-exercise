@@ -230,7 +230,7 @@ Recommendation: Monitor. No successful authentications detected.`,
     id: 'L-1853',
     severity: 'low',
     title: 'Disk space warning',
-    timestamp: '2024-10-14T09:05:00+10:30',
+    timestamp: '2024-10-14T08:05:00+10:30',
     source: 'monitoring',
     target: 'log-archive-02',
     status: 'open',
@@ -251,7 +251,7 @@ Low priority - monitor only.`,
     id: 'M-2474',
     severity: 'medium',
     title: 'Multiple password resets',
-    timestamp: '2024-10-14T09:12:00+10:30',
+    timestamp: '2024-10-14T08:10:00+10:30',
     source: 'identity-mgmt',
     target: 'active-directory',
     status: 'open',
@@ -275,7 +275,7 @@ Recommend: Close as expected activity.`,
     id: 'I-0892',
     severity: 'info',
     title: 'Firewall rule change detected',
-    timestamp: '2024-10-14T09:18:00+10:30',
+    timestamp: '2024-10-14T08:15:00+10:30',
     source: 'fw-monitor',
     target: 'fw-edge-01',
     status: 'open',
@@ -297,7 +297,7 @@ Informational only.`,
     id: 'M-2475',
     severity: 'medium',
     title: 'Geographic anomaly - VPN login',
-    timestamp: '2024-10-14T09:25:00+10:30',
+    timestamp: '2024-10-14T08:25:00+10:30',
     source: '122.148.91.203',
     target: 'vpn-gateway',
     user: 'jenny.martinez@xyzpay.com.au',
@@ -319,7 +319,7 @@ Recommend: Close as expected travel.`,
     id: 'L-1854',
     severity: 'low',
     title: 'Service health check failed',
-    timestamp: '2024-10-14T09:32:00+10:30',
+    timestamp: '2024-10-14T08:30:00+10:30',
     source: 'healthcheck',
     target: 'print-server-02',
     status: 'open',
@@ -329,7 +329,7 @@ Recommend: Close as expected travel.`,
 Server: print-server-02
 Service: Print Spooler
 Status: Not responding
-Last successful check: 09:17 ACDT
+Last successful check: 08:17 ACDT
 
 This is a secondary print server. Primary print-server-01 is operational. IT Service Desk has been notified (INC-8821).
 
@@ -340,7 +340,7 @@ Low priority - redundant service.`,
     id: 'M-2476',
     severity: 'medium',
     title: 'Unusual database query volume',
-    timestamp: '2024-10-14T09:40:00+10:30',
+    timestamp: '2024-10-14T08:35:00+10:30',
     source: '10.50.21.45',
     target: 'reporting-db',
     user: 'svc-tableau@xyzpay.com.au',
@@ -362,7 +362,7 @@ Recommend: Close as expected month-end activity.`,
     id: 'I-0893',
     severity: 'info',
     title: 'New device enrolled',
-    timestamp: '2024-10-14T09:45:00+10:30',
+    timestamp: '2024-10-14T08:40:00+10:30',
     source: 'intune',
     target: 'device-mgmt',
     user: 'marcus.chen@xyzpay.com.au',
@@ -384,7 +384,7 @@ Informational - normal device refresh.`,
     id: 'M-2477',
     severity: 'medium',
     title: 'Failed SSH authentication',
-    timestamp: '2024-10-14T09:52:00+10:30',
+    timestamp: '2024-10-14T08:45:00+10:30',
     source: '10.50.20.88',
     target: 'bastion-01',
     user: 'admin-jokoro',
@@ -426,11 +426,13 @@ User: liam.fitzgerald@xyzpay.com.au
 Source IP: 103.42.91.17 (Indonesia)
 Target: internal-sso
 Event: Login from new device
+Login time: 2024-10-14 07:52 ACDT
 Risk Score: Medium
 
 Note: User's typical location is Adelaide, AU. This login originated from a foreign IP address not previously associated with this account.
 
-Device: Unknown (not in asset inventory)`,
+Device: Unknown (not in asset inventory)
+MFA: Completed successfully`,
     actions: [
       {
         id: 'investigate-liam-logs',
@@ -475,7 +477,7 @@ Source IP: 103.42.91.17 (Indonesia)
 Access time: 2024-10-14 08:34:12 ACDT
 
 ⚠️ This user does not normally access this system
-⚠️ Access occurred outside business hours pattern
+⚠️ Access from foreign IP address (Indonesia)
 ⚠️ Source IP flagged as suspicious
 
 This alert requires immediate investigation.`,
@@ -508,10 +510,9 @@ Source IP: 185.234.72.88 (Russia)
 Access time: 2024-10-14 08:34:12 ACDT
 
 ⚠️ This user does not normally access this system
-⚠️ Access occurred outside business hours pattern
+⚠️ Access from foreign IP address (Russia)
 ⚠️ Source IP flagged as suspicious
-
-Note: Detection delay due to SIEM correlation processing.
+⚠️ Attacker may have switched infrastructure after initial IP was blocked
 
 This alert requires immediate investigation.`,
     actions: []
