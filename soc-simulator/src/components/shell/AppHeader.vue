@@ -35,9 +35,11 @@ function toggleTimer() {
       <div class="flex gap-2">
         <button 
           @click="toggleTimer"
-          class="px-4 py-2 bg-soc-raised border border-soc-border rounded text-sm hover:bg-soc-border transition"
+          :disabled="gameStore.timeExpired"
+          class="px-4 py-2 bg-soc-raised border border-soc-border rounded text-sm transition"
+          :class="gameStore.timeExpired ? 'opacity-50 cursor-not-allowed' : 'hover:bg-soc-border'"
         >
-          {{ gameStore.isRunning ? 'Pause' : 'Start' }}
+          {{ gameStore.timeExpired ? 'Time Up' : (gameStore.isRunning ? 'Pause' : 'Start') }}
         </button>
       </div>
       

@@ -12,6 +12,12 @@ const evidenceStore = useEvidenceStore()
 const commsStore = useCommsStore()
 
 function handleAction(action) {
+  // Check if time has expired
+  if (gameStore.timeExpired) {
+    gameStore.addNotification('Time has expired - no further actions can be taken', 'warning')
+    return
+  }
+  
   // Check if action already completed
   if (alertsStore.isActionCompleted(action.id)) {
     gameStore.addNotification('Action already completed', 'info')

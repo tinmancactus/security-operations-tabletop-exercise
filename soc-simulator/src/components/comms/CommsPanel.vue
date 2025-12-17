@@ -47,6 +47,12 @@ function getEscalationCostText(npcId) {
 function sendMessage() {
   if (!messageInput.value.trim() || !commsStore.activeChannelId) return
   
+  // Check if time has expired
+  if (gameStore.timeExpired) {
+    gameStore.addNotification('Time has expired - no further messages can be sent', 'warning')
+    return
+  }
+  
   const npcId = commsStore.activeChannelId
   const npc = commsStore.npcs[npcId]
   const mode = npc.messagingMode || 'busy'

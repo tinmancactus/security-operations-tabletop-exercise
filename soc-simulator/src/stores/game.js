@@ -26,6 +26,8 @@ export const useGameStore = defineStore('game', () => {
     return ''
   })
 
+  const timeExpired = computed(() => timeRemaining.value <= 0)
+
   // Actions
   function loadScenario(scenarioData) {
     scenario.value = scenarioData
@@ -280,6 +282,7 @@ export const useGameStore = defineStore('game', () => {
     // Computed
     formattedTime,
     timerClass,
+    timeExpired,
     
     // Actions
     loadScenario,

@@ -166,13 +166,21 @@ const currentComponent = {
     <div v-else class="flex flex-col h-screen">
       <AppHeader @reset="confirmReset" />
       
-      <div class="flex flex-1 overflow-hidden">
-        <AppSidebar />
+      <div class="flex flex-1 overflow-hidden relative">
+        <AppSidebar :class="{ 'blur-sm pointer-events-none': !gameStore.isRunning && !gameStore.timeExpired }" />
         
-        <main class="flex-1 overflow-auto p-4 relative">
+        <main class="flex-1 overflow-auto p-4 relative" :class="{ 'blur-sm pointer-events-none': !gameStore.isRunning && !gameStore.timeExpired }">
           <NotificationToast />
           <component :is="currentComponent[gameStore.currentView]" />
         </main>
+        
+        <!-- Pause Overlay -->
+        <div 
+          v-if="!gameStore.isRunning && !gameStore.timeExpired"
+          class="absolute inset-0 bg-black/50 flex items-center justify-center z-50"
+        >
+          <div class="text-4xl font-bold text-white tracking-widest">PAUSED</div>
+        </div>
       </div>
     </div>
     

@@ -10,6 +10,12 @@ const gameStore = useGameStore()
 const evidenceStore = useEvidenceStore()
 
 function handleAction(action) {
+  // Check if time has expired
+  if (gameStore.timeExpired) {
+    gameStore.addNotification('Time has expired - no further actions can be taken', 'warning')
+    return
+  }
+  
   if (ticketsStore.isActionCompleted(action.id)) {
     gameStore.addNotification('You have already taken this action', 'warning')
     return

@@ -130,6 +130,12 @@ const suggestions = computed(() => {
 })
 
 function handleAction(action) {
+  // Check if time has expired
+  if (gameStore.timeExpired) {
+    gameStore.addNotification('Time has expired - no further actions can be taken', 'warning')
+    return
+  }
+  
   if (completedActions.value.has(action.id)) {
     gameStore.addNotification('Action already completed', 'info')
     return
