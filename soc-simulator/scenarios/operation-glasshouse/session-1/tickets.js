@@ -171,5 +171,38 @@ Jenny`,
         exclusiveGroup: 'jenny-response'
       }
     ]
+  },
+  
+  // ============================================
+  // ACTION-TRIGGERED TICKETS
+  // ============================================
+  {
+    id: 'TKT-4475',
+    priority: 'medium',
+    status: 'open',
+    category: 'Security — Vishing Report',
+    triggeredBy: 'disable-liam', // Only shown after this action
+    triggerDelaySeconds: 600, // 10 minutes of game time after action
+    from: {
+      name: 'Anika Patel',
+      email: 'anika.patel@xyzpay.com.au',
+      department: 'Finance'
+    },
+    subject: 'Suspicious call from "IT Support"',
+    submitted: '2024-10-14T09:45:00+10:30',
+    sla: '4 hours',
+    content: `Hi Security,
+
+I just received a strange call from someone claiming to be from IT Support. The number was blocked/withheld.
+
+They said there was an issue with my account and asked me to verify my identity by reading out a one-time code that would be sent to my phone. I thought this sounded suspicious - we've had training about this kind of thing after the last time this happened - so I told them I'd call IT back directly and hung up.
+
+No code ever came through to my phone.
+
+Just wanted to flag this in case it's something you need to know about.
+
+Thanks,
+Anika`,
+    actions: []
   }
 ]

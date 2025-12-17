@@ -212,16 +212,16 @@ export const useCommsStore = defineStore('comms', () => {
     const rachel = npcs.value['rachel']
     if (!rachel || getNpcStatus('rachel') !== 'dnd') return
     
-    const delay = rachel.accountDisableMessage?.delay || 60000
+    // Use game time (60 seconds of game time, not real time)
+    const delaySeconds = rachel.accountDisableMessage?.delaySeconds || 60
     
-    setTimeout(() => {
+    gameStore.scheduleCallback('rachel-account-disable', delaySeconds, () => {
       // Only proceed if still in dnd status (player hasn't reset)
       if (getNpcStatus('rachel') !== 'dnd') return
       
       setNpcStatus('rachel', 'awaiting-response')
       receiveMessage('rachel', rachel.accountDisableMessage.content, false)
-      // Note: receiveMessage already adds a notification when isSystemEvent is false
-    }, delay)
+    })
   }
 
   function handleRachelResponse(playerMessage) {

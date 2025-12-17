@@ -3,6 +3,7 @@ import { useAlertsStore } from '../../stores/alerts'
 import { useGameStore } from '../../stores/game'
 import { useEvidenceStore } from '../../stores/evidence'
 import { useCommsStore } from '../../stores/comms'
+import { useTicketsStore } from '../../stores/tickets'
 import AlertCard from './AlertCard.vue'
 import AlertDetail from './AlertDetail.vue'
 
@@ -10,6 +11,7 @@ const alertsStore = useAlertsStore()
 const gameStore = useGameStore()
 const evidenceStore = useEvidenceStore()
 const commsStore = useCommsStore()
+const ticketsStore = useTicketsStore()
 
 function handleAction(action) {
   // Check if time has expired
@@ -43,6 +45,8 @@ function handleAction(action) {
       gameStore.logAction('Disabled account: liam.fitzgerald@xyzpay.com.au', 'containment')
       // Trigger Rachel's follow-up message after delay
       commsStore.triggerRachelAccountDisable()
+      // Trigger any tickets associated with this action
+      ticketsStore.triggerActionTickets('disable-liam')
     }
     
     if (action.isBlockIP && action.ip) {

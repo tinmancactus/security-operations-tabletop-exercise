@@ -311,7 +311,7 @@ SL`
     
     // Special message sent when player disables Liam's account
     accountDisableMessage: {
-      delay: 60000, // 1 minute after action
+      delaySeconds: 60, // 1 minute of game time after action
       content: `Hey, Jodie Williams from Customer Support just dropped by IT. One of her team members, Liam Fitzgerald, says he's completely locked out of his account.
 
 I can see the account was disabled about a moment ago. Was that you? If so, can you give me a quick rundown of what's going on so we can update Jodie?

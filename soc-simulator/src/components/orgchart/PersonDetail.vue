@@ -92,10 +92,6 @@ function formatDuration(mins) {
               <span class="text-soc-text font-mono">{{ person.email }}</span>
             </div>
             <div class="flex justify-between">
-              <span class="text-soc-muted">Phone:</span>
-              <span class="text-soc-text">{{ person.phone }}</span>
-            </div>
-            <div class="flex justify-between">
               <span class="text-soc-muted">Location:</span>
               <span class="text-soc-text">{{ person.location }}</span>
             </div>

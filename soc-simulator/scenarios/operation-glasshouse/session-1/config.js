@@ -23,9 +23,11 @@ It's Monday morning. You've just started your shift and are taking over from the
 
 Your job is to monitor security alerts, investigate suspicious activity, and escalate incidents appropriately. You have limited time and resources—choose your actions wisely.
 
-**Your team has 12 action tokens.** Each investigation, escalation, or action costs tokens. You cannot do everything, so prioritise what matters most.
+Your team has 12 action tokens. Each investigation, escalation, or action costs tokens. You cannot do everything, so prioritise what matters most.
 
 Some events will occur automatically as time passes. Watch the clock.
+
+All names, domain names, locations and IP addresses are fictional. Use the in-game tools to investigate them, not publicly available sources.
 
 Good luck.`
   }

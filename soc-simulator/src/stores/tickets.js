@@ -59,6 +59,24 @@ export const useTicketsStore = defineStore('tickets', () => {
     })
   }
 
+  function triggerActionTickets(actionId) {
+    // Find tickets triggered by this action and schedule them
+    allTickets.value.forEach(ticket => {
+      if (ticket.triggeredBy === actionId && !visibleTicketIds.value.includes(ticket.id)) {
+        const delaySeconds = ticket.triggerDelaySeconds || 0
+        if (delaySeconds > 0) {
+          // Schedule for later using game time
+          gameStore.scheduleCallback(`ticket-${ticket.id}`, delaySeconds, () => {
+            showTicket(ticket.id)
+          })
+        } else {
+          // Show immediately
+          showTicket(ticket.id)
+        }
+      }
+    })
+  }
+
   function selectTicket(ticketId) {
     selectedTicketId.value = ticketId
   }
@@ -172,6 +190,7 @@ export const useTicketsStore = defineStore('tickets', () => {
     closeTicket,
     isTicketClosed,
     isActionAvailable,
+    triggerActionTickets,
     saveState,
     loadState,
     clearState

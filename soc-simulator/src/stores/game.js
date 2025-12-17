@@ -12,6 +12,7 @@ export const useGameStore = defineStore('game', () => {
   const actionLog = ref([])
   const currentView = ref('siem')
   const notifications = ref([])
+  const scheduledCallbacks = ref([]) // Game-time scheduled events: { triggerAt: elapsedSeconds, callback: fn, id: string }
 
   // Computed
   const formattedTime = computed(() => {
@@ -159,6 +160,36 @@ export const useGameStore = defineStore('game', () => {
       const ticketsStore = useTicketsStore()
       ticketsStore.checkScheduledTickets(elapsed)
     })
+    
+    // Check for scheduled callbacks (action-triggered events)
+    checkScheduledCallbacks(elapsed)
+  }
+
+  function scheduleCallback(id, delaySeconds, callback) {
+    // Schedule a callback to run after delaySeconds of game time
+    const duration = scenario.value?.config?.duration || 3600
+    const currentElapsed = duration - timeRemaining.value
+    const triggerAt = currentElapsed + delaySeconds
+    
+    // Remove any existing callback with same id
+    scheduledCallbacks.value = scheduledCallbacks.value.filter(c => c.id !== id)
+    
+    scheduledCallbacks.value.push({ id, triggerAt, callback })
+  }
+
+  function checkScheduledCallbacks(elapsed) {
+    const toTrigger = scheduledCallbacks.value.filter(c => elapsed >= c.triggerAt)
+    
+    toTrigger.forEach(c => {
+      c.callback()
+    })
+    
+    // Remove triggered callbacks
+    scheduledCallbacks.value = scheduledCallbacks.value.filter(c => elapsed < c.triggerAt)
+  }
+
+  function cancelScheduledCallback(id) {
+    scheduledCallbacks.value = scheduledCallbacks.value.filter(c => c.id !== id)
   }
 
   function saveState() {
@@ -299,6 +330,8 @@ export const useGameStore = defineStore('game', () => {
     saveState,
     loadState,
     clearState,
-    resumeTimer
+    resumeTimer,
+    scheduleCallback,
+    cancelScheduledCallback
   }
 })
