@@ -57,6 +57,15 @@ watch(() => gameStore.timeRemaining, (newTime) => {
   
   scenario.events.forEach(event => {
     if (elapsed >= event.triggerAt && !triggeredEvents.value.includes(event.id)) {
+      // Check if event should be skipped because player already messaged the NPC
+      if (event.skipIfMessaged) {
+        const messages = commsStore.channels[event.skipIfMessaged] || []
+        const playerMessaged = messages.some(m => m.from === 'player' && !m.isHistory)
+        if (playerMessaged) {
+          triggeredEvents.value.push(event.id) // Mark as handled so we don't check again
+          return
+        }
+      }
       triggerEvent(event)
     }
   })
