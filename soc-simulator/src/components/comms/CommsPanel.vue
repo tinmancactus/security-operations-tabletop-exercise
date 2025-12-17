@@ -51,16 +51,16 @@ function sendMessage() {
   const npc = commsStore.npcs[npcId]
   const mode = npc.messagingMode || 'busy'
   
-  // Check if NPC is busy (cannot message at all)
-  if (mode === 'busy') {
-    gameStore.addNotification(`${npc.name} is busy right now`, 'warning')
-    return
-  }
-  
-  // Special handling for Rachel's one-time response
+  // Special handling for Rachel's one-time response (check before busy status)
   const rachelStatus = commsStore.getNpcStatus('rachel')
   if (npcId === 'rachel' && rachelStatus === 'awaiting-response') {
     showRachelConfirm.value = true
+    return
+  }
+  
+  // Check if NPC is busy (cannot message at all)
+  if (mode === 'busy') {
+    gameStore.addNotification(`${npc.name} is busy right now`, 'warning')
     return
   }
   
