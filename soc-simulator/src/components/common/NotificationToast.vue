@@ -2,14 +2,18 @@
 import { useGameStore } from '../../stores/game'
 import { useEvidenceStore } from '../../stores/evidence'
 import { useCommsStore } from '../../stores/comms'
+import { useAlertsStore } from '../../stores/alerts'
+import { useTicketsStore } from '../../stores/tickets'
 import { X } from 'lucide-vue-next'
 
 const gameStore = useGameStore()
 const evidenceStore = useEvidenceStore()
 const commsStore = useCommsStore()
+const alertsStore = useAlertsStore()
+const ticketsStore = useTicketsStore()
 
 function handleClick(notification) {
-  gameStore.handleNotificationClick(notification, { evidenceStore, commsStore })
+  gameStore.handleNotificationClick(notification, { evidenceStore, commsStore, alertsStore, ticketsStore })
 }
 
 function handleDismiss(event, id) {

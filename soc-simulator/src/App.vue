@@ -74,7 +74,10 @@ function triggerEvent(event) {
   }
   
   if (event.notification) {
-    gameStore.addNotification(event.notification.message, event.notification.type)
+    // Include navigation data based on event type
+    const navigateTo = event.type === 'message' ? 'comms' : event.type === 'alert' ? 'siem' : null
+    const data = event.type === 'message' ? { npcId: event.npcId } : event.type === 'alert' ? { alertId: event.alertId } : null
+    gameStore.addNotification(event.notification.message, event.notification.type, navigateTo, data)
   }
   
   if (event.pauseTimer) {

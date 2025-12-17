@@ -41,7 +41,7 @@ export const useTicketsStore = defineStore('tickets', () => {
       visibleTicketIds.value.push(ticketId)
       const ticket = allTickets.value.find(t => t.id === ticketId)
       if (ticket) {
-        gameStore.addNotification(`New ticket: ${ticket.subject}`, 'info', 'tickets')
+        gameStore.addNotification(`New ticket: ${ticket.subject}`, 'info', 'tickets', { ticketId })
         gameStore.logAction(`New service ticket: ${ticket.subject}`, 'event')
       }
       saveState()

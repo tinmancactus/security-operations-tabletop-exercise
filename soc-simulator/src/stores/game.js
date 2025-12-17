@@ -122,6 +122,14 @@ export const useGameStore = defineStore('game', () => {
       stores.commsStore.setActiveChannel(notification.data.npcId)
     }
     
+    if (notification.navigateTo === 'siem' && notification.data?.alertId && stores.alertsStore) {
+      stores.alertsStore.selectAlert(notification.data.alertId)
+    }
+    
+    if (notification.navigateTo === 'tickets' && notification.data?.ticketId && stores.ticketsStore) {
+      stores.ticketsStore.selectTicket(notification.data.ticketId)
+    }
+    
     if (notification.navigateTo) {
       setView(notification.navigateTo)
     }

@@ -54,7 +54,7 @@ export const useAlertsStore = defineStore('alerts', () => {
       const alert = allAlerts.value.find(a => a.id === alertId)
       if (alert) {
         if (!skipNotification) {
-          gameStore.addNotification(`New alert: ${alert.title}`, 'warning', 'siem')
+          gameStore.addNotification(`New alert: ${alert.title}`, 'warning', 'siem', { alertId })
         }
         gameStore.logAction(`New SIEM alert: ${alert.title}`, 'event')
       }
@@ -141,7 +141,7 @@ export const useAlertsStore = defineStore('alerts', () => {
     
     // Handle custom notification if specified
     if (alert.notification) {
-      gameStore.addNotification(alert.notification.message, alert.notification.type, 'siem')
+      gameStore.addNotification(alert.notification.message, alert.notification.type, 'siem', { alertId: alert.id })
     }
     
     // Handle pauseTimer for cliffhanger alerts
