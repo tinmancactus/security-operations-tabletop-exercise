@@ -110,7 +110,7 @@ I've got meetings until 11. Send an update when you have more.`
         title: 'Weak Escalation',
         content: `I've read your message but I'm not clear what you're asking me to do.
 
-Is this an incident or just suspicious activity? What's the impact? I need specifics—affected systems, IOCs, timeline—before I can justify pulling anyone off other work.
+Is this an incident or just suspicious activity? What's the impact? I need specifics before I can justify pulling anyone off other work.
 
 Credential stuffing is business as usual. If something's different, spell it out clearly. Document what you have and come back with something concrete.`
       }

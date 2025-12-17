@@ -12,6 +12,8 @@ export const useCommsStore = defineStore('comms', () => {
   const escalationCounts = ref({}) // npcId -> count
   const unreadCounts = ref({}) // npcId -> count
   const npcStatus = ref({}) // npcId -> status overrides (e.g., 'dnd', 'awaiting-response', 'resolved')
+  const messageDrafts = ref({}) // npcId -> draft message text
+  const pendingEscalation = ref(null) // { npcId, message, step: 'confirm' | 'assess' }
 
   // Computed
   const activeChannel = computed(() => {
@@ -164,7 +166,9 @@ export const useCommsStore = defineStore('comms', () => {
       activeChannelId: activeChannelId.value,
       escalationCounts: escalationCounts.value,
       unreadCounts: unreadCounts.value,
-      npcStatus: npcStatus.value
+      npcStatus: npcStatus.value,
+      messageDrafts: messageDrafts.value,
+      pendingEscalation: pendingEscalation.value
     }))
   }
 
@@ -177,6 +181,8 @@ export const useCommsStore = defineStore('comms', () => {
       escalationCounts.value = state.escalationCounts || {}
       unreadCounts.value = state.unreadCounts || {}
       npcStatus.value = state.npcStatus || {}
+      messageDrafts.value = state.messageDrafts || {}
+      pendingEscalation.value = state.pendingEscalation || null
       return true
     }
     return false
@@ -189,6 +195,32 @@ export const useCommsStore = defineStore('comms', () => {
     escalationCounts.value = {}
     unreadCounts.value = {}
     npcStatus.value = {}
+    messageDrafts.value = {}
+    pendingEscalation.value = null
+  }
+
+  function setMessageDraft(npcId, text) {
+    messageDrafts.value[npcId] = text
+    // Don't save to localStorage on every keystroke - too expensive
+  }
+
+  function getMessageDraft(npcId) {
+    return messageDrafts.value[npcId] || ''
+  }
+
+  function clearMessageDraft(npcId) {
+    delete messageDrafts.value[npcId]
+    saveState()
+  }
+
+  function setPendingEscalation(npcId, message, step) {
+    pendingEscalation.value = { npcId, message, step }
+    saveState()
+  }
+
+  function clearPendingEscalation() {
+    pendingEscalation.value = null
+    saveState()
   }
 
   function setNpcStatus(npcId, status) {
@@ -247,6 +279,8 @@ export const useCommsStore = defineStore('comms', () => {
     escalationCounts,
     unreadCounts,
     npcStatus,
+    messageDrafts,
+    pendingEscalation,
     activeChannel,
     totalUnread,
     loadNPCs,
@@ -265,6 +299,11 @@ export const useCommsStore = defineStore('comms', () => {
     getNpcStatus,
     isNpcAvailable,
     triggerRachelAccountDisable,
-    handleRachelResponse
+    handleRachelResponse,
+    setMessageDraft,
+    getMessageDraft,
+    clearMessageDraft,
+    setPendingEscalation,
+    clearPendingEscalation
   }
 })

@@ -7,11 +7,28 @@ import { BellOff, Clock } from 'lucide-vue-next'
 const commsStore = useCommsStore()
 const gameStore = useGameStore()
 
-const messageInput = ref('')
 const messagesContainer = ref(null)
-const showAssessment = ref(false)
 const assessmentChecks = ref([false, false, false, false, false])
 const showRachelConfirm = ref(false)
+
+// Use computed for message input to sync with store drafts
+const messageInput = computed({
+  get: () => commsStore.getMessageDraft(commsStore.activeChannelId) || '',
+  set: (val) => commsStore.setMessageDraft(commsStore.activeChannelId, val)
+})
+
+// Escalation state from store
+const showEscalationConfirm = computed(() => 
+  commsStore.pendingEscalation?.npcId === commsStore.activeChannelId && 
+  commsStore.pendingEscalation?.step === 'confirm'
+)
+const showAssessment = computed(() => 
+  commsStore.pendingEscalation?.npcId === commsStore.activeChannelId && 
+  commsStore.pendingEscalation?.step === 'assess'
+)
+const pendingEscalationMessage = computed(() => 
+  commsStore.pendingEscalation?.message || ''
+)
 
 const npcList = computed(() => {
   return Object.values(commsStore.npcs)
@@ -35,6 +52,8 @@ const canMessageCurrentNpc = computed(() => {
 })
 
 function selectChannel(npcId) {
+  // Save current draft before switching
+  commsStore.saveState()
   commsStore.setActiveChannel(npcId)
 }
 
@@ -85,8 +104,8 @@ function sendMessage() {
     // James - send message but no response
     sendDndMessage()
   } else if (mode === 'escalation') {
-    // Priya - show self-assessment
-    showAssessment.value = true
+    // Priya - show confirmation first, then self-assessment
+    commsStore.setPendingEscalation(npcId, messageInput.value.trim(), 'confirm')
   }
 }
 
@@ -108,7 +127,7 @@ function sendAutoReply() {
   }, 500)
   
   // Reset
-  messageInput.value = ''
+  commsStore.clearMessageDraft(npcId)
   scrollToBottom()
 }
 
@@ -124,14 +143,14 @@ function sendDndMessage() {
   gameStore.logAction(`Sent message to ${npc.name} (DND - no response)`, 'comms', { content })
   
   // Reset - no response will come
-  messageInput.value = ''
+  commsStore.clearMessageDraft(npcId)
   scrollToBottom()
 }
 
 function submitWithAssessment() {
   const npcId = commsStore.activeChannelId
   const cost = commsStore.getEscalationCost(npcId)
-  const content = messageInput.value.trim()
+  const content = pendingEscalationMessage.value || messageInput.value.trim()
   
   // Spend tokens if needed
   if (cost > 0) {
@@ -162,16 +181,24 @@ function submitWithAssessment() {
   }, 1000)
   
   // Reset
-  messageInput.value = ''
-  showAssessment.value = false
+  commsStore.clearMessageDraft(npcId)
+  commsStore.clearPendingEscalation()
   assessmentChecks.value = [false, false, false, false, false]
   
   scrollToBottom()
 }
 
-function cancelAssessment() {
-  showAssessment.value = false
-  assessmentChecks.value = [false, false, false, false, false]
+function confirmEscalation() {
+  // User confirmed their message - now show assessment
+  const pending = commsStore.pendingEscalation
+  if (pending) {
+    commsStore.setPendingEscalation(pending.npcId, pending.message, 'assess')
+  }
+}
+
+function cancelEscalation() {
+  // User wants to go back and edit - keep the message in the draft
+  commsStore.clearPendingEscalation()
 }
 
 function confirmRachelResponse() {
@@ -179,7 +206,7 @@ function confirmRachelResponse() {
   if (!content) return
   
   commsStore.handleRachelResponse(content)
-  messageInput.value = ''
+  commsStore.clearMessageDraft('rachel')
   showRachelConfirm.value = false
   scrollToBottom()
 }
@@ -372,13 +399,45 @@ const checksCount = computed(() => assessmentChecks.value.filter(c => c).length)
             </div>
           </div>
           
-          <!-- Self-Assessment Modal -->
-          <div v-if="showAssessment" class="p-4 border-t border-soc-border bg-soc-raised">
+          <!-- Escalation Confirmation Modal (Step 1) -->
+          <div v-if="showEscalationConfirm" class="p-4 border-t border-soc-border bg-soc-raised">
+            <div class="bg-soc-surface border-2 border-soc-warning rounded-lg p-4">
+              <h3 class="text-lg font-semibold text-soc-warning mb-3">Confirm Escalation to {{ commsStore.activeChannel?.npc?.name }}</h3>
+              <p class="text-sm text-soc-muted mb-4">
+                Messaging {{ commsStore.activeChannel?.npc?.name }} means <strong>escalating an incident</strong>. Once you continue, you will not be able to edit this message, but you can send follow-up messages.
+              </p>
+              <div class="bg-soc-bg border border-soc-border rounded p-3 mb-4">
+                <div class="text-xs text-soc-muted mb-1">Your message:</div>
+                <div class="text-sm text-soc-text whitespace-pre-wrap">{{ pendingEscalationMessage }}</div>
+              </div>
+              <div class="flex gap-2 justify-end">
+                <button 
+                  @click="cancelEscalation"
+                  class="px-4 py-2 bg-soc-raised border border-soc-border rounded hover:bg-soc-border transition"
+                >
+                  Go Back to Edit
+                </button>
+                <button 
+                  @click="confirmEscalation"
+                  class="px-4 py-2 bg-soc-warning text-black font-semibold rounded hover:bg-yellow-400 transition"
+                >
+                  Confirm & Continue
+                </button>
+              </div>
+            </div>
+          </div>
+          
+          <!-- Self-Assessment Modal (Step 2) -->
+          <div v-else-if="showAssessment" class="p-4 border-t border-soc-border bg-soc-raised">
             <div class="bg-soc-surface border-2 border-soc-warning rounded-lg p-4">
               <h3 class="text-lg font-semibold text-soc-warning mb-3">Self-Assessment: Escalation Quality</h3>
-              <p class="text-sm text-soc-muted mb-4">
-                Review your message. Check ALL that apply honestly — this determines the response quality.
+              <p class="text-sm text-soc-muted mb-3">
+                Review your message and check ALL criteria that apply honestly — this determines the response quality.
               </p>
+              <div class="bg-soc-bg border border-soc-border rounded p-3 mb-4">
+                <div class="text-xs text-soc-muted mb-1">Your message:</div>
+                <div class="text-sm text-soc-text whitespace-pre-wrap">{{ pendingEscalationMessage }}</div>
+              </div>
               
               <div class="space-y-2 mb-4">
                 <label 
@@ -399,20 +458,12 @@ const checksCount = computed(() => assessmentChecks.value.filter(c => c).length)
                 <div class="text-lg font-bold text-soc-accent">
                   {{ checksCount }} / 5 checks
                 </div>
-                <div class="flex gap-2">
-                  <button 
-                    @click="cancelAssessment"
-                    class="px-4 py-2 bg-soc-raised border border-soc-border rounded hover:bg-soc-border transition"
-                  >
-                    Cancel
-                  </button>
-                  <button 
-                    @click="submitWithAssessment"
-                    class="px-4 py-2 bg-soc-warning text-black font-semibold rounded hover:bg-yellow-400 transition"
-                  >
-                    Submit Escalation
-                  </button>
-                </div>
+                <button 
+                  @click="submitWithAssessment"
+                  class="px-4 py-2 bg-soc-warning text-black font-semibold rounded hover:bg-yellow-400 transition"
+                >
+                  Submit Escalation
+                </button>
               </div>
             </div>
           </div>
@@ -445,8 +496,8 @@ const checksCount = computed(() => assessmentChecks.value.filter(c => c).length)
             </div>
           </div>
           
-          <!-- Input - only show if NPC can receive messages -->
-          <div v-else-if="!showAssessment && canMessageCurrentNpc" class="p-3 border-t border-soc-border">
+          <!-- Input - only show if NPC can receive messages and no modals are open -->
+          <div v-else-if="!showAssessment && !showEscalationConfirm && canMessageCurrentNpc" class="p-3 border-t border-soc-border">
             <div class="flex gap-2">
               <textarea
                 v-model="messageInput"
@@ -469,7 +520,7 @@ const checksCount = computed(() => assessmentChecks.value.filter(c => c).length)
           </div>
           
           <!-- Busy indicator - show when NPC cannot receive messages -->
-          <div v-else-if="!showAssessment && !canMessageCurrentNpc" class="p-3 border-t border-soc-border">
+          <div v-else-if="!showAssessment && !showEscalationConfirm && !canMessageCurrentNpc" class="p-3 border-t border-soc-border">
             <div class="flex items-center justify-center gap-2 py-4 text-red-400">
               <Clock class="w-5 h-5" />
               <span class="text-sm">{{ commsStore.npcs[commsStore.activeChannelId]?.name }} is busy</span>
