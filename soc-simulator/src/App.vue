@@ -169,7 +169,8 @@ const currentComponent = {
       <div class="flex flex-1 overflow-hidden">
         <AppSidebar />
         
-        <main class="flex-1 overflow-auto p-4">
+        <main class="flex-1 overflow-auto p-4 relative">
+          <NotificationToast />
           <component :is="currentComponent[gameStore.currentView]" />
         </main>
       </div>
@@ -178,7 +179,7 @@ const currentComponent = {
     <!-- Reset Confirmation Modal -->
     <div 
       v-if="showResetConfirm" 
-      class="fixed inset-0 bg-black/70 flex items-center justify-center z-50"
+      class="fixed inset-0 bg-black/70 flex items-center justify-center z-100"
       @click.self="cancelReset"
     >
       <div class="bg-soc-surface border border-soc-danger rounded-lg p-6 max-w-md mx-4">
@@ -207,8 +208,5 @@ const currentComponent = {
         </div>
       </div>
     </div>
-    
-    <!-- Notifications -->
-    <NotificationToast />
   </div>
 </template>
