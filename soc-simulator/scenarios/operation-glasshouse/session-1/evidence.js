@@ -39,7 +39,12 @@ LIAM: "No, he just said thanks and hung up. Should I be
 ANALYST NOTES:
 Pattern consistent with MFA bypass via social engineering. 
 Attacker likely had Liam's password already and used vishing 
-to obtain MFA code.`
+to obtain MFA code.
+
+RECOMMENDED NEXT STEPS:
+• Check authentication logs for liam.fitzgerald around 
+  the time of the call (~07:45-08:00)
+• Review any unusual activity on Liam's account`
   },
   {
     id: 'EV-6',
@@ -140,39 +145,6 @@ vigilant for targeted attacks using different vectors
 (phishing, vishing).`
   },
   {
-    id: 'EV-9',
-    title: 'Liam Account Activity',
-    category: 'Log Analysis',
-    content: `USER ACTIVITY: LIAM.FITZGERALD
-━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
-
-Period: Monday 14 October 2024, 07:52-08:30 ACDT
-Source: Internal SSO + Application Logs
-
-07:52 — SSO Login (MFA success) from 103.42.91.17
-07:54 — Accessed: Employee Directory
-07:56 — Accessed: Internal Wiki (searched: "org chart")
-08:01 — Accessed: HR Portal (viewed own profile)
-08:09 — Accessed: Finance Team contact list
-08:15 — Accessed: IT Support documentation
-08:22 — Accessed: Executive Assistant contact details
-08:28 — Accessed: Customer Database (query executed)
-08:30 — Session ongoing...
-
-───────────────────────────────────────────────────────
-ANALYSIS:
-Activity suggests reconnaissance—browsing directories and 
-contact info rather than normal Customer Support tasks.
-
-⚠️  Customer database access at 08:28 is HIGHLY UNUSUAL 
-for a Customer Support role. Liam does not have business 
-need for direct database queries.
-
-ASSESSMENT: Likely attacker performing internal recon 
-after gaining access via compromised credentials. Session 
-still active - immediate action recommended.`
-  },
-  {
     id: 'EV-10',
     title: 'Anika Interview',
     category: 'Interview',
@@ -211,6 +183,40 @@ ANIKA: "I said I'd call the IT helpdesk directly to verify,
 ───────────────────────────────────────────────────────
 ANALYST NOTES:
 Failed vishing attempt. Anika's suspicion prevented 
-compromise. The attacker likely moved on to other targets.`
+compromise.`
+  },
+  {
+    id: 'EV-11',
+    title: 'Andrew Email Analysis',
+    category: 'Email Analysis',
+    content: `EMAIL ANALYSIS: ANDREW WALSH REPORT
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+Analysis conducted: Monday, 14 October 2024
+
+EMAIL HEADERS:
+From: noreply@docusign-notifications.com
+Reply-To: support@docusign-notifications.com
+Subject: Action Required: Contract #4892 awaiting your signature
+SPF: PASS    DKIM: PASS    DMARC: PASS
+
+LINK ANALYSIS:
+URL: https://docusign-notifications.com/sign?id=...
+Domain registered: 3 weeks ago (24 September 2024)
+SSL Certificate: Valid, Let's Encrypt
+VirusTotal: 2/87 detections (phishing, suspicious)
+URLScan: Flagged as potential phishing
+
+DOMAIN COMPARISON:
+• Legitimate DocuSign: docusign.com
+• This email: docusign-notifications.com
+• Typosquat/lookalike domain
+
+───────────────────────────────────────────────────────
+VERDICT: PHISHING
+
+Lookalike domain impersonating DocuSign. Recently registered
+domain is a red flag. Recommend deleting email and blocking
+sender domain at email gateway.`
   },
 ]

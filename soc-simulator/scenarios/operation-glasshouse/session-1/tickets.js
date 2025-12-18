@@ -7,13 +7,13 @@ export default [
     priority: 'low',
     status: 'open',
     category: 'Security — Phishing Report',
-    visibleAt: 300, // 5 min into session
+    visibleAt: 660, // 11 min into session
     from: {
       name: 'Andrew Walsh',
       email: 'andrew.walsh@xyzpay.com.au',
       department: 'Sales'
     },
-    subject: 'Suspicious email from "DocuSign"',
+    subject: 'DocuSign email',
     submitted: '2024-10-14T08:05:00+10:30',
     sla: '24 hours',
     content: `Hi Security team,
@@ -26,7 +26,31 @@ Is this legit or should I delete it?
 
 Thanks,
 Andrew`,
-    actions: []
+    actions: [
+      {
+        id: 'analyse-andrew-email',
+        label: 'Analyse reported email',
+        cost: 1,
+        description: 'Check email headers, links, and sender reputation',
+        unlocksEvidence: 'EV-11'
+      },
+      {
+        id: 'inform-andrew-safe',
+        label: 'Inform Andrew email is safe',
+        cost: 0,
+        description: 'Tell Andrew the email is legitimate and safe to click',
+        closesTicket: true,
+        requiresEvidence: ['EV-11']
+      },
+      {
+        id: 'advise-andrew-delete',
+        label: 'Advise Andrew to delete email',
+        cost: 0,
+        description: 'Warn Andrew this is phishing and to delete the email',
+        closesTicket: true,
+        requiresEvidence: ['EV-11']
+      }
+    ]
   },
   {
     id: 'TKT-4470',
@@ -44,7 +68,7 @@ Andrew`,
     sla: '48 hours',
     content: `Hi Security,
 
-I'm trying to access contractpodai.com for our new contract management system but it's being blocked by the web filter. Legal has approved this tool and we need it for the Q4 contract review cycle, which I'll need to start working next week.
+I'm trying to access contractpodai.com for our new contract management system but it's being blocked by the web filter. Legal has approved this tool and we need it for the Q4 contract review cycle, which I'll be working on starting next week.
 
 Can you please review and whitelist this site?
 
@@ -52,36 +76,6 @@ Thanks,
 Sophie`,
     actions: []
   },
-  
-  // ============================================
-  // NOISE TICKETS - Appear during session
-  // ============================================
-  {
-    id: 'TKT-4473',
-    priority: 'low',
-    status: 'open',
-    category: 'Security — General Inquiry',
-    visibleAt: 1200, // 20 min into session
-    from: {
-      name: 'Ben Harrison',
-      email: 'ben.harrison@xyzpay.com.au',
-      department: 'Engineering'
-    },
-    subject: 'Think my account might be compromised?',
-    submitted: '2024-10-14T08:20:00+10:30',
-    sla: '4 hours',
-    content: `Hi Security,
-
-I just checked my account activity and I'm seeing logins from a device I don't recognise - something called "Ben's iPhone" but I have an Android phone?
-
-I think that might be my old work phone from before I switched. Can you confirm? Just want to make sure no one else is in my account.
-
-Sorry if this is a false alarm!
-
-Ben`,
-    actions: []
-  },
-  
   // ============================================
   // STORY TICKETS - Key investigation items
   // ============================================
@@ -115,6 +109,19 @@ Anika`,
         cost: 1,
         description: 'Quick interview about the suspicious call',
         unlocksEvidence: 'EV-10'
+      },
+      {
+        id: 'reset-anika-password',
+        label: 'Reset Anika\'s password',
+        cost: 1,
+        description: 'Precautionary password reset for Anika\'s account'
+      },
+      {
+        id: 'close-anika-ticket',
+        label: 'Log and close',
+        cost: 0,
+        description: 'Document the report and close the ticket',
+        closesTicket: true
       }
     ]
   },
@@ -123,7 +130,7 @@ Anika`,
     priority: 'low',
     status: 'open',
     category: 'Security — General Inquiry',
-    visibleAt: 240, // 4 min into session
+    visibleAt: 360, // 6 min into session
     notification: {
       message: 'New service ticket from Liam Fitzgerald',
       type: 'info'
@@ -151,14 +158,6 @@ Liam`,
         cost: 2,
         description: 'In-depth interview — probing questions about the call',
         unlocksEvidence: 'EV-5'
-      },
-      {
-        id: 'check-liam-account',
-        label: 'Check Liam\'s account activity',
-        cost: 2,
-        description: 'Review authentication logs and recent activity for liam.fitzgerald',
-        unlocksEvidence: 'EV-9',
-        requiresEvidence: ['EV-5']
       }
     ]
   },

@@ -368,7 +368,7 @@ export default {
     reportsTo: 'sandra-leigh',
     location: 'Level 5, Adelaide HQ',
     startDate: '2022-01-15',
-    bio: 'Finance team analyst. Reports to Sandra. More cautious than Liam but still fell for vishing attack.',
+    bio: 'Finance team analyst. Reports to Sandra. Fell for a phishing email earlier this year but has been more careful since.',
     calendar: [
       { day: 'Monday', entries: [
         { time: '09:00', duration: 60, title: 'Finance Standup', location: 'Finance Meeting Room' },
