@@ -100,8 +100,8 @@ function sendMessage() {
   if (mode === 'auto-reply') {
     // Alex - send message and get auto-reply
     sendAutoReply()
-  } else if (mode === 'dnd') {
-    // James - send message but no response
+  } else if (mode === 'dnd' || mode === 'online') {
+    // Send message but no response (online = green dot, dnd = yellow dot)
     sendDndMessage()
   } else if (mode === 'escalation') {
     // Priya - show confirmation first, then self-assessment
@@ -275,12 +275,12 @@ const checksCount = computed(() => assessmentChecks.value.filter(c => c).length)
               <span 
                 class="absolute -bottom-0.5 -right-0.5 w-3 h-3 rounded-full border-2 border-soc-surface"
                 :class="{
-                  'bg-green-500': npc.messagingMode === 'escalation',
+                  'bg-green-500': npc.messagingMode === 'escalation' || npc.messagingMode === 'online',
                   'bg-gray-500': npc.messagingMode === 'auto-reply',
                   'bg-yellow-500': npc.messagingMode === 'dnd',
                   'bg-red-500': !npc.messagingMode || npc.messagingMode === 'busy'
                 }"
-                :title="npc.messagingMode === 'escalation' ? 'Online' : npc.messagingMode === 'auto-reply' ? 'Offline' : npc.messagingMode === 'dnd' ? 'Do Not Disturb' : 'Busy'"
+                :title="npc.messagingMode === 'escalation' || npc.messagingMode === 'online' ? 'Online' : npc.messagingMode === 'auto-reply' ? 'Offline' : npc.messagingMode === 'dnd' ? 'Do Not Disturb' : 'Busy'"
               ></span>
             </div>
             <div>
@@ -340,6 +340,12 @@ const checksCount = computed(() => assessmentChecks.value.filter(c => c).length)
                     Do Not Disturb
                   </span>
                   <span 
+                    v-else-if="commsStore.activeChannel.npc.messagingMode === 'online'"
+                    class="text-xs px-2 py-0.5 rounded bg-green-500/30 text-green-400"
+                  >
+                    Online
+                  </span>
+                  <span 
                     v-else-if="!commsStore.activeChannel.npc.messagingMode || commsStore.activeChannel.npc.messagingMode === 'busy'"
                     class="text-xs px-2 py-0.5 rounded bg-red-500/30 text-red-400"
                   >
@@ -372,6 +378,9 @@ const checksCount = computed(() => assessmentChecks.value.filter(c => c).length)
               </template>
               <template v-else-if="commsStore.activeChannel.npc.messagingMode === 'dnd'">
                 <span class="text-yellow-400">Do Not Disturb</span>
+              </template>
+              <template v-else-if="commsStore.activeChannel.npc.messagingMode === 'online'">
+                <span class="text-green-400">Online</span>
               </template>
               <template v-else>
                 <span class="text-red-400">Cannot message</span>

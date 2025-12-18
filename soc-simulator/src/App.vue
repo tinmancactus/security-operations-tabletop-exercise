@@ -99,6 +99,7 @@ function handleStart() {
   // Load pre-existing message history, then send initial messages
   commsStore.loadMessageHistory()
   commsStore.sendInitialMessages()
+  commsStore.scheduleNpcMessages()
 }
 
 function handleResume() {
@@ -113,6 +114,7 @@ function handleNewGame() {
   // Load pre-existing message history, then send initial messages
   commsStore.loadMessageHistory()
   commsStore.sendInitialMessages()
+  commsStore.scheduleNpcMessages()
 }
 
 function resetSession() {

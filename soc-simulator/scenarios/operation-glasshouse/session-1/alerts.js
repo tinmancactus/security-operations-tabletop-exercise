@@ -380,28 +380,29 @@ Marcus Chen (CISO) enrolled a new corporate device. Device policy applied succes
 Informational - normal device refresh.`,
     actions: []
   },
-  {
-    id: 'M-2477',
-    severity: 'medium',
-    title: 'Failed SSH authentication',
-    timestamp: '2024-10-14T08:45:00',
-    source: '10.50.20.88',
-    target: 'bastion-01',
-    user: 'admin-jokoro',
-    status: 'open',
-    visibleAt: 2700, // 45 min into session
-    details: `Failed SSH authentication attempts.
+  // Disabled for now as this is a potential distraction given James is away at this time.
+//   {
+//     id: 'M-2477',
+//     severity: 'medium',
+//     title: 'Failed SSH authentication',
+//     timestamp: '2024-10-14T08:45:00',
+//     source: '10.50.20.88',
+//     target: 'bastion-01',
+//     user: 'admin-jokoro',
+//     status: 'open',
+//     visibleAt: 2700, // 45 min into session
+//     details: `Failed SSH authentication attempts.
 
-User: admin-jokoro (James Okoro admin account)
-Source: 10.50.20.88 (WORKSTATION-SEC-03)
-Target: bastion-01
-Attempts: 3 failed
+// User: admin-jokoro (James Okoro admin account)
+// Source: 10.50.20.88 (WORKSTATION-SEC-03)
+// Target: bastion-01
+// Attempts: 3 failed
 
-James Okoro confirmed he was attempting to connect but had wrong SSH key loaded. Successfully authenticated on 4th attempt with correct key.
+// James Okoro confirmed he was attempting to connect but had wrong SSH key loaded. Successfully authenticated on 4th attempt with correct key.
 
-Recommend: Close as user error.`,
-    actions: []
-  },
+// Recommend: Close as user error.`,
+//     actions: []
+//   },
   
   // ============================================
   // STORY ALERTS - Key investigation items

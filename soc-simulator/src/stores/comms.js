@@ -80,6 +80,24 @@ export const useCommsStore = defineStore('comms', () => {
     })
   }
 
+  function scheduleNpcMessages() {
+    // Schedule messages that trigger at specific game times
+    Object.entries(npcs.value).forEach(([npcId, npc]) => {
+      if (npc.scheduledMessages) {
+        npc.scheduledMessages.forEach(msg => {
+          gameStore.scheduleCallback(`npc-msg-${msg.id}`, msg.triggerAt, () => {
+            // Switch messaging mode if specified
+            if (msg.switchMode) {
+              setNpcMessagingMode(npcId, msg.switchMode)
+            }
+            // Send the message (receiveMessage handles notification)
+            receiveMessage(npcId, msg.content)
+          })
+        })
+      }
+    })
+  }
+
   function setActiveChannel(npcId) {
     activeChannelId.value = npcId
     // Clear unread for this channel
@@ -294,6 +312,7 @@ export const useCommsStore = defineStore('comms', () => {
     loadNPCs,
     loadMessageHistory,
     sendInitialMessages,
+    scheduleNpcMessages,
     setActiveChannel,
     sendMessage,
     receiveMessage,

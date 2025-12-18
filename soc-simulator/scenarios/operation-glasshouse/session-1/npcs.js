@@ -190,6 +190,31 @@ Credential stuffing is business as usual. If something's different, spell it out
         from: 'npc',
         content: `no worries, have a good weekend`
       }
+    ],
+    
+    // Scheduled messages - James comes online in final 7 minutes
+    scheduledMessages: [
+      {
+        id: 'james-sched-1',
+        triggerAt: 3180, // 53 min elapsed = 7 min remaining
+        content: `hey, just logging in and catching up on my messages. thanks for handling everything so far. pri has forwarded me the details. gimme a moment while I catch up on the full situation...`,
+        switchMode: 'online' // Switch to online (green dot) - can message but no response
+      },
+      {
+        id: 'james-sched-2',
+        triggerAt: 3240, // 54 min elapsed = 6 min remaining
+        content: `ok this is not how I was planning my monday morning going 😬`
+      },
+      {
+        id: 'james-sched-3',
+        triggerAt: 3340, // moments after the final SIEM alert
+        content: `OMFG did you see the siem alert that just came through? 2847 records breached 🤯`
+      },
+      {
+        id: 'james-sched-4',
+        triggerAt: 3350, // 10 seconds later
+        content: `liam bruh`
+      }
     ]
   },
 
