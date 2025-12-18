@@ -13,7 +13,7 @@ export default {
     messageHistory: [
       {
         id: 'priya-hist-1',
-        timestamp: '2024-10-09T09:00:00+10:30',
+        timestamp: '2024-10-09T09:00:00',
         gameTime: 'Wed 9:00am',
         from: 'npc',
         content: `Morning. Did you see the news about the PayFlex breach? 50,000 customer records exposed.
@@ -22,28 +22,28 @@ Board is asking questions. Marcus wants us to review our detection coverage for 
       },
       {
         id: 'priya-hist-2',
-        timestamp: '2024-10-09T09:15:00+10:30',
+        timestamp: '2024-10-09T09:15:00',
         gameTime: 'Wed 9:15am',
         from: 'player',
         content: `Yeah, I saw the article - sounds like they got in through a compromised vendor account?`
       },
       {
         id: 'priya-hist-3',
-        timestamp: '2024-10-09T09:18:00+10:30',
+        timestamp: '2024-10-09T09:18:00',
         gameTime: 'Wed 9:18am',
         from: 'npc',
         content: `That's what the initial reports say. Third-party risk is a blind spot for a lot of companies. We're not immune.`
       },
       {
         id: 'priya-hist-4',
-        timestamp: '2024-10-11T11:30:00+10:30',
+        timestamp: '2024-10-11T11:30:00',
         gameTime: 'Fri 11:30am',
         from: 'npc',
         content: `Heads up - I'll be in and out of meetings Monday morning until about 11am. Should be reachable by message but might be slow to respond.`
       },
       {
         id: 'priya-hist-5',
-        timestamp: '2024-10-11T11:35:00+10:30',
+        timestamp: '2024-10-11T11:35:00',
         gameTime: 'Fri 11:35am',
         from: 'player',
         content: `Got it, thanks for the heads up.`
@@ -129,63 +129,63 @@ Credential stuffing is business as usual. If something's different, spell it out
     messageHistory: [
       {
         id: 'james-hist-1',
-        timestamp: '2024-10-07T09:15:00+10:30',
+        timestamp: '2024-10-07T09:15:00',
         gameTime: 'Mon 9:15am',
         from: 'npc',
         content: `hey, you around? need a second pair of eyes on something`
       },
       {
         id: 'james-hist-2',
-        timestamp: '2024-10-07T09:16:00+10:30',
+        timestamp: '2024-10-07T09:16:00',
         gameTime: 'Mon 9:16am',
         from: 'player',
         content: `Yeah, what's up?`
       },
       {
         id: 'james-hist-3',
-        timestamp: '2024-10-07T09:18:00+10:30',
+        timestamp: '2024-10-07T09:18:00',
         gameTime: 'Mon 9:18am',
         from: 'npc',
         content: `false alarm, figured it out. was just some weird edge case in the waf logs. thanks anyway 👍`
       },
       {
         id: 'james-hist-4',
-        timestamp: '2024-10-07T16:42:00+10:30',
+        timestamp: '2024-10-07T16:42:00',
         gameTime: 'Mon 4:42pm',
         from: 'npc',
         content: `fyi i'm not going to get to that siem tuning this week. marcus wants me focused on the security uplift stuff for the board presentation. fml 🫠`
       },
       {
         id: 'james-hist-5',
-        timestamp: '2024-10-07T16:45:00+10:30',
+        timestamp: '2024-10-07T16:45:00',
         gameTime: 'Mon 4:45pm',
         from: 'player',
         content: `No worries, I know you're swamped. Good luck with the board stuff.`
       },
       {
         id: 'james-hist-6',
-        timestamp: '2024-10-07T16:47:00+10:30',
+        timestamp: '2024-10-07T16:47:00',
         gameTime: 'Mon 4:47pm',
         from: 'npc',
         content: `lol thanks. gonna need it`
       },
       {
         id: 'james-hist-7',
-        timestamp: '2024-10-11T16:47:00+10:30',
+        timestamp: '2024-10-11T16:47:00',
         gameTime: 'Fri 4:47pm',
         from: 'npc',
         content: `you coming for drinks tonight? few of us heading to nola after work`
       },
       {
         id: 'james-hist-8',
-        timestamp: '2024-10-11T16:50:00+10:30',
+        timestamp: '2024-10-11T16:50:00',
         gameTime: 'Fri 4:50pm',
         from: 'player',
         content: `Maybe next time, got plans tonight.`
       },
       {
         id: 'james-hist-9',
-        timestamp: '2024-10-11T16:51:00+10:30',
+        timestamp: '2024-10-11T16:51:00',
         gameTime: 'Fri 4:51pm',
         from: 'npc',
         content: `no worries, have a good weekend`
@@ -205,7 +205,7 @@ Credential stuffing is business as usual. If something's different, spell it out
     messageHistory: [
       {
         id: 'marcus-hist-1',
-        timestamp: '2024-10-10T14:30:00+10:30',
+        timestamp: '2024-10-10T14:30:00',
         gameTime: 'Thu 2:30pm',
         from: 'npc',
         content: `Quick note - thanks for handling that phishing report yesterday. Good catch on the lookalike domain.
@@ -214,14 +214,14 @@ I've mentioned to the board that our detection capabilities are improving. Keep 
       },
       {
         id: 'marcus-hist-2',
-        timestamp: '2024-10-10T14:35:00+10:30',
+        timestamp: '2024-10-10T14:35:00',
         gameTime: 'Thu 2:35pm',
         from: 'player',
         content: `Thanks Marcus, appreciate the feedback.`
       },
       {
         id: 'marcus-hist-3',
-        timestamp: '2024-10-10T14:36:00+10:30',
+        timestamp: '2024-10-10T14:36:00',
         gameTime: 'Thu 2:36pm',
         from: 'npc',
         content: `FYI I'll be in board meetings most of Monday. Priya's your first point of contact. Only interrupt me if something's critical.`
@@ -241,7 +241,7 @@ I've mentioned to the board that our detection capabilities are improving. Keep 
     messageHistory: [
       {
         id: 'sandra-hist-1',
-        timestamp: '2024-10-08T11:20:00+10:30',
+        timestamp: '2024-10-08T11:20:00',
         gameTime: 'Tue 11:20am',
         from: 'npc',
         content: `Hey 😊
@@ -252,21 +252,21 @@ SL`
       },
       {
         id: 'sandra-hist-2',
-        timestamp: '2024-10-08T11:45:00+10:30',
+        timestamp: '2024-10-08T11:45:00',
         gameTime: 'Tue 11:45am',
         from: 'player',
         content: `Sure, I'll swing by this afternoon.`
       },
       {
         id: 'sandra-hist-3',
-        timestamp: '2024-10-08T11:46:00+10:30',
+        timestamp: '2024-10-08T11:46:00',
         gameTime: 'Tue 11:46am',
         from: 'npc',
         content: `Thanks! 😊`
       },
       {
         id: 'sandra-hist-4',
-        timestamp: '2024-10-09T15:30:00+10:30',
+        timestamp: '2024-10-09T15:30:00',
         gameTime: 'Wed 3:30pm',
         from: 'npc',
         content: `Hey 😊
@@ -279,14 +279,14 @@ SL`
       },
       {
         id: 'sandra-hist-5',
-        timestamp: '2024-10-09T15:45:00+10:30',
+        timestamp: '2024-10-09T15:45:00',
         gameTime: 'Wed 3:45pm',
         from: 'player',
         content: `No problem at all, happy to help. Let me know if you have any other questions about it.`
       },
       {
         id: 'sandra-hist-6',
-        timestamp: '2024-10-09T15:47:00+10:30',
+        timestamp: '2024-10-09T15:47:00',
         gameTime: 'Wed 3:47pm',
         from: 'npc',
         content: `Will do!`

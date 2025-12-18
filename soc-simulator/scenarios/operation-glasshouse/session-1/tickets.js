@@ -14,7 +14,7 @@ export default [
       department: 'Sales'
     },
     subject: 'DocuSign email',
-    submitted: '2024-10-14T08:05:00+10:30',
+    submitted: '2024-10-14T08:05:00',
     sla: '24 hours',
     content: `Hi Security team,
 
@@ -64,7 +64,7 @@ Andrew`,
       department: 'Legal'
     },
     subject: 'Request to unblock website - contractpodai.com',
-    submitted: '2024-10-11T15:40:00+10:30',
+    submitted: '2024-10-11T15:40:00',
     sla: '48 hours',
     content: `Hi Security,
 
@@ -90,7 +90,7 @@ Sophie`,
       department: 'Finance'
     },
     subject: 'Suspicious call yesterday (Sunday)',
-    submitted: '2024-10-13T10:17:00+10:30',
+    submitted: '2024-10-13T10:17:00',
     sla: '48 hours',
     content: `Hi Security,
 
@@ -141,7 +141,7 @@ Anika`,
       department: 'Customer Support'
     },
     subject: 'Weird call from IT this morning?',
-    submitted: '2024-10-14T08:15:00+10:30',
+    submitted: '2024-10-14T08:15:00',
     sla: '48 hours',
     content: `Hi,
 
@@ -172,7 +172,7 @@ Liam`,
       department: 'Marketing'
     },
     subject: 'Suspicious email - please check',
-    submitted: '2024-10-11T14:23:00+10:30',
+    submitted: '2024-10-11T14:23:00',
     sla: '48 hours',
     content: `Hi Security team,
 
@@ -228,7 +228,7 @@ Jenny`,
       department: 'Finance'
     },
     subject: 'Suspicious call from "IT Support"',
-    submitted: '2024-10-14T08:45:00+10:30',
+    submitted: '2024-10-14T08:45:00',
     sla: '4 hours',
     content: `Hi Security,
 
