@@ -72,7 +72,8 @@ export const useCommsStore = defineStore('comms', () => {
       if (npc.initialMessage && channels.value[npcId]?.length === 0) {
         const delay = npc.initialMessage.delay || 0
         setTimeout(() => {
-          receiveMessage(npcId, npc.initialMessage.content, true)
+          // Use gameTime from data if provided, otherwise use current game time
+          receiveMessage(npcId, npc.initialMessage.content, true, npc.initialMessage.gameTime)
           gameStore.addNotification(`New message from ${npc.name}`, 'info', 'comms', { npcId })
         }, delay)
       }
@@ -108,12 +109,12 @@ export const useCommsStore = defineStore('comms', () => {
     return message
   }
 
-  function receiveMessage(npcId, content, isSystemEvent = false) {
+  function receiveMessage(npcId, content, isSystemEvent = false, customGameTime = null) {
     const npc = npcs.value[npcId]
     const message = {
       id: Date.now(),
       timestamp: new Date().toISOString(),
-      gameTime: gameStore.formattedTime,
+      gameTime: customGameTime || gameStore.formattedTime,
       from: 'npc',
       npcId,
       npcName: npc?.name,

@@ -334,6 +334,8 @@ Good luck with the investigation.`
     // Initial message sent at session start
     initialMessage: {
       delay: 0, // Immediate
+      timestamp: '2024-10-14T07:51:00',
+      gameTime: 'Mon 7:51am',
       content: `Morning team! Shift handover notes below. I'm heading home to sleep - back online tonight.
 
 OVERNIGHT SUMMARY (22:00 - 08:00)
