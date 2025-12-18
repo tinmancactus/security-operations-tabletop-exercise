@@ -62,9 +62,10 @@ export default [
   { id: 'LOG-0056', timestamp: '2024-10-14T08:22:44', system: 'hr-portal', type: 'access', severity: 'low',
     source: '103.42.91.17', user: 'liam.fitzgerald@xyzpay.com.au', action: 'page_view',
     message: 'Accessed Executive Assistant Contact Details', details: 'Viewed: /directory/executive-support' },
-  { id: 'LOG-0057', timestamp: '2024-10-14T08:28:00', system: 'customer-db', type: 'access', severity: 'high',
-    source: '103.42.91.17', user: 'liam.fitzgerald@xyzpay.com.au', action: 'query_executed',
-    message: 'Database query executed', details: 'Table: customers, Query type: SELECT, Rows returned: 15,847' },
+    // Disabling this as it kinda ruins the cliffhanger
+  // { id: 'LOG-0057', timestamp: '2024-10-14T08:28:00', system: 'customer-db', type: 'access', severity: 'high',
+  //   source: '103.42.91.17', user: 'liam.fitzgerald@xyzpay.com.au', action: 'query_executed',
+  //   message: 'Database query executed', details: 'Table: customers, Query type: SELECT, Rows returned: 15,847' },
     
   // Normal Liam login on Monday (legitimate)
   { id: 'LOG-0060', timestamp: '2024-10-14T07:56:12', system: 'internal-sso', type: 'auth', severity: 'info',

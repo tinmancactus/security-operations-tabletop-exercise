@@ -177,6 +177,12 @@ function submitWithAssessment() {
   // Deliver response after a short delay
   setTimeout(() => {
     commsStore.receiveMessage(npcId, response.content)
+    
+    // After a strong escalation, switch Priya to DND mode (can message but no response)
+    if (tier === 'strong' && npcId === 'priya') {
+      commsStore.setNpcMessagingMode(npcId, 'dnd')
+    }
+    
     scrollToBottom()
   }, 1000)
   

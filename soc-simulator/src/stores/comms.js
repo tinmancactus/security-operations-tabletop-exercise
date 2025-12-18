@@ -161,6 +161,13 @@ export const useCommsStore = defineStore('comms', () => {
     return 'weak'
   }
 
+  function setNpcMessagingMode(npcId, mode) {
+    if (npcs.value[npcId]) {
+      npcs.value[npcId].messagingMode = mode
+      saveState()
+    }
+  }
+
   function saveState() {
     localStorage.setItem('soc-sim-comms', JSON.stringify({
       channels: channels.value,
@@ -305,6 +312,7 @@ export const useCommsStore = defineStore('comms', () => {
     getMessageDraft,
     clearMessageDraft,
     setPendingEscalation,
-    clearPendingEscalation
+    clearPendingEscalation,
+    setNpcMessagingMode
   }
 })
