@@ -141,7 +141,7 @@ Anika`,
       department: 'Customer Support'
     },
     subject: 'Weird call from IT this morning?',
-    submitted: '2024-10-14T08:15:00',
+    submitted: '2024-10-14T08:06:00',
     sla: '48 hours',
     content: `Hi,
 
@@ -176,13 +176,12 @@ Liam`,
     sla: '48 hours',
     content: `Hi Security team,
 
-I received an email that looks a bit dodgy. It's asking me to click a link to "verify my account" for some retail analytics platform. I don't remember signing up for this. Screenshot attached.
+I received an email that looks a bit dodgy. It's asking me to click a link to "verify my account" for some retail analytics platform. I don't remember signing up for this.
 
 Can you check if it's legit?
 
 Thanks,
 Jenny`,
-    attachment: 'email_screenshot.png',
     actions: [
       {
         id: 'analyse-jenny-email',

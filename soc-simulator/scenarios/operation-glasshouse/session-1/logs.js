@@ -67,7 +67,7 @@ export default [
     message: 'Database query executed', details: 'Table: customers, Query type: SELECT, Rows returned: 15,847' },
     
   // Normal Liam login on Monday (legitimate)
-  { id: 'LOG-0060', timestamp: '2024-10-14T08:45:12', system: 'internal-sso', type: 'auth', severity: 'info',
+  { id: 'LOG-0060', timestamp: '2024-10-14T07:56:12', system: 'internal-sso', type: 'auth', severity: 'info',
     source: '10.1.50.89', user: 'liam.fitzgerald@xyzpay.com.au', action: 'login_success',
     message: 'Successful authentication via SSO', details: 'MFA: SMS, Device: DESKTOP-LF001, Location: Adelaide Office' },
     
@@ -160,8 +160,8 @@ export default [
   { id: 'LOG-0502', timestamp: '2024-10-14T07:52:33', system: 'finance-system', type: 'access', severity: 'info',
     source: '10.1.50.112', user: 'anika.patel@xyzpay.com.au', action: 'report_generated',
     message: 'Financial report generated', details: 'Report: Monthly Reconciliation October 2024' },
-  { id: 'LOG-0503', timestamp: '2024-10-14T07:56:45', system: 'customer-portal', type: 'access', severity: 'info',
+  { id: 'LOG-0503', timestamp: '2024-10-14T08:06:00', system: 'customer-portal', type: 'access', severity: 'info',
     source: '10.1.50.89', user: 'liam.fitzgerald@xyzpay.com.au', action: 'ticket_updated',
-    message: 'Support ticket updated', details: 'Ticket: #45892, Status: Resolved' },
+    message: 'Support ticket updated', details: 'Ticket: #TKT-4472, Status: Open' },
     
   ]

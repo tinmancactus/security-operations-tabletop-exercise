@@ -39,7 +39,7 @@ Board is asking questions. Marcus wants us to review our detection coverage for 
         timestamp: '2024-10-11T11:30:00',
         gameTime: 'Fri 11:30am',
         from: 'npc',
-        content: `Heads up - I'll be in and out of meetings Monday morning until about 11am. Should be reachable by message but might be slow to respond.`
+        content: `Heads up - I'll be in and out of meetings Monday morning until about 11am. Should be reachable by message but might be slow to respond. James has an appointment first thing and will be starting later than usual, so contact me directly if anything comes up.`
       },
       {
         id: 'priya-hist-5',
