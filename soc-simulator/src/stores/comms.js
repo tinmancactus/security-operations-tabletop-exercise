@@ -93,7 +93,7 @@ export const useCommsStore = defineStore('comms', () => {
     const message = {
       id: Date.now(),
       timestamp: new Date().toISOString(),
-      gameTime: gameStore.formattedTime,
+      gameTime: gameStore.inGameTime,
       from: 'player',
       content
     }
@@ -114,7 +114,7 @@ export const useCommsStore = defineStore('comms', () => {
     const message = {
       id: Date.now(),
       timestamp: new Date().toISOString(),
-      gameTime: customGameTime || gameStore.formattedTime,
+      gameTime: customGameTime || gameStore.inGameTime,
       from: 'npc',
       npcId,
       npcName: npc?.name,

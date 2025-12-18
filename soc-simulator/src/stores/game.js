@@ -29,6 +29,25 @@ export const useGameStore = defineStore('game', () => {
 
   const timeExpired = computed(() => timeRemaining.value <= 0)
 
+  // In-game time: session starts at 8:00am, runs for 60 minutes
+  // So elapsed time maps to 8:00 + elapsed minutes
+  const inGameTime = computed(() => {
+    const totalDuration = scenario.value?.config?.duration || 3600
+    const elapsedSeconds = totalDuration - timeRemaining.value
+    const elapsedMinutes = Math.floor(elapsedSeconds / 60)
+    
+    // Start at 8:00am (480 minutes from midnight)
+    const startMinutes = 8 * 60
+    const currentMinutes = startMinutes + elapsedMinutes
+    
+    const hours = Math.floor(currentMinutes / 60)
+    const mins = currentMinutes % 60
+    const period = hours >= 12 ? 'pm' : 'am'
+    const displayHours = hours > 12 ? hours - 12 : hours
+    
+    return `${displayHours}:${mins.toString().padStart(2, '0')}${period}`
+  })
+
   // Actions
   function loadScenario(scenarioData) {
     scenario.value = scenarioData
@@ -312,6 +331,7 @@ export const useGameStore = defineStore('game', () => {
     
     // Computed
     formattedTime,
+    inGameTime,
     timerClass,
     timeExpired,
     
