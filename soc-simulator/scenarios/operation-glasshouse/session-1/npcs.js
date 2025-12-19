@@ -51,37 +51,13 @@ Board is asking questions. Marcus wants us to review our detection coverage for 
       }
     ],
     
-    responseRubric: [
-      { 
-        id: 'names-account', 
-        keywords: ['liam', 'fitzgerald', 'liam.fitzgerald', 'account', 'user'], 
-        points: 1,
-        description: 'Names a specific user account of concern'
-      },
-      { 
-        id: 'has-evidence', 
-        keywords: ['mfa', 'bypass', 'vishing', 'social engineering', 'phone call', 'code', '6-digit', 'indonesia', '103.42', 'vpn'], 
-        points: 1,
-        description: 'References key evidence (MFA bypass, suspicious login)'
-      },
-      { 
-        id: 'has-timeline', 
-        keywords: ['sunday', '10am', '10:14', 'timeline', 'yesterday', 'morning', 'sequence'], 
-        points: 1,
-        description: 'Describes a timeline of events'
-      },
-      { 
-        id: 'proposes-action', 
-        keywords: ['disable', 'block', 'investigate', 'recommend', 'suggest', 'should we', 'next step', 'contain'], 
-        points: 1,
-        description: 'Proposes a specific action or asks a specific question'
-      },
-      { 
-        id: 'has-severity', 
-        keywords: ['severity', 'high', 'medium', 'critical', 'priority', 'urgent', 'serious', 'significant'], 
-        points: 1,
-        description: 'Includes severity assessment with justification'
-      }
+    // Self-assessment criteria shown to player when escalating
+    selfAssessmentCriteria: [
+      'Names a specific user account of concern',
+      'References key evidence',
+      'Describes a timeline of events',
+      'Proposes a specific action OR asks a specific question',
+      'Includes severity assessment with justification'
     ],
     
     responses: {

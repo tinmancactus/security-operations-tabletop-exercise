@@ -232,13 +232,17 @@ function scrollToBottom() {
 
 watch(() => commsStore.activeChannel?.messages.length, scrollToBottom)
 
-const assessmentCriteria = [
-  'Names a specific user account of concern',
-  'References key evidence',
-  'Describes a timeline of events',
-  'Proposes a specific action OR asks a specific question',
-  'Includes severity assessment with justification'
-]
+// Get self-assessment criteria from NPC data (falls back to generic if not defined)
+const assessmentCriteria = computed(() => {
+  const npc = commsStore.npcs[commsStore.activeChannelId]
+  return npc?.selfAssessmentCriteria || [
+    'Clearly describes the issue',
+    'Provides supporting evidence',
+    'Includes relevant context',
+    'Proposes next steps',
+    'Assesses priority/severity'
+  ]
+})
 
 const checksCount = computed(() => assessmentChecks.value.filter(c => c).length)
 </script>

@@ -111,17 +111,16 @@ export default {
       }
     ],
     
-    // For escalation mode: scoring rubric
-    responseRubric: [
-      {
-        id: 'criterion-id',
-        keywords: ['keyword1', 'keyword2'], // Keywords to match in player message
-        points: 1,
-        description: 'What this criterion checks for'
-      }
+    // For escalation mode: self-assessment criteria (checkboxes shown to player)
+    selfAssessmentCriteria: [
+      'Names a specific user account of concern',
+      'References key evidence',
+      'Describes a timeline of events',
+      'Proposes a specific action OR asks a specific question',
+      'Includes severity assessment with justification'
     ],
     
-    // For escalation mode: tiered responses based on score
+    // For escalation mode: tiered responses based on self-assessment score
     responses: {
       strong: {
         minScore: 4,
@@ -166,11 +165,24 @@ export default {
 
 | Mode | Behavior |
 |------|----------|
-| `escalation` | Player message is scored against rubric, tiered response returned. Costs tokens. |
+| `escalation` | Player writes message, completes self-assessment checklist, receives tiered response. May cost tokens. |
 | `auto-reply` | Player can message, receives automatic out-of-office response. |
 | `online` | Player can message, no response (green status dot). |
 | `dnd` | Player can message, no response (yellow "Do Not Disturb" dot). |
 | `busy` | Player cannot message at all (red dot). |
+
+#### Escalation Self-Assessment
+
+When an NPC has `messagingMode: 'escalation'`, the player sees a self-assessment checklist after writing their message. They check which criteria their message meets, and the count determines the response tier:
+
+1. Player writes escalation message
+2. Player sees confirmation with their message
+3. Player checks boxes for criteria they believe they've met
+4. Score = number of boxes checked
+5. Score compared against `responses.strong.minScore`, `responses.partial.minScore`
+6. Appropriate tiered response delivered
+
+This encourages players to reflect on the quality of their escalation before submitting.
 
 ---
 
