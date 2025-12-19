@@ -1,6 +1,7 @@
 import html2pdf from 'html2pdf.js'
 
-export function generateSessionReport(gameStore, alertsStore, ticketsStore, commsStore, evidenceStore) {
+// Generate the HTML content for the report (shared by PDF and debug preview)
+function buildReportHtml(gameStore, alertsStore, ticketsStore, commsStore, evidenceStore) {
   const now = new Date()
   const scenario = gameStore.scenario
   
@@ -17,8 +18,7 @@ export function generateSessionReport(gameStore, alertsStore, ticketsStore, comm
   // Build timeline data structure
   const timeline = buildTimeline(actionLog, channels, npcs, ticketNotes, alertNotes, allTickets, allAlerts, unlockedEvidence)
   
-  // Build HTML content
-  const html = `
+  return `
     <div style="font-family: 'Segoe UI', system-ui, sans-serif; color: #222; padding: 20px; max-width: 800px;">
       <!-- Header -->
       <div style="border-bottom: 3px solid #4a9eff; padding-bottom: 20px; margin-bottom: 30px;">
@@ -70,6 +70,12 @@ export function generateSessionReport(gameStore, alertsStore, ticketsStore, comm
     </div>
   `
   
+  }
+
+export function generateSessionReport(gameStore, alertsStore, ticketsStore, commsStore, evidenceStore) {
+  const now = new Date()
+  const html = buildReportHtml(gameStore, alertsStore, ticketsStore, commsStore, evidenceStore)
+  
   // Configure PDF options
   const opt = {
     margin: [10, 10, 10, 10],
@@ -85,6 +91,16 @@ export function generateSessionReport(gameStore, alertsStore, ticketsStore, comm
   container.innerHTML = html
   
   return html2pdf().set(opt).from(container).save()
+}
+
+// Debug function: opens report HTML in new tab for inspection
+export function previewReportHtml(gameStore, alertsStore, ticketsStore, commsStore, evidenceStore) {
+  const html = buildReportHtml(gameStore, alertsStore, ticketsStore, commsStore, evidenceStore)
+  const fullHtml = `<!DOCTYPE html><html><head><title>Report Preview</title></head><body>${html}</body></html>`
+  const blob = new Blob([fullHtml], { type: 'text/html' })
+  const url = URL.createObjectURL(blob)
+  window.open(url, '_blank')
+  console.log('📄 Report HTML opened in new tab. Use dev tools to inspect.')
 }
 
 function buildTimeline(actionLog, channels, npcs, ticketNotes, alertNotes, allTickets, allAlerts, unlockedEvidence) {
@@ -219,18 +235,18 @@ function buildTimeline(actionLog, channels, npcs, ticketNotes, alertNotes, allTi
 
 function renderTimelineEntry(entry) {
   const typeStyles = {
-    system: { icon: '⚙️', color: '#888' },
-    token: { icon: '🪙', color: '#4a9eff' },
-    action: { icon: '▶️', color: '#333' },
-    event: { icon: '📢', color: '#f59e0b' },
-    comms: { icon: '💬', color: '#3b82f6' },
-    evidence: { icon: '📁', color: '#22c55e' },
-    note: { icon: '📝', color: '#8b5cf6' },
-    containment: { icon: '🛑', color: '#ef4444' },
-    assessment: { icon: '✅', color: '#a855f7' }
+    system: { icon: '⚙️' },
+    token: { icon: '🪙' },
+    action: { icon: '▶️' },
+    event: { icon: '📢' },
+    comms: { icon: '💬' },
+    evidence: { icon: '📁' },
+    note: { icon: '📝' },
+    containment: { icon: '🛑' },
+    assessment: { icon: '✅' }
   }
   
-  const style = typeStyles[entry.type] || { icon: '•', color: '#333' }
+  const style = typeStyles[entry.type] || { icon: '•' }
   
   let html = `
     <div style="margin-bottom: 16px; page-break-inside: avoid;">
@@ -238,11 +254,12 @@ function renderTimelineEntry(entry) {
       <div style="display: flex; align-items: flex-start; gap: 12px;">
         <div style="font-size: 18px; line-height: 1;">${style.icon}</div>
         <div style="flex: 1;">
-          <div style="display: flex; gap: 12px; margin-bottom: 4px;">
-            <span style="font-family: monospace; font-size: 12px; color: #666; background: #f0f0f0; padding: 2px 6px; border-radius: 3px;">${entry.gameTime}</span>
+          <div style="display: flex; gap: 12px;">
+           <!--  <span style="font-family: monospace; font-size: 12px; color: #666; background: #f0f0f0; padding: 2px 6px; border-radius: 3px;">${entry.gameTime}</span> -->
+            <span style="font-size: 12px; color: #999;">${entry.gameTime}</span>
             <span style="font-size: 12px; color: #999;">${entry.realTime}</span>
           </div>
-          <div style="color: ${style.color}; font-size: 14px;">${escapeHtml(entry.message)}</div>
+          <div style="color: #333; font-size: 14px;">${escapeHtml(entry.message)}</div>
         </div>
       </div>
   `
@@ -254,39 +271,39 @@ function renderTimelineEntry(entry) {
     entry.attachments.forEach(att => {
       if (att.type === 'evidence') {
         html += `
-          <div style="background: #f0fdf4; border-left: 3px solid #22c55e; padding: 12px; margin-bottom: 10px; border-radius: 0 4px 4px 0;">
-            <div style="font-weight: 600; font-size: 13px; color: #166534; margin-bottom: 8px;">
+          <div style="background: #f5f5f5; border-left: 3px solid #666; padding: 12px; margin-bottom: 10px; border-radius: 0 4px 4px 0;">
+            <div style="font-weight: 600; font-size: 13px; color: #333; margin-bottom: 8px;">
               📁 ${escapeHtml(att.data.id)}: ${escapeHtml(att.data.title)}
             </div>
             <div style="font-size: 11px; color: #666; margin-bottom: 8px;">Category: ${escapeHtml(att.data.category)}</div>
-            <pre style="background: #fff; padding: 10px; border-radius: 4px; font-size: 10px; white-space: pre-wrap; word-wrap: break-word; margin: 0; border: 1px solid #dcfce7;">${escapeHtml(att.data.content)}</pre>
+            <pre style="background: #fff; padding: 10px; border-radius: 4px; font-size: 10px; white-space: pre-wrap; word-wrap: break-word; margin: 0; border: 1px solid #ddd;">${escapeHtml(att.data.content)}</pre>
           </div>
         `
       } else if (att.type === 'player-message') {
         html += `
-          <div style="background: #eff6ff; border-left: 3px solid #3b82f6; padding: 10px 12px; margin-bottom: 10px; border-radius: 0 4px 4px 0;">
-            <div style="font-size: 11px; color: #1e40af; margin-bottom: 4px;">Your message:</div>
+          <div style="background: #f5f5f5; border-left: 3px solid #666; padding: 10px 12px; margin-bottom: 10px; border-radius: 0 4px 4px 0;">
+            <div style="font-size: 11px; color: #333; margin-bottom: 4px;">Your message:</div>
             <div style="font-size: 12px; white-space: pre-wrap;">${escapeHtml(att.content)}</div>
           </div>
         `
       } else if (att.type === 'npc-response') {
         html += `
-          <div style="background: #fefce8; border-left: 3px solid #eab308; padding: 10px 12px; margin-bottom: 10px; border-radius: 0 4px 4px 0;">
-            <div style="font-size: 11px; color: #854d0e; margin-bottom: 4px;">${att.npc?.avatar || '👤'} ${escapeHtml(att.npc?.name || 'NPC')} responded:</div>
+          <div style="background: #f5f5f5; border-left: 3px solid #666; padding: 10px 12px; margin-bottom: 10px; border-radius: 0 4px 4px 0;">
+            <div style="font-size: 11px; color: #333; margin-bottom: 4px;">${att.npc?.avatar || '👤'} ${escapeHtml(att.npc?.name || 'NPC')} responded:</div>
             <div style="font-size: 12px; white-space: pre-wrap;">${escapeHtml(att.content)}</div>
           </div>
         `
       } else if (att.type === 'ticket-note') {
         html += `
-          <div style="background: #faf5ff; border-left: 3px solid #a855f7; padding: 10px 12px; margin-bottom: 10px; border-radius: 0 4px 4px 0;">
-            <div style="font-size: 11px; color: #6b21a8; margin-bottom: 4px;">📝 Notes on ${escapeHtml(att.ticketId)} (${escapeHtml(att.ticketSubject)}):</div>
+          <div style="background: #f5f5f5; border-left: 3px solid #666; padding: 10px 12px; margin-bottom: 10px; border-radius: 0 4px 4px 0;">
+            <div style="font-size: 11px; color: #333; margin-bottom: 4px;">📝 Notes on ${escapeHtml(att.ticketId)} (${escapeHtml(att.ticketSubject)}):</div>
             <div style="font-size: 12px; white-space: pre-wrap;">${escapeHtml(att.content)}</div>
           </div>
         `
       } else if (att.type === 'alert-note') {
         html += `
-          <div style="background: #fef3c7; border-left: 3px solid #f59e0b; padding: 10px 12px; margin-bottom: 10px; border-radius: 0 4px 4px 0;">
-            <div style="font-size: 11px; color: #92400e; margin-bottom: 4px;">📝 Notes on ${escapeHtml(att.alertId)} (${escapeHtml(att.alertTitle)}):</div>
+          <div style="background: #f5f5f5; border-left: 3px solid #666; padding: 10px 12px; margin-bottom: 10px; border-radius: 0 4px 4px 0;">
+            <div style="font-size: 11px; color: #333; margin-bottom: 4px;">📝 Notes on ${escapeHtml(att.alertId)} (${escapeHtml(att.alertTitle)}):</div>
             <div style="font-size: 12px; white-space: pre-wrap;">${escapeHtml(att.content)}</div>
           </div>
         `

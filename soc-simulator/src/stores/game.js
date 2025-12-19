@@ -301,11 +301,22 @@ export const useGameStore = defineStore('game', () => {
     console.log(`⏱️ Time: ${formattedTime.value} (${timeRemaining.value}s remaining)`)
     console.log(`🪙 Tokens: ${tokens.value}`)
     console.log(`▶️ Running: ${isRunning.value}`)
-    console.log(`\n📋 Commands:\n  soc.setTime(seconds)\n  soc.addTime(seconds)\n  soc.setTokens(amount)\n  soc.addTokens(amount)\n  soc.pause()\n  soc.resume()\n  soc.status()`)
+    console.log(`\n📋 Commands:\n  soc.setTime(seconds)\n  soc.addTime(seconds)\n  soc.setTokens(amount)\n  soc.addTokens(amount)\n  soc.pause()\n  soc.resume()\n  soc.previewReport()\n  soc.status()`)
   }
 
   // Expose console commands on window object
   if (typeof window !== 'undefined') {
+    // Import preview function dynamically to avoid circular deps
+    const _previewReport = async () => {
+      const { previewReportHtml } = await import('../utils/exportPdf')
+      const { useAlertsStore } = await import('./alerts')
+      const { useTicketsStore } = await import('./tickets')
+      const { useCommsStore } = await import('./comms')
+      const { useEvidenceStore } = await import('./evidence')
+      const gameStore = useGameStore()
+      previewReportHtml(gameStore, useAlertsStore(), useTicketsStore(), useCommsStore(), useEvidenceStore())
+    }
+    
     window.soc = {
       setTime: _setTime,
       addTime: _addTime,
@@ -313,6 +324,7 @@ export const useGameStore = defineStore('game', () => {
       addTokens: _addTokens,
       pause: pauseTimer,
       resume: startTimer,
+      previewReport: _previewReport,
       status: _status,
       help: () => _status()
     }

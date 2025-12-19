@@ -10,6 +10,7 @@ import { AlertTriangle } from 'lucide-vue-next'
 import StartScreen from './components/shell/StartScreen.vue'
 import AppHeader from './components/shell/AppHeader.vue'
 import AppSidebar from './components/shell/AppSidebar.vue'
+import SessionEndModal from './components/shell/SessionEndModal.vue'
 import NotificationToast from './components/common/NotificationToast.vue'
 import SiemDashboard from './components/siem/SiemDashboard.vue'
 import TicketQueue from './components/tickets/TicketQueue.vue'
@@ -30,6 +31,7 @@ const evidenceStore = useEvidenceStore()
 
 const showResumePrompt = ref(false)
 const showResetConfirm = ref(false)
+const showSessionEndModal = ref(false)
 
 onMounted(() => {
   // Load scenario data
@@ -51,6 +53,11 @@ onMounted(() => {
 
 // Watch for timed events
 watch(() => gameStore.timeRemaining, (newTime) => {
+  // Show session end modal when time expires
+  if (newTime <= 0 && gameStore.sessionStarted && !showSessionEndModal.value) {
+    showSessionEndModal.value = true
+  }
+  
   if (!gameStore.isRunning) return
   
   const elapsed = scenario.config.duration - newTime
@@ -227,5 +234,12 @@ const currentComponent = {
         </div>
       </div>
     </div>
+    
+    <!-- Session End Modal -->
+    <SessionEndModal 
+      v-if="showSessionEndModal"
+      :config="scenario.config.sessionEnd"
+      @close="showSessionEndModal = false"
+    />
   </div>
 </template>
