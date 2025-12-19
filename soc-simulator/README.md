@@ -17,8 +17,8 @@ node --version
 
 ```bash
 # 1. Clone the repository
-git clone <repository-url>
-cd soc-simulator
+git clone https://github.com/tinmancactus/security-operations-tabletop-exercise.git
+cd security-operations-tabletop-exercise/soc-simulator
 
 # 2. Install dependencies
 npm install
