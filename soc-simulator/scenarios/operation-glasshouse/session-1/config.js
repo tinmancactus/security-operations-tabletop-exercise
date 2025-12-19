@@ -4,6 +4,7 @@ export default {
   subtitle: 'Session 1: Static',
   
   duration: 3600, // 60 minutes in seconds
+  startTime: { hour: 8, minute: 0 }, // Session starts at 8:00am in-game
   tokens: 12,
   
   company: {

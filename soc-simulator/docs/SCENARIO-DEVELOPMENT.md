@@ -37,6 +37,7 @@ export default {
   subtitle: 'Session 1: Static',           // Subtitle shown in header
   
   duration: 3600,                          // Session length in seconds
+  startTime: { hour: 8, minute: 0 },       // In-game clock start (8:00am)
   tokens: 12,                              // Starting action tokens
   
   company: {
@@ -299,7 +300,11 @@ export default [
 ]
 ```
 
-**Note:** Logs are filtered by game time. A log with timestamp `08:22:00` won't appear until 22 minutes into the session (assuming session starts at 08:00).
+**Note:** Logs are filtered by time-of-day only (date is ignored). The log's hour:minute is compared against the current in-game clock. For example:
+- Scenario starts at 08:00, log timestamp `14:22:00` → appears at 6h 22m into session
+- Scenario starts at 14:00, log timestamp `14:22:00` → appears at 22m into session
+
+**Historical logs:** To show logs from "before" the session (e.g., overnight activity), give them timestamps earlier than your start time. A log at `06:00` will be visible immediately if the session starts at `08:00`. The date portion is for display/narrative only.
 
 ---
 

@@ -29,15 +29,17 @@ export const useGameStore = defineStore('game', () => {
 
   const timeExpired = computed(() => timeRemaining.value <= 0)
 
-  // In-game time: session starts at 8:00am, runs for 60 minutes
-  // So elapsed time maps to 8:00 + elapsed minutes
+  // In-game time: session starts at configured time, runs for duration
+  // So elapsed time maps to startTime + elapsed minutes
   const inGameTime = computed(() => {
     const totalDuration = scenario.value?.config?.duration || 3600
     const elapsedSeconds = totalDuration - timeRemaining.value
     const elapsedMinutes = Math.floor(elapsedSeconds / 60)
     
-    // Start at 8:00am (480 minutes from midnight)
-    const startMinutes = 8 * 60
+    // Start time from config (default 8:00am = 480 minutes from midnight)
+    const startHour = scenario.value?.config?.startTime?.hour ?? 8
+    const startMinute = scenario.value?.config?.startTime?.minute ?? 0
+    const startMinutes = startHour * 60 + startMinute
     const currentMinutes = startMinutes + elapsedMinutes
     
     const hours = Math.floor(currentMinutes / 60)
