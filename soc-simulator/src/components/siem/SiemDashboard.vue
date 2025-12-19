@@ -40,14 +40,19 @@ function handleAction(action) {
       evidenceStore.unlockEvidence(action.unlocksEvidence)
     }
     
-    if (action.id === 'disable-liam') {
-      gameStore.addNotification('Account liam.fitzgerald has been disabled', 'success')
-      gameStore.logAction('Disabled account: liam.fitzgerald@xyzpay.com.au', 'containment')
-      // Trigger Rachel's follow-up message after delay
-      commsStore.triggerRachelAccountDisable()
-      // Trigger any tickets associated with this action
-      ticketsStore.triggerActionTickets('disable-liam')
+    // Handle action-specific notification and log
+    if (action.notification) {
+      gameStore.addNotification(action.notification, 'success')
     }
+    if (action.logMessage) {
+      gameStore.logAction(action.logMessage, action.logType || 'action')
+    }
+    
+    // Trigger any special NPC interactions linked to this action
+    commsStore.triggerSpecialInteraction(action.id)
+    
+    // Trigger any tickets associated with this action
+    ticketsStore.triggerActionTickets(action.id)
     
     if (action.isBlockIP && action.ip) {
       alertsStore.blockIP(action.ip)

@@ -9,6 +9,7 @@ export default {
     available: true,
     messagingMode: 'escalation', // 'escalation' = scoring/rubric, 'auto-reply' = out of office, 'dnd' = no messaging
     escalationCost: { first: 0, followUp: 0 },
+    onStrongEscalation: { switchMode: 'dnd' }, // After a strong escalation, switch to DND mode
     
     messageHistory: [
       {
@@ -326,25 +327,26 @@ SL`
     image: images.rachel,
     available: false,
     messagingMode: 'busy', // Becomes available only after disable-liam action
-    status: 'dnd', // 'dnd', 'awaiting-response', 'resolved'
     escalationCost: { first: 0, followUp: 0 },
     
-    // Special message sent when player disables Liam's account
-    accountDisableMessage: {
-      delaySeconds: 60, // 1 minute of game time after action
-      content: `Hey, Jodie Williams from Customer Support just dropped by IT. One of her team members, Liam Fitzgerald, says he's completely locked out of his account.
+    // Generic one-time response interaction (triggered by an action)
+    specialInteraction: {
+      type: 'one-time-response',
+      triggeredByAction: 'disable-liam', // Which action triggers this
+      delaySeconds: 60, // Delay after action before NPC messages
+      promptMessage: `Hey, Jodie Williams from Customer Support just dropped by IT. One of her team members, Liam Fitzgerald, says he's completely locked out of his account.
 
 I can see the account was disabled about a moment ago. Was that you? If so, can you give me a quick rundown of what's going on so we can update Jodie?
 
-She's asking when he'll be able to get back in.`
-    },
-    
-    // Response after player explains
-    accountDisableResponse: `Thanks for the heads up. That makes sense - I'll let Jodie know it's a security issue and that access will be restored once you've completed your investigation.
+She's asking when he'll be able to get back in.`,
+      responseMessage: `Thanks for the heads up. That makes sense - I'll let Jodie know it's a security issue and that access will be restored once you've completed your investigation.
 
 I won't re-enable the account without checking with you first.
 
-Good luck with the investigation.`
+Good luck with the investigation.`,
+      confirmTitle: 'Confirm Response to Rachel',
+      confirmText: 'Rachel is asking about the account you disabled. Your response will be logged in your session report.'
+    }
   },
 
   alex: {

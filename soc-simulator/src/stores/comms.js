@@ -266,36 +266,51 @@ export const useCommsStore = defineStore('comms', () => {
     return npcs.value[npcId]?.available ?? true
   }
 
-  function triggerRachelAccountDisable() {
-    const rachel = npcs.value['rachel']
-    if (!rachel || getNpcStatus('rachel') !== 'dnd') return
-    
-    // Use game time (60 seconds of game time, not real time)
-    const delaySeconds = rachel.accountDisableMessage?.delaySeconds || 60
-    
-    gameStore.scheduleCallback('rachel-account-disable', delaySeconds, () => {
-      // Only proceed if still in dnd status (player hasn't reset)
-      if (getNpcStatus('rachel') !== 'dnd') return
-      
-      setNpcStatus('rachel', 'awaiting-response')
-      receiveMessage('rachel', rachel.accountDisableMessage.content, false)
+  // Trigger special interaction for an NPC based on action ID
+  function triggerSpecialInteraction(actionId) {
+    // Find any NPC with a specialInteraction triggered by this action
+    Object.entries(npcs.value).forEach(([npcId, npc]) => {
+      if (npc.specialInteraction?.triggeredByAction === actionId) {
+        const interaction = npc.specialInteraction
+        const delaySeconds = interaction.delaySeconds || 60
+        
+        gameStore.scheduleCallback(`special-interaction-${npcId}`, delaySeconds, () => {
+          // Set status to awaiting-response so player can reply
+          setNpcStatus(npcId, 'awaiting-response')
+          receiveMessage(npcId, interaction.promptMessage, false)
+        })
+      }
     })
   }
 
-  function handleRachelResponse(playerMessage) {
-    const rachel = npcs.value['rachel']
-    if (!rachel) return
+  // Handle player response to a special interaction
+  function handleSpecialInteractionResponse(npcId, playerMessage) {
+    const npc = npcs.value[npcId]
+    if (!npc?.specialInteraction) return
+    
+    const interaction = npc.specialInteraction
     
     // Send player's message
-    sendMessage('rachel', playerMessage)
-    gameStore.logAction('Responded to Rachel Torres regarding account disable', 'comms', { content: playerMessage })
+    sendMessage(npcId, playerMessage)
+    gameStore.logAction(`Responded to ${npc.name}`, 'comms', { content: playerMessage })
     
-    // Rachel responds after a short delay
+    // NPC responds after a short delay
     setTimeout(() => {
-      receiveMessage('rachel', rachel.accountDisableResponse)
-      // Set status back to resolved (DND)
-      setNpcStatus('rachel', 'resolved')
+      receiveMessage(npcId, interaction.responseMessage)
+      // Set status back to resolved
+      setNpcStatus(npcId, 'resolved')
     }, 2000)
+  }
+  
+  // Check if an NPC has a pending special interaction
+  function hasSpecialInteraction(npcId) {
+    const npc = npcs.value[npcId]
+    return npc?.specialInteraction?.type === 'one-time-response'
+  }
+  
+  // Get special interaction config for an NPC
+  function getSpecialInteraction(npcId) {
+    return npcs.value[npcId]?.specialInteraction
   }
 
   return {
@@ -325,8 +340,10 @@ export const useCommsStore = defineStore('comms', () => {
     setNpcStatus,
     getNpcStatus,
     isNpcAvailable,
-    triggerRachelAccountDisable,
-    handleRachelResponse,
+    triggerSpecialInteraction,
+    handleSpecialInteractionResponse,
+    hasSpecialInteraction,
+    getSpecialInteraction,
     setMessageDraft,
     getMessageDraft,
     clearMessageDraft,

@@ -446,7 +446,10 @@ MFA: Completed successfully`,
         id: 'disable-liam',
         label: 'Disable account',
         cost: 2,
-        description: 'Immediately disable liam.fitzgerald account'
+        description: 'Immediately disable liam.fitzgerald account',
+        notification: 'Account liam.fitzgerald has been disabled',
+        logMessage: 'Disabled account: liam.fitzgerald@xyzpay.com.au',
+        logType: 'containment'
       }
     ]
   },

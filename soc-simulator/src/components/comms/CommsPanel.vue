@@ -9,7 +9,7 @@ const gameStore = useGameStore()
 
 const messagesContainer = ref(null)
 const assessmentChecks = ref([false, false, false, false, false])
-const showRachelConfirm = ref(false)
+const showSpecialInteractionConfirm = ref(false)
 
 // Use computed for message input to sync with store drafts
 const messageInput = computed({
@@ -40,9 +40,9 @@ const canMessageCurrentNpc = computed(() => {
   const npc = commsStore.npcs[commsStore.activeChannelId]
   if (!npc) return false
   
-  // Rachel's special case - can message when awaiting response
-  const rachelStatus = commsStore.getNpcStatus('rachel')
-  if (commsStore.activeChannelId === 'rachel' && rachelStatus === 'awaiting-response') {
+  // Special interaction case - can message when awaiting response
+  const npcStatus = commsStore.getNpcStatus(commsStore.activeChannelId)
+  if (npcStatus === 'awaiting-response' && commsStore.hasSpecialInteraction(commsStore.activeChannelId)) {
     return true
   }
   
@@ -76,10 +76,10 @@ function sendMessage() {
   const npc = commsStore.npcs[npcId]
   const mode = npc.messagingMode || 'busy'
   
-  // Special handling for Rachel's one-time response (check before busy status)
-  const rachelStatus = commsStore.getNpcStatus('rachel')
-  if (npcId === 'rachel' && rachelStatus === 'awaiting-response') {
-    showRachelConfirm.value = true
+  // Special handling for one-time response interactions (check before busy status)
+  const npcStatus = commsStore.getNpcStatus(npcId)
+  if (npcStatus === 'awaiting-response' && commsStore.hasSpecialInteraction(npcId)) {
+    showSpecialInteractionConfirm.value = true
     return
   }
   
@@ -98,13 +98,13 @@ function sendMessage() {
   
   // Handle based on messaging mode
   if (mode === 'auto-reply') {
-    // Alex - send message and get auto-reply
+    // Auto-reply mode - send message and get auto-reply
     sendAutoReply()
   } else if (mode === 'dnd' || mode === 'online') {
     // Send message but no response (online = green dot, dnd = yellow dot)
     sendDndMessage()
   } else if (mode === 'escalation') {
-    // Priya - show confirmation first, then self-assessment
+    // Escalation mode - show confirmation first, then self-assessment
     commsStore.setPendingEscalation(npcId, messageInput.value.trim(), 'confirm')
   }
 }
@@ -178,9 +178,9 @@ function submitWithAssessment() {
   setTimeout(() => {
     commsStore.receiveMessage(npcId, response.content)
     
-    // After a strong escalation, switch Priya to DND mode (can message but no response)
-    if (tier === 'strong' && npcId === 'priya') {
-      commsStore.setNpcMessagingMode(npcId, 'dnd')
+    // Check if NPC has onStrongEscalation config
+    if (tier === 'strong' && npc.onStrongEscalation?.switchMode) {
+      commsStore.setNpcMessagingMode(npcId, npc.onStrongEscalation.switchMode)
     }
     
     scrollToBottom()
@@ -207,18 +207,19 @@ function cancelEscalation() {
   commsStore.clearPendingEscalation()
 }
 
-function confirmRachelResponse() {
+function confirmSpecialInteractionResponse() {
   const content = messageInput.value.trim()
   if (!content) return
   
-  commsStore.handleRachelResponse(content)
-  commsStore.clearMessageDraft('rachel')
-  showRachelConfirm.value = false
+  const npcId = commsStore.activeChannelId
+  commsStore.handleSpecialInteractionResponse(npcId, content)
+  commsStore.clearMessageDraft(npcId)
+  showSpecialInteractionConfirm.value = false
   scrollToBottom()
 }
 
-function cancelRachelConfirm() {
-  showRachelConfirm.value = false
+function cancelSpecialInteractionConfirm() {
+  showSpecialInteractionConfirm.value = false
 }
 
 function scrollToBottom() {
@@ -483,12 +484,14 @@ const checksCount = computed(() => assessmentChecks.value.filter(c => c).length)
             </div>
           </div>
           
-          <!-- Rachel Confirmation Modal -->
-          <div v-if="showRachelConfirm" class="p-4 border-t border-soc-border bg-soc-raised">
+          <!-- Special Interaction Confirmation Modal -->
+          <div v-if="showSpecialInteractionConfirm" class="p-4 border-t border-soc-border bg-soc-raised">
             <div class="bg-soc-surface border-2 border-soc-warning rounded-lg p-4">
-              <h3 class="text-lg font-semibold text-soc-warning mb-3">Confirm Response to Rachel</h3>
+              <h3 class="text-lg font-semibold text-soc-warning mb-3">
+                {{ commsStore.getSpecialInteraction(commsStore.activeChannelId)?.confirmTitle || 'Confirm Response' }}
+              </h3>
               <p class="text-sm text-soc-muted mb-4">
-                You can only respond to Rachel <strong>once</strong>. Your response will be logged and included in the final report.
+                {{ commsStore.getSpecialInteraction(commsStore.activeChannelId)?.confirmText || 'Your response will be logged and included in the final report.' }}
               </p>
               <div class="bg-soc-bg border border-soc-border rounded p-3 mb-4">
                 <div class="text-xs text-soc-muted mb-1">Your message:</div>
@@ -496,13 +499,13 @@ const checksCount = computed(() => assessmentChecks.value.filter(c => c).length)
               </div>
               <div class="flex gap-2 justify-end">
                 <button 
-                  @click="cancelRachelConfirm"
+                  @click="cancelSpecialInteractionConfirm"
                   class="px-4 py-2 bg-soc-raised border border-soc-border rounded hover:bg-soc-border transition"
                 >
                   Continue Writing
                 </button>
                 <button 
-                  @click="confirmRachelResponse"
+                  @click="confirmSpecialInteractionResponse"
                   class="px-4 py-2 bg-soc-warning text-black font-semibold rounded hover:bg-yellow-400 transition"
                 >
                   Send Response
