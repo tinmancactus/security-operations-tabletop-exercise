@@ -18,7 +18,7 @@ import CommsPanel from './components/comms/CommsPanel.vue'
 import EvidencePanel from './components/common/EvidencePanel.vue'
 import ActionLog from './components/common/ActionLog.vue'
 import OrgChart from './components/orgchart/OrgChart.vue'
-import LogViewer from './components/logs/LogViewer.vue'
+import LogViewer from './components/logsviewer/LogViewer.vue'
 import ThreatIntelPortal from './components/threatintel/ThreatIntelPortal.vue'
 
 // Scenario is determined at build time via SCENARIO env var
