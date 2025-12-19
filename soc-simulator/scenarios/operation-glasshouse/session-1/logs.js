@@ -277,7 +277,7 @@ export default [
     message: 'Accessed Executive Assistant Contact Details', details: 'Viewed: /directory/executive-support' },
   // We could disable this log as it ruins the cliffhanger at the end – but it's also an opportunity for 
   // students who are paying attention to discover the true severity of the situation early.
-    { id: 'LOG-0057', timestamp: '2024-10-14T08:22:00', system: 'customer-db', type: 'access', severity: 'high',
+    { id: 'LOG-0057', timestamp: '2024-10-14T08:22:00', system: 'customer-db', type: 'access', severity: 'info',
     source: '103.42.91.17', user: 'liam.fitzgerald@xyzpay.com.au', action: 'query_executed',
     message: 'Database query executed', details: 'Table: customers, Query type: SELECT, Rows returned: 2,847' },
     
