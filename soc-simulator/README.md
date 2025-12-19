@@ -67,7 +67,8 @@ Open browser DevTools (F12) and use these commands:
 | `soc.status()` | Show current game state |
 | `soc.setTime(seconds)` | Set remaining time (e.g., `soc.setTime(300)` for 5 min) |
 | `soc.addTokens(n)` | Add tokens |
-| `soc.reset()` | Reset to start screen |
+| `soc.clearNotifications()` | Dismiss all notifications |
+| `soc.previewReport()` | Preview session report in new tab |
 
 ## Development
 

@@ -303,7 +303,14 @@ export const useGameStore = defineStore('game', () => {
     console.log(`⏱️ Time: ${formattedTime.value} (${timeRemaining.value}s remaining)`)
     console.log(`🪙 Tokens: ${tokens.value}`)
     console.log(`▶️ Running: ${isRunning.value}`)
-    console.log(`\n📋 Commands:\n  soc.setTime(seconds)\n  soc.addTime(seconds)\n  soc.setTokens(amount)\n  soc.addTokens(amount)\n  soc.pause()\n  soc.resume()\n  soc.previewReport()\n  soc.status()`)
+    console.log(`🔔 Notifications: ${notifications.value.length}`)
+    console.log(`\n📋 Commands:\n  soc.setTime(seconds)\n  soc.addTime(seconds)\n  soc.setTokens(amount)\n  soc.addTokens(amount)\n  soc.pause()\n  soc.resume()\n  soc.clearNotifications()\n  soc.previewReport()\n  soc.status()`)
+  }
+
+  function _clearNotifications() {
+    notifications.value = []
+    saveState()
+    console.log('🔔 All notifications cleared')
   }
 
   // Expose console commands on window object
@@ -326,6 +333,7 @@ export const useGameStore = defineStore('game', () => {
       addTokens: _addTokens,
       pause: pauseTimer,
       resume: startTimer,
+      clearNotifications: _clearNotifications,
       previewReport: _previewReport,
       status: _status,
       help: () => _status()
