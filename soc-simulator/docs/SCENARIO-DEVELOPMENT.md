@@ -475,26 +475,28 @@ export default {
 
 ## Creating a New Scenario
 
-1. **Copy existing scenario** as a template:
+1. **Copy the template** as your starting point:
    ```bash
-   cp -r scenarios/operation-glasshouse/session-1 scenarios/your-operation/session-1
+   cp -r scenarios/_template scenarios/your-campaign-name/session-1
    ```
 
-2. **Edit config.js** with new scenario details
+2. **Edit config.js** with your scenario details (title, company, briefing, etc.)
 
-3. **Replace/edit data files** (alerts, tickets, npcs, etc.)
+3. **Edit data files** — Add your alerts, tickets, NPCs, logs, evidence, etc.
 
-4. **Add profile images** to `./img/` and update `images.js`
+4. **Add profile images** (optional) — Place in `./img/` and update `images.js`
 
 5. **Test with dev server:**
    ```bash
-   npm run dev
+   SCENARIO=your-campaign/session-1 npm run dev
    ```
 
 6. **Build for deployment:**
    ```bash
-   npm run build:scenario your-operation/session-1
+   npm run build:scenario your-campaign/session-1
    ```
+
+**Note:** The `_template` folder contains minimal working examples of all required files. It's designed to be a clean starting point rather than copying a full scenario.
 
 ---
 
