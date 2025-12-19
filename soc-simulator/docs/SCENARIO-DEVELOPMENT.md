@@ -59,9 +59,18 @@ export default {
     message: 'The timer has ended.',
     downloadWarning: 'You must save your session report now...',
     instructions: 'Follow any instructions from your tutor...'
+  },
+  
+  credits: {
+    story: 'Story by ...',                 // Story/scenario authors
+    acknowledgements: 'Thanks to ...',     // Optional acknowledgements
+    assets: 'Profile pictures from ...',   // Asset credits
+    disclaimer: 'This scenario is ...'     // Legal disclaimer
   }
 }
 ```
+
+**Note:** Credits are displayed in the About modal (info button in header). All fields are optional.
 
 ---
 

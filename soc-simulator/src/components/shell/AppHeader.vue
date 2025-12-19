@@ -1,8 +1,12 @@
 <script setup>
+import { ref } from 'vue'
 import { useGameStore } from '../../stores/game'
-import { ShieldCheck } from 'lucide-vue-next'
+import { ShieldCheck, Info } from 'lucide-vue-next'
+import AboutModal from './AboutModal.vue'
 
 const emit = defineEmits(['reset'])
+
+const showAbout = ref(false)
 
 const gameStore = useGameStore()
 
@@ -12,6 +16,11 @@ function toggleTimer() {
   } else {
     gameStore.startTimer()
   }
+}
+
+function openAbout() {
+  gameStore.pauseTimer()
+  showAbout.value = true
 }
 </script>
 
@@ -76,6 +85,16 @@ function toggleTimer() {
       >
         Reset
       </button>
+      
+      <button 
+        @click="openAbout"
+        class="p-1.5 text-soc-muted border border-soc-border rounded hover:bg-soc-raised hover:text-soc-text transition"
+        title="About"
+      >
+        <Info class="w-5 h-5" />
+      </button>
     </div>
   </header>
+  
+  <AboutModal :show="showAbout" @close="showAbout = false" />
 </template>
