@@ -411,12 +411,12 @@ Informational - normal device refresh.`,
     id: 'M-2489',
     severity: 'medium',
     title: 'Unusual login pattern detected',
-    timestamp: '2024-10-14T08:20:00',
+    timestamp: '2024-10-14T08:24:00',
     source: '103.42.91.17',
     target: 'internal-sso',
     user: 'liam.fitzgerald@xyzpay.com.au',
     status: 'open',
-    visibleAt: 1200, // Appears at 40:00 remaining (20 min elapsed)
+    visibleAt: 1440, // Appears at 36:00 remaining (24 min elapsed)
     notification: {
       message: 'New SIEM alert: Unusual login pattern detected',
       type: 'warning'
@@ -450,7 +450,7 @@ MFA: Completed successfully`,
       }
     ]
   },
-  // H-0012: Two versions - show one OR the other based on whether IP was blocked
+  // H-0012: Final cliffhanger alert - data breach already occurred at 8:22am
   {
     id: 'H-0012',
     severity: 'critical',
@@ -461,10 +461,9 @@ MFA: Completed successfully`,
     user: 'liam.fitzgerald@xyzpay.com.au',
     status: 'open',
     visibleAt: 3300, // Appears at 05:00 remaining (cliffhanger)
-    showUnlessIPBlocked: '103.42.91.17', // Only show if this IP is NOT blocked
     isCliffhanger: true,
     notification: {
-      message: '🚨 CRITICAL ALERT: Sensitive data access detected',
+      message: 'CRITICAL ALERT: Sensitive data access detected',
       type: 'danger'
     },
     details: `⚠️ CRITICAL ALERT
@@ -473,47 +472,15 @@ Sensitive data access detected.
 
 User: liam.fitzgerald@xyzpay.com.au
 Action: Accessed CUSTOMER_DATABASE (prod)
-Records viewed: 2,847
+Records accessed: 2,847
 Source IP: 103.42.91.17 (Indonesia)
-Access time: 2024-10-14 08:34:12 ACDT
+Access time: 2024-10-14 08:22:00 ACDT
 
 ⚠️ This user does not normally access this system
 ⚠️ Access from foreign IP address (Indonesia)
 ⚠️ Source IP flagged as suspicious
 
-This alert requires immediate investigation.`,
-    actions: []
-  },
-  {
-    id: 'H-0013',
-    severity: 'critical',
-    title: 'Sensitive data access detected',
-    timestamp: '2024-10-14T08:55:00',
-    source: '185.234.72.88',
-    target: 'CUSTOMER_DATABASE',
-    user: 'liam.fitzgerald@xyzpay.com.au',
-    status: 'open',
-    visibleAt: 3300, // Same timing as H-0012
-    showIfIPBlocked: '103.42.91.17', // Only show if this IP IS blocked
-    isCliffhanger: true,
-    notification: {
-      message: '🚨 CRITICAL ALERT: Sensitive data access detected',
-      type: 'danger'
-    },
-    details: `⚠️ CRITICAL ALERT
-
-Sensitive data access detected.
-
-User: liam.fitzgerald@xyzpay.com.au
-Action: Accessed CUSTOMER_DATABASE (prod)
-Records viewed: 2,847
-Source IP: 185.234.72.88 (Russia)
-Access time: 2024-10-14 08:34:12 ACDT
-
-⚠️ This user does not normally access this system
-⚠️ Access from foreign IP address (Russia)
-⚠️ Source IP flagged as suspicious
-⚠️ Attacker may have switched infrastructure after initial IP was blocked
+Note: Alert delay due to SIEM correlation engine processing time.
 
 This alert requires immediate investigation.`,
     actions: []

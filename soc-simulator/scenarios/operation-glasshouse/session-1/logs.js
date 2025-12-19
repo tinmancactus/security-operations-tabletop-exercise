@@ -59,13 +59,14 @@ export default [
   { id: 'LOG-0055', timestamp: '2024-10-14T08:15:18', system: 'internal-wiki', type: 'access', severity: 'info',
     source: '103.42.91.17', user: 'liam.fitzgerald@xyzpay.com.au', action: 'page_view',
     message: 'Viewed IT Support Documentation', details: 'Page: /wiki/it-support/contact-procedures' },
-  { id: 'LOG-0056', timestamp: '2024-10-14T08:22:44', system: 'hr-portal', type: 'access', severity: 'low',
+  { id: 'LOG-0056', timestamp: '2024-10-14T08:15:44', system: 'hr-portal', type: 'access', severity: 'low',
     source: '103.42.91.17', user: 'liam.fitzgerald@xyzpay.com.au', action: 'page_view',
     message: 'Accessed Executive Assistant Contact Details', details: 'Viewed: /directory/executive-support' },
-    // Disabling this as it kinda ruins the cliffhanger
-  // { id: 'LOG-0057', timestamp: '2024-10-14T08:28:00', system: 'customer-db', type: 'access', severity: 'high',
-  //   source: '103.42.91.17', user: 'liam.fitzgerald@xyzpay.com.au', action: 'query_executed',
-  //   message: 'Database query executed', details: 'Table: customers, Query type: SELECT, Rows returned: 15,847' },
+  // We could disable this log as it ruins the cliffhanger at the end – but it's also an opportunity for 
+  // students who are paying attention to discover the true severity of the situation early.
+    { id: 'LOG-0057', timestamp: '2024-10-14T08:22:00', system: 'customer-db', type: 'access', severity: 'high',
+    source: '103.42.91.17', user: 'liam.fitzgerald@xyzpay.com.au', action: 'query_executed',
+    message: 'Database query executed', details: 'Table: customers, Query type: SELECT, Rows returned: 2,847' },
     
   // Normal Liam login on Monday (legitimate)
   { id: 'LOG-0060', timestamp: '2024-10-14T07:56:12', system: 'internal-sso', type: 'auth', severity: 'info',

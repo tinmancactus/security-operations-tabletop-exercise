@@ -207,12 +207,12 @@ Credential stuffing is business as usual. If something's different, spell it out
       },
       {
         id: 'james-sched-3',
-        triggerAt: 3340, // moments after the final SIEM alert
-        content: `OMFG did you see the siem alert that just came through? 2847 records breached 🤯`
+        triggerAt: 3310, // moments after the final SIEM alert (visibleAt: 3300)
+        content: `OMFG did you see the siem alert that just came through? 2,847 records accessed 🤯`
       },
       {
         id: 'james-sched-4',
-        triggerAt: 3350, // 10 seconds later
+        triggerAt: 3320, // 10 seconds later
         content: `liam bruh`
       }
     ]
