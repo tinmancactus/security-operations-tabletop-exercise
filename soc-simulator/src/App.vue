@@ -21,7 +21,15 @@ import OrgChart from './components/orgchart/OrgChart.vue'
 import LogViewer from './components/logs/LogViewer.vue'
 import ThreatIntelPortal from './components/threatintel/ThreatIntelPortal.vue'
 
-import scenario from '../scenarios/operation-glasshouse/session-1/index.js'
+// Scenario is determined at build time via SCENARIO env var
+// @ts-ignore - __SCENARIO_PATH__ is defined by Vite at build time
+const scenarioModules = import.meta.glob('../scenarios/**/index.js', { eager: true })
+const scenarioPath = `../scenarios/${__SCENARIO_PATH__}/index.js`
+const scenario = scenarioModules[scenarioPath]?.default
+
+if (!scenario) {
+  console.error(`Scenario not found: ${__SCENARIO_PATH__}`)
+}
 
 const gameStore = useGameStore()
 const alertsStore = useAlertsStore()

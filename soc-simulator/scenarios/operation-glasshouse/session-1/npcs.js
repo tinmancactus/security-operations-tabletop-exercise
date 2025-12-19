@@ -1,11 +1,11 @@
-const IMG_PATH = '/scenarios/operation-glasshouse/session-1/img'
+import images from './images.js'
 
 export default {
   priya: {
     id: 'priya',
     name: 'Priya Sharma',
     role: 'SOC Manager',
-    image: `${IMG_PATH}/priya.jpg`,
+    image: images.priya,
     available: true,
     messagingMode: 'escalation', // 'escalation' = scoring/rubric, 'auto-reply' = out of office, 'dnd' = no messaging
     escalationCost: { first: 0, followUp: 0 },
@@ -121,7 +121,7 @@ Credential stuffing is business as usual. If something's different, spell it out
     id: 'james',
     name: 'James Okoro',
     role: 'Senior IR Analyst (Tier 3)',
-    image: `${IMG_PATH}/james.jpg`,
+    image: images.james,
     available: false,
     messagingMode: 'dnd',
     escalationCost: { first: 2, followUp: 1 },
@@ -222,7 +222,7 @@ Credential stuffing is business as usual. If something's different, spell it out
     id: 'marcus',
     name: 'Marcus Chen',
     role: 'CISO',
-    image: `${IMG_PATH}/marcus.jpg`,
+    image: images.marcus,
     available: false,
     messagingMode: 'busy', // In meetings most of the day
     escalationCost: { first: 3, followUp: 1 },
@@ -258,7 +258,7 @@ I've mentioned to the board that our detection capabilities are improving. Keep 
     id: 'sandra',
     name: 'Sandra Leigh',
     role: 'CFO',
-    image: `${IMG_PATH}/sandra.jpg`,
+    image: images.sandra,
     available: false,
     messagingMode: 'busy',
     escalationCost: { first: 0, followUp: 0 },
@@ -323,7 +323,7 @@ SL`
     id: 'rachel',
     name: 'Rachel Torres',
     role: 'Infrastructure Lead',
-    image: `${IMG_PATH}/rachel.jpg`,
+    image: images.rachel,
     available: false,
     messagingMode: 'busy', // Becomes available only after disable-liam action
     status: 'dnd', // 'dnd', 'awaiting-response', 'resolved'
@@ -351,7 +351,7 @@ Good luck with the investigation.`
     id: 'alex',
     name: 'Alex Anderson',
     role: 'SOC Analyst',
-    image: `${IMG_PATH}/alex.jpg`,
+    image: images.alex,
     available: false,
     messagingMode: 'auto-reply', // Out of office with auto-response
     escalationCost: { first: 0, followUp: 0 },
