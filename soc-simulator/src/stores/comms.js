@@ -1,6 +1,7 @@
 import { defineStore } from 'pinia'
 import { ref, computed } from 'vue'
 import { useGameStore } from './game'
+import { useEvidenceStore } from './evidence'
 
 export const useCommsStore = defineStore('comms', () => {
   const gameStore = useGameStore()
@@ -14,6 +15,7 @@ export const useCommsStore = defineStore('comms', () => {
   const npcStatus = ref({}) // npcId -> status overrides (e.g., 'dnd', 'awaiting-response', 'resolved')
   const messageDrafts = ref({}) // npcId -> draft message text
   const pendingEscalation = ref(null) // { npcId, message, step: 'confirm' | 'assess' }
+  const npcModeOverrides = ref({}) // npcId -> overridden messagingMode (persisted across reloads)
 
   // Computed
   const activeChannel = computed(() => {
@@ -69,13 +71,13 @@ export const useCommsStore = defineStore('comms', () => {
   function sendInitialMessages() {
     // Send any initial messages from NPCs (e.g., shift handover)
     Object.entries(npcs.value).forEach(([npcId, npc]) => {
-      if (npc.initialMessage && channels.value[npcId]?.length === 0) {
-        const delay = npc.initialMessage.delay || 0
+      if (npc.initialMessage) {
+        const delayMs = (npc.initialMessage.delay || 0) * 1000
         setTimeout(() => {
           // Use gameTime from data if provided, otherwise use current game time
           receiveMessage(npcId, npc.initialMessage.content, true, npc.initialMessage.gameTime)
           gameStore.addNotification(`New message from ${npc.name}`, 'info', 'comms', { npcId })
-        }, delay)
+        }, delayMs)
       }
     })
   }
@@ -182,8 +184,38 @@ export const useCommsStore = defineStore('comms', () => {
   function setNpcMessagingMode(npcId, mode) {
     if (npcs.value[npcId]) {
       npcs.value[npcId].messagingMode = mode
+      npcModeOverrides.value[npcId] = mode
       saveState()
     }
+  }
+
+  function sendCannedResponse(npcId, responseId) {
+    const npc = npcs.value[npcId]
+    if (!npc?.cannedResponses) return
+
+    const response = npc.cannedResponses.find(r => r.id === responseId)
+    if (!response) return
+
+    // Send player message
+    sendMessage(npcId, response.label)
+    gameStore.logAction(`Responded to ${npc.name}`, 'comms', { content: response.label })
+
+    // NPC replies after delay
+    const delay = response.delay || 2000
+    setTimeout(() => {
+      receiveMessage(npcId, response.npcReply)
+
+      // Unlock evidence if configured
+      if (response.unlockEvidence) {
+        const evidenceStore = useEvidenceStore()
+        response.unlockEvidence.forEach(id => evidenceStore.unlockEvidence(id))
+      }
+
+      // Switch mode if configured
+      if (response.afterMode) {
+        setNpcMessagingMode(npcId, response.afterMode)
+      }
+    }, delay)
   }
 
   function saveState() {
@@ -194,7 +226,8 @@ export const useCommsStore = defineStore('comms', () => {
       unreadCounts: unreadCounts.value,
       npcStatus: npcStatus.value,
       messageDrafts: messageDrafts.value,
-      pendingEscalation: pendingEscalation.value
+      pendingEscalation: pendingEscalation.value,
+      npcModeOverrides: npcModeOverrides.value
     }))
   }
 
@@ -209,6 +242,13 @@ export const useCommsStore = defineStore('comms', () => {
       npcStatus.value = state.npcStatus || {}
       messageDrafts.value = state.messageDrafts || {}
       pendingEscalation.value = state.pendingEscalation || null
+      npcModeOverrides.value = state.npcModeOverrides || {}
+      // Apply saved mode overrides to NPC data
+      Object.entries(npcModeOverrides.value).forEach(([id, mode]) => {
+        if (npcs.value[id]) {
+          npcs.value[id].messagingMode = mode
+        }
+      })
       return true
     }
     return false
@@ -223,6 +263,7 @@ export const useCommsStore = defineStore('comms', () => {
     npcStatus.value = {}
     messageDrafts.value = {}
     pendingEscalation.value = null
+    npcModeOverrides.value = {}
   }
 
   function setMessageDraft(npcId, text) {
@@ -349,6 +390,7 @@ export const useCommsStore = defineStore('comms', () => {
     clearMessageDraft,
     setPendingEscalation,
     clearPendingEscalation,
-    setNpcMessagingMode
+    setNpcMessagingMode,
+    sendCannedResponse
   }
 })

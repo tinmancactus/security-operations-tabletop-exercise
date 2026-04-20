@@ -3,7 +3,7 @@ import vue from '@vitejs/plugin-vue'
 import { viteSingleFile } from 'vite-plugin-singlefile'
 
 // Get scenario from environment variable, default to operation-glasshouse/session-1
-const scenario = process.env.SCENARIO || 'operation-glasshouse/session-1'
+const scenario = process.env.SCENARIO || 'operation-glasshouse/session-2'
 
 // https://vite.dev/config/
 export default defineConfig(({ command }) => {

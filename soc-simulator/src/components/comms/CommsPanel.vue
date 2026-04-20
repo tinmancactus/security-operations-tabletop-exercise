@@ -245,6 +245,27 @@ const assessmentCriteria = computed(() => {
 })
 
 const checksCount = computed(() => assessmentChecks.value.filter(c => c).length)
+
+// Canned response mode
+const isCannedMode = computed(() => {
+  if (!commsStore.activeChannelId) return false
+  const npc = commsStore.npcs[commsStore.activeChannelId]
+  return npc?.messagingMode === 'canned' && npc?.cannedResponses?.length > 0
+})
+
+const cannedResponses = computed(() => {
+  if (!commsStore.activeChannelId) return []
+  return commsStore.npcs[commsStore.activeChannelId]?.cannedResponses || []
+})
+
+function selectCannedResponse(responseId) {
+  if (gameStore.timeExpired) {
+    gameStore.addNotification('Time has expired - no further messages can be sent', 'warning')
+    return
+  }
+  commsStore.sendCannedResponse(commsStore.activeChannelId, responseId)
+  scrollToBottom()
+}
 </script>
 
 <template>
@@ -280,12 +301,12 @@ const checksCount = computed(() => assessmentChecks.value.filter(c => c).length)
               <span 
                 class="absolute -bottom-0.5 -right-0.5 w-3 h-3 rounded-full border-2 border-soc-surface"
                 :class="{
-                  'bg-green-500': npc.messagingMode === 'escalation' || npc.messagingMode === 'online',
+                  'bg-green-500': npc.messagingMode === 'escalation' || npc.messagingMode === 'online' || npc.messagingMode === 'canned',
                   'bg-gray-500': npc.messagingMode === 'auto-reply',
                   'bg-yellow-500': npc.messagingMode === 'dnd',
                   'bg-red-500': !npc.messagingMode || npc.messagingMode === 'busy'
                 }"
-                :title="npc.messagingMode === 'escalation' || npc.messagingMode === 'online' ? 'Online' : npc.messagingMode === 'auto-reply' ? 'Offline' : npc.messagingMode === 'dnd' ? 'Do Not Disturb' : 'Busy'"
+                :title="npc.messagingMode === 'escalation' || npc.messagingMode === 'online' || npc.messagingMode === 'canned' ? 'Online' : npc.messagingMode === 'auto-reply' ? 'Offline' : npc.messagingMode === 'dnd' ? 'Do Not Disturb' : 'Busy'"
               ></span>
             </div>
             <div>
@@ -333,6 +354,12 @@ const checksCount = computed(() => assessmentChecks.value.filter(c => c).length)
                     Conversation Ended
                   </span>
                   <span 
+                    v-else-if="commsStore.activeChannel.npc.messagingMode === 'canned'"
+                    class="text-xs px-2 py-0.5 rounded bg-green-500/30 text-green-400"
+                  >
+                    Online
+                  </span>
+                  <span 
                     v-else-if="commsStore.activeChannel.npc.messagingMode === 'auto-reply'"
                     class="text-xs px-2 py-0.5 rounded bg-gray-500/30 text-gray-400"
                   >
@@ -377,6 +404,9 @@ const checksCount = computed(() => assessmentChecks.value.filter(c => c).length)
                     {{ getEscalationCostText(commsStore.activeChannelId) }}
                   </span>
                 </template>
+              </template>
+              <template v-else-if="commsStore.activeChannel.npc.messagingMode === 'canned'">
+                <span class="text-soc-accent">Select a response below</span>
               </template>
               <template v-else-if="commsStore.activeChannel.npc.messagingMode === 'auto-reply'">
                 <span class="text-gray-400">Auto-reply enabled</span>
@@ -515,6 +545,20 @@ const checksCount = computed(() => assessmentChecks.value.filter(c => c).length)
                   Send Response
                 </button>
               </div>
+            </div>
+          </div>
+          
+          <!-- Canned Responses - show pre-written response options -->
+          <div v-else-if="!showAssessment && !showEscalationConfirm && isCannedMode" class="p-3 border-t border-soc-border">
+            <div class="space-y-2">
+              <button
+                v-for="response in cannedResponses"
+                :key="response.id"
+                @click="selectCannedResponse(response.id)"
+                class="w-full text-left p-3 bg-soc-bg border border-soc-border rounded-lg hover:border-soc-accent hover:bg-soc-raised transition text-sm text-soc-text cursor-pointer"
+              >
+                {{ response.label }}
+              </button>
             </div>
           </div>
           

@@ -57,6 +57,15 @@ onMounted(() => {
     evidenceStore.loadState()
     showResumePrompt.value = true
   }
+  
+  // Auto-unlock any evidence marked as available from session start
+  // Runs after state restore so saved state doesn't overwrite it
+  // Adds directly without notification — starting evidence should just be there
+  scenario.evidence.forEach(ev => {
+    if (ev.unlockedAtStart && !evidenceStore.isUnlocked(ev.id)) {
+      evidenceStore.unlockedIds.push(ev.id)
+    }
+  })
 })
 
 // Watch for timed events

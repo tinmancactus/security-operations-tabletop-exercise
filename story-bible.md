@@ -6,7 +6,7 @@
 
 ## Executive Summary
 
-**Operation Glasshouse** is a three-session tabletop exercise where students role-play as SOC Analysts responding to an escalating cyberattack against a fictional Australian fintech company. The attack is perpetrated by hacktivists who oppose the "Buy Now, Pay Later" industry and combines social engineering, credential theft, and insider manipulation.
+**Operation Glasshouse** is a two-session tabletop exercise where students role-play as SOC Analysts responding to an escalating cyberattack against a fictional Australian fintech company. The attack is perpetrated by hacktivists who oppose the "Buy Now, Pay Later" industry and combines social engineering, credential theft, and insider manipulation.
 
 **Core Themes**:
 - Signal vs. noise in alert triage
@@ -83,7 +83,7 @@ These are the characters students will interact with via artefacts (emails, tick
 
 **Background**: Priya built the SOC from scratch and is protective of her team. She trusts her analysts but expects them to bring evidence, not hunches.
 
-**Narrative Role**: Priya is the students' direct manager. She provides guidance when escalated to, but pushes back if students escalate without justification. Her responses (via envelope reveals) will vary based on the quality of information students provide.
+**Narrative Role**: Priya is the students' direct manager. She provides guidance when escalated to, but pushes back if students escalate without justification. Her responses (via in-game messages) will vary based on the quality of information students provide.
 
 ---
 
@@ -97,7 +97,7 @@ These are the characters students will interact with via artefacts (emails, tick
 
 **Background**: James is the only Tier 3 analyst. He handles forensics, malware analysis, and leads major incident responses. He's overworked and can be brusque, but he's the best technical resource available.
 
-**Narrative Role**: James is the "expert witness"—when students escalate correctly, his analysis (via envelopes) provides crucial insights. If students escalate prematurely, his responses are curt and unhelpful.
+**Narrative Role**: James is the "expert witness"—when students escalate correctly, his analysis (via in-game messages) provides crucial insights. If students escalate prematurely, his responses are curt and unhelpful.
 
 ---
 
@@ -177,18 +177,18 @@ Students who verify her instructions against logs/protocols will spot the decept
 
 ### Employees (Victims of Social Engineering)
 
-#### Liam Fitzgerald — Customer Support Lead
+#### Liam Fitzgerald — Customer Support Officer
 | Attribute | Detail |
 |-----------|--------|
-| **Role** | Customer Support Team Lead |
-| **Relevance** | First social engineering victim |
+| **Role** | Customer Support Officer |
+| **Relevance** | Successfully vished the morning of Session 1; his compromised account is the primary attack vector |
 
-**What Happened**: Liam received a call from "IT Support" (actually the attackers) asking him to "verify his identity" by reading back an MFA code sent to his phone. He complied, thinking it was routine.
+**What Happened**: At approximately 07:45 on Monday morning (just before Session 1 begins), Liam received a call from "IT Support" (actually the attackers) asking him to "verify his identity" by reading back an MFA code sent to his phone. He complied, thinking it was routine. The attacker logged in with Liam's credentials at 07:52 from Indonesia, conducted internal reconnaissance (employee directory, org chart, finance contacts), and accessed the customer database at 08:22 — querying 2,847 records. By the time Liam submits his service ticket at 08:06, the attacker is already inside.
 
-**How Students Encounter Him**: Via a service ticket where he mentions a "weird call from IT" but downplays it ("they said they'd never ask for my password, so it seemed legit").
+**How Students Encounter Him**: Via a service ticket (TKT-4472, visible 6 minutes into Session 1) where he mentions a "weird call from IT this morning" but downplays it.
 
-**Key Quote** (in service ticket follow-up):
-> "The IT guy was really professional. He even said 'we'll never ask for your password' which made me trust him more. I just read him the code from my phone—is that bad?"
+**Key Quote** (from interview — evidence EV-5):
+> "I got a call this morning—maybe quarter to 8? The guy said he was from IT, something about a system migration. He needed me to read back a code from my phone to confirm my identity. He even said 'we'll never ask for your password' which made me trust him more. I just read him the code—is that bad?"
 
 ---
 
@@ -196,16 +196,82 @@ Students who verify her instructions against logs/protocols will spot the decept
 | Attribute | Detail |
 |-----------|--------|
 | **Role** | Finance Team Analyst |
-| **Relevance** | Second social engineering victim; reports to Sandra |
+| **Relevance** | Vishing target who resisted — contrasts with Liam's compromise; reports to Sandra |
 
-**What Happened**: Anika received a similar vishing call. She was more suspicious but ultimately complied because the caller "knew details about the finance system."
+**What Happened**: Anika received a vishing call around 10:00 AM on Sunday (the day before Session 1). The caller claimed to be from IT and asked her to confirm an MFA code. Anika was suspicious — the caller seemed "a bit too pushy" and kept asking for the code. She hung up. Authentication logs (LOG-1005) confirm a failed MFA challenge for her account from the attacker's IP (103.42.91.17) at 09:47 Sunday. She was **not** compromised.
 
-**How Students Encounter Her**: She submits a worried service ticket in Session 2 after hearing about "security issues."
+**How Students Encounter Her**: Via a service ticket (TKT-4471, submitted Sunday at 10:17 AM, visible at Session 1 start) flagged by Alex Anderson in his overnight handover notes. Alex notes: "Anika Patel reported a suspicious call from 'IT Support' yesterday. She didn't give them anything but wanted it on record."
 
-**Key Quote** (in service ticket):
-> "I'm probably being paranoid, but I got a call last week from someone claiming to be IT. They knew I use the finance portal and asked me to confirm a code. Sandra told me IT does that sometimes for audits, so I didn't think much of it. Should I be worried?"
+**Key Quote** (from interview — evidence EV-10):
+> "I got a call yesterday around 10 in the morning. They said they were from IT, asked me to confirm a code on my phone. Something felt off — he was a bit too pushy about it. I told him I'd call the help desk back myself and hung up. Then I put in a ticket just in case."
 
-*(Note: Sandra's "reassurance" is either a lie by the attacker using Sandra's account, or Sandra genuinely gave bad advice before being compromised—either interpretation works.)*
+*(Note: Anika's suspicion and correct response contrasts with Liam's compliance. The failed attempt on Anika also shows the attacker pivoted to Liam as the next target.)*
+
+---
+
+#### David Chen — Merchant Partnerships Manager
+| Attribute | Detail |
+|-----------|--------|
+| **Role** | Merchant Partnerships Manager |
+| **Department** | Sales |
+| **Relevance** | Compromised via vishing but account never used by right_0ff (decoy/reserve) |
+
+**What Happened**: David received a vishing call on the Saturday before Session 1 (two days before Monday). He gave the caller his MFA code. Authentication logs show a successful login from attacker infrastructure at 14:23 Saturday, a brief session (~3 minutes, enough to confirm access works), then nothing. right_0ff never used his account — they had already obtained Sandra's executive-level access and Liam's customer database access, making David's sales-level credentials redundant.
+
+**How Students Encounter Him**: David comes forward in Session 2 after reading Monday's company-wide security advisory. He submits a worried ticket: "I think I might have messed up — I got a call from IT on Saturday and gave them a code."
+
+**Investigative Value**: Students who investigate David's account find the single anomalous login from attacker infrastructure but **no further activity**. The trail goes cold. This is time-consuming to confirm and yields no new IOCs — exactly what right_0ff intended. However, the *pattern* of multiple compromised accounts is itself valuable intelligence: it reveals the scale of the vishing campaign and suggests the attacker had more access than they used.
+
+---
+
+#### Nadia Khoury — Marketing Coordinator
+| Attribute | Detail |
+|-----------|--------|
+| **Role** | Marketing Coordinator |
+| **Department** | Marketing |
+| **Relevance** | Compromised via vishing but account never used by right_0ff (decoy/reserve) |
+
+**What Happened**: Nadia received a vishing call on Sunday morning, shortly before the attempt on Anika. She gave the caller her MFA code without hesitation. Authentication logs show a successful login from a *different* attacker IP (185.220.101.48 — a European VPN endpoint) at 09:15 Sunday, a brief session (~5 minutes), then nothing. The use of a different IP is deliberate — it makes correlation harder for the SOC.
+
+**How Students Encounter Her**: Nadia comes forward in Session 2 after David Chen mentions his experience in the break room. She doesn't submit a ticket — she messages the SOC directly via the comms channel: "David just told me about his call. I got one too — Sunday morning. Did I do something wrong?"
+
+**Investigative Value**: Same dead-end pattern as David's account, but with a *different* attacker IP. This is a deliberate anti-forensic technique — if the SOC is hunting solely for 103.42.91.17, they'll miss this one. Students who correlate the timing and call pattern rather than just the IP will identify a broader campaign. Students who chase only the IP will waste tokens and find nothing.
+
+---
+
+#### Tom Bradshaw — Account Executive
+| Attribute | Detail |
+|-----------|--------|
+| **Role** | Account Executive |
+| **Department** | Sales |
+| **Relevance** | Innocent — legitimate MFA re-enrollment that looks suspicious in context (noise) |
+
+**What Happened**: Tom switched to a new phone over the weekend and needed to get his authenticator app set up again. On Monday morning he called the IT help desk himself and they walked him through re-enrolling his MFA. His account was never compromised — this is entirely legitimate activity.
+
+**How Students Encounter Him**: His ticket appears in Session 2's queue a few minutes after the session starts, alongside the vishing-related tickets from David and Nadia. He heard them talking and wanted to flag his own IT interaction just in case. It looks superficially similar — "staff member + IT call + MFA" — but investigation reveals an entirely mundane explanation.
+
+**Investigative Value**: None (it's noise). Students who check the logs find a service desk–authorised MFA re-enrollment from Tom's office IP, no anomalous foreign login, and a perfectly clean trail. The value is in the *decision not to investigate further* — recognising that not every MFA-related event during a breach is part of the breach. Students who spend a token resetting Tom's credentials without checking have wasted resources.
+
+---
+
+### The Vishing Campaign — Summary
+
+right_0ff's vishing campaign targeted at least 5 XYZ employees over the Saturday–Monday window:
+
+| Target | When | Outcome | Account Used? | Attacker IP |
+|--------|------|---------|---------------|-------------|
+| Sandra Leigh (CFO) | ~1 week prior | ✅ Compromised | **Yes** — primary executive access | 45.32.198.41 (SG, Vultr) / 167.172.62.94 (US, DigitalOcean) |
+| David Chen (Sales) | Saturday ~14:23 | ✅ Compromised | **No** — access confirmed then abandoned | 198.54.131.152 (US, Namecheap) |
+| Nadia Khoury (Marketing) | Sunday ~09:15 | ✅ Compromised | **No** — access confirmed then abandoned | 185.220.101.48 (NL, ZAVOD) |
+| Anika Patel (Finance) | Sunday ~09:47 | ❌ Failed — target hung up | N/A | 103.42.91.17 (ID VPN) |
+| Liam Fitzgerald (Support) | Monday ~07:45 | ✅ Compromised | **Yes** — customer DB access | 103.42.91.17 (ID VPN) |
+
+**Why right_0ff compromised accounts they didn't use**: This is a deliberate tactic with three purposes:
+1. **Reserve access** — if Sandra or Liam's accounts were disabled, David or Nadia's could serve as fallback entry points
+2. **SOC distraction** — each compromised account that students discover during Session 2 costs time and tokens to investigate, pulling resources from the active threats (Sandra's ongoing compromise, the scheduled exfiltration task)
+3. **Scale intimidation** — when students realise right_0ff compromised 4+ accounts, it changes the threat assessment. The attacker is more capable and methodical than a single vished account would suggest.
+
+**Real-world precedent**: Lapsus$ (2021–22) routinely compromised more employee accounts than they needed via SIM-swapping and social engineering, using the extras as backup access and to confuse incident responders. LulzSec similarly operated on a principle of creating chaos and misdirection — their 2011 campaigns involved throwaway compromises designed to waste defenders' time while the real objective was pursued elsewhere.
 
 ---
 
@@ -277,55 +343,234 @@ This is the "true" timeline of the attack. Students will discover fragments of t
 
 | Date | Event |
 |------|-------|
-| 3 weeks ago | ClearDebt identifies XYZ as target after consumer advocacy report |
+| 3 weeks ago | right_0ff identifies XYZ as target after consumer advocacy report |
 | 2 weeks ago | Attackers scrape LinkedIn for XYZ employee names and roles |
 | 10 days ago | Attackers obtain XYZ employee phone numbers via social engineering (calling reception) |
-| 8 days ago | First vishing calls begin; Liam Fitzgerald compromised |
-| 6 days ago | Anika Patel compromised |
-| 5 days ago | Sandra Leigh compromised (highest-value target) |
-| 4 days ago | Attackers use Sandra's access to explore internal systems |
-| 3 days ago | Attackers create backdoor admin account ("svc_backup_admin") |
-| 2 days ago | Attackers begin querying customer database |
-| 1 day ago | Attackers exfiltrate sample customer data |
-| Today | **Session 1 begins** |
+| ~1 week ago | Sandra Leigh compromised via vishing (highest-value target — provides executive-level access) |
+| 5 days ago | Attackers use Sandra's access to explore internal systems, map org chart, identify finance/support staff |
+| 3 days ago | Attackers create backdoor admin account ("svc_backup_admin") using Sandra's access |
+| Saturday 14:23 | Attackers compromise David Chen (Sales) via vishing — brief login to confirm access, then abandoned. Account never used. |
+| Sunday 09:15 | Attackers compromise Nadia Khoury (Marketing) via vishing — brief login from 185.220.101.48 (EU VPN), then abandoned. Account never used. |
+| Sunday 09:47 | Attackers attempt to compromise Anika Patel via vishing — she is suspicious and hangs up. Failed MFA login from 103.42.91.17. |
+| Sunday 10:17 | Anika submits service ticket (TKT-4471) reporting the suspicious call |
+| **Monday 07:45** | Attackers successfully vish Liam Fitzgerald — he reads back his MFA code |
+| **Monday 07:52** | Attacker logs into XYZ SSO using Liam's credentials from Indonesia (103.42.91.17) |
+| **Monday 07:52–08:22** | Attacker conducts reconnaissance via Liam's account: employee directory, org chart, finance contacts, IT support docs |
+| **Monday 08:00** | **Session 1 begins** — the attack is already underway |
+| **Monday 08:22** | Attacker accesses customer database via Liam's account — 2,847 records queried |
 
 ### Session 1 Timeline ("Static")
 
-| Time | Event | Visible to Students? |
-|------|-------|---------------------|
-| 08:00 | Credential stuffing attack begins against customer portal | Yes (SIEM alerts) |
-| 08:15 | Liam Fitzgerald submits service ticket about "weird IT call" | Yes (ticket queue) |
-| 09:30 | Attackers (using Liam's creds) access internal HR portal | Discoverable if investigated |
-| 10:45 | Attackers pivot to Sandra's account | Not yet visible |
-| 11:30 | Successful login to admin tool from anomalous IP | Yes (end-of-session alert) |
-
-### Session 2 Timeline ("Foothold")
+*Session runs 08:00–09:00 in-game (60 minutes real-time). Elapsed time shown in parentheses.*
 
 | Time | Event | Visible to Students? |
 |------|-------|---------------------|
-| 08:00 | Students return; compromised account has accessed customer DB | Yes (SIEM alert) |
-| 08:30 | Anika Patel submits worried service ticket | Yes (ticket queue) |
-| 09:00 | Attackers create new admin account | Discoverable via AD logs |
-| 09:30 | Sandra's account sends email to SOC: "Stand down, I'm handling this" | Yes (email artefact) |
-| 10:00 | ClearDebt calling card discovered on file share | Yes (mid-session reveal) |
-| 10:30 | Data exfiltration to external cloud storage | Discoverable via network logs |
-| 11:00 | Ransom/ultimatum email sent to CISO | Yes (end-of-session reveal) |
-| 11:00 | Backup failure alert | Yes (end-of-session reveal) |
+| 03:12–04:15 (overnight) | Credential stuffing attack against customer portal — hundreds of failed logins from Tor exit nodes | Yes (SIEM alerts visible at session start — background noise) |
+| 07:52 (pre-session) | Attacker logs in with Liam's stolen credentials from 103.42.91.17 | In logs if investigated (LOG-0050) |
+| 07:52–08:22 (pre-session) | Attacker reconnaissance: employee directory, org chart, finance contacts, IT support docs | In logs if investigated |
+| 08:00 (0 min) | Session begins. Alex Anderson's overnight handover notes arrive. Anika's Sunday ticket (TKT-4471) visible. Overnight credential stuffing alerts on SIEM dashboard. | Yes (starting artefacts) |
+| 08:06 (6 min) | Liam Fitzgerald submits service ticket (TKT-4472): "Weird call from IT this morning?" | Yes (ticket queue) |
+| 08:22 | Attacker accesses customer database via Liam's account — 2,847 records queried | In logs if investigated (LOG-0057) |
+| 08:24 (24 min) | SIEM alert M-2489: Unusual login pattern for liam.fitzgerald from Indonesian IP | Yes (medium-severity alert) |
+| 08:53 (53 min) | James Okoro comes online, begins catching up | Yes (comms message) |
+| 08:55 (55 min) | **CRITICAL ALERT H-0012**: Sensitive data access detected — 2,847 customer records accessed from Liam's account via 103.42.91.17 | Yes (cliffhanger alert) |
 
-### Session 3 Timeline ("Exposure")
+### Monday Morning — Initial Response (Post-Session 1)
 
-| Time | Event | Visible to Students? |
-|------|-------|---------------------|
-| 08:00 | 48-hour deadline approaching; leadership decides not to negotiate | Yes (briefing) |
-| 08:30 | Journalist emails company about breach tip | Yes (forwarded email) |
-| 09:00 | Students discover scheduled task "time bomb" | Yes (mid-session) |
-| 09:30 | Sandra's account sends another misdirecting email | Yes (test of student vigilance) |
-| 10:30 | Branch point: sandbox vs. kill decision | Yes (decision moment) |
-| 11:00 | Session ends; students submit final report | — |
+| Time | Event | Notes |
+|------|-------|-------|
+| 09:00 Mon | Session 1 ends. James (online since ~08:53) begins full investigation of the critical alert (H-0012). | James started late due to morning appointment |
+| 09:30 Mon | James confirms anomalous login and customer database access — Liam's account accessed from 103.42.91.17 (Indonesia) | Full investigation of cliffhanger alert |
+| 10:00 Mon | James escalates to Priya with evidence. Priya declares security incident (IR-2024-0847), escalates to Marcus (CISO). | Formal incident opened |
+| 10:30 Mon | Marcus briefs David Whitmore (CEO): "Developing security incident, we're investigating" | CEO aware but not alarmed yet |
+| 11:00 Mon | Liam's account disabled, password reset, MFA token revoked | Containment (may have been done by students in Session 1) |
+| 11:30 Mon | Attacker IP 103.42.91.17 blocked at perimeter firewall | Standard containment step |
+| 12:00 Mon | Marcus authorises James for extended work (overtime approved) | James is the only Tier 3 IR specialist |
+| 14:00 Mon | Marcus sends company-wide security advisory: "Be vigilant about IT calls. Do not share MFA codes with anyone claiming to be from XYZ IT. Report suspicious contacts to the SOC immediately." | General awareness measure |
+| 14:30 Mon | James begins reviewing all of Liam's account activity for the past 30 days | Following the Liam thread |
+| 15:00 Mon | James discovers 2,847 transaction records accessed via Liam's credentials | Scope of data access confirmed |
+| 16:00 Mon | James confirms accessed data was from customer_transactions_db — contains customer IDs, amounts, dates, late fee history — but **no PII** (no names, emails, or contact details) | Data separation identified |
+| 17:00 Mon | Day shift ends. James stays for overtime. Priya goes home, on-call. | Standard shift handover |
+
+### Monday Evening — James's Overtime
+
+| Time | Event | Notes |
+|------|-------|-------|
+| 17:30 Mon | James begins cross-referencing 2,847 accessed customer IDs against PII database to identify affected individuals | Building the impact assessment |
+| 19:30 Mon | James notes some recognisable names during cross-referencing — adds sensitivity warning to report | Increases urgency |
+| 21:00 Mon | James completes draft Customer Impact Assessment — 2,847 customers identified by name with exposure details | Detailed, methodical work |
+| 22:00 Mon | Alex Anderson arrives for night shift. James briefs Alex on the incident and hands off monitoring. | James has been working since ~09:00 — roughly 13 hours |
+| 22:00 Mon | **[ATTACKER]** Using Sandra's account, places right_0ff calling card (manifesto + data sample) on internal file share | Alex is being briefed by James, not browsing file shares |
+| 22:30 Mon | James finalises report, marks CONFIDENTIAL — IR USE ONLY, uploads to SOC shared drive with restricted access. Sends handoff email to Priya. | **This is the document the Sandra Trap targets** |
+| ~23:00 Mon | James goes home. Available by phone for urgent questions. | Worked ~14 hours (09:00–23:00). Will start late Tuesday as a result. |
+
+### Monday Night / Tuesday Early Hours — Alex Anderson on Watch
+
+| Time | Event | Notes |
+|------|-------|-------|
+| 01:00 Tue | **[ATTACKER]** Using Sandra's account, performs reconnaissance on PII database access controls — testing whether CFO credentials can access it directly | Sandra's credentials lack direct PII DB access; the impact assessment becomes their target |
+| 02:00 Tue | **[ATTACKER]** Using svc_backup_admin, creates scheduled task on DB server for nightly bulk export of transaction data to external cloud endpoint | Named "system_maintenance_daily" — looks routine. Alex is monitoring alerts, not auditing scheduled tasks. |
+
+### Tuesday Morning — Pre-Session 2
+
+| Time | Event | Notes |
+|------|-------|-------|
+| 06:00 Tue | **[ATTACKER]** right_0ff sends ultimatum email to Marcus's direct email | Demands public disclosure, late fee refund, and debt write-off within 48 hours |
+| 06:30 Tue | Marcus reads ultimatum. Immediately calls David Whitmore (CEO). | CEO now fully engaged |
+| 07:00 Tue | Marcus calls Priya: "Get the team in early, this just escalated significantly" | Sets up Session 2 opening |
+| 07:30 Tue | Priya prepares overnight briefing document for incoming SOC team | Summarises Monday's findings and outstanding items |
+| 07:45 Tue | David Chen reads Monday's security advisory and realises he was vished on Saturday — begins composing service ticket | First of the "coming forward" wave |
+| 08:00 Tue | **Session 2 begins.** James Okoro is not yet in — starting late after Monday overtime. | Alex Anderson provides handover to incoming SOC team before going off-shift. |
+
+### What Was Done vs. What Was Missed
+
+**Contained:**
+- Liam's account disabled, password and MFA revoked
+- Known attacker IP blocked at firewall
+- Data access scope identified (2,847 transaction records, no PII)
+- Affected customers identified by name (impact assessment)
+- Company-wide security advisory issued
+
+**Not yet discovered (and why):**
+- **Sandra's account is compromised** — investigation followed the Liam thread only. Sandra's CFO-level access patterns don't trigger anomaly alerts. The attacker used different IPs for Sandra's sessions.
+- **svc_backup_admin backdoor account** — created 3 days ago with a plausible name. No automated alerting on service account creation (common gap). James was focused on data access, not account auditing.
+- **Scheduled exfiltration task** — created at 02:00 Tuesday on a different server than where James was working. Named "system_maintenance_daily" — looks routine.
+- **right_0ff calling card** — placed on a file share at 22:00 Monday. Nobody was browsing file shares overnight.
+- **Anika's failed vishing attempt connects to Liam's compromise** — Anika's Sunday ticket (TKT-4471) is visible from Session 1 start and shows the attackers targeted multiple employees. Students who connect Anika's report to Liam's "weird call" can identify a vishing campaign pattern — but the urgency of the credential stuffing noise may cause them to overlook it.
+- **David Chen and Nadia Khoury are also compromised** — they don't know it yet. They come forward on Tuesday after reading the security advisory. Their accounts have anomalous logins from attacker infrastructure but no further activity — deliberate decoys/reserves by right_0ff.
+- **The vishing campaign is broader than it appears** — the Monday response focused on Liam's thread. Nobody has yet connected Anika's Sunday report, Liam's Monday compromise, and the as-yet-unreported David and Nadia compromises into a single coordinated campaign.
+- **The attacker is still inside the network** — blocking Liam's account and one IP closed one door, but Sandra's credentials and the backdoor account remain active. David and Nadia's credentials also remain live (unused but available as fallback).
+
+### Session 2 Timeline ("Exposure") — Tuesday
+
+*In-story times on left. Approximate session clock (mm:ss) on right.*
+
+| In-Story | Session Clock | Event | Visible to Students? |
+|----------|--------------|-------|---------------------|
+| 08:00 | 00:00 | Students begin shift; receive Priya's overnight briefing and James's Customer Impact Assessment (CONFIDENTIAL). SIEM dashboard shows ~15-20 overnight alerts to triage. | Yes (starting artefacts) |
+| 08:00 | 00:00 | David Chen and Nadia Khoury vishing tickets already in queue (came forward after reading Monday advisory) | Yes (ticket queue) — **first signs of broader vishing campaign** |
+| 08:03 | ~03:00 | Tom Bradshaw submits ticket about MFA re-enrollment on new phone — legitimate, but looks suspicious in context | Yes (ticket queue, delayed) — **noise that looks like signal** |
+| 08:30 | ~15:00 | Sandra's compromised account emails SOC requesting the Customer Impact Assessment "for the CEO's emergency board call" | Yes (email) — **Sandra Trap** |
+| — | 03:00–30:00 | **Investigation phase**: Students spend tokens to dig into alerts, AD logs, network traffic, vishing reports (David, Nadia). Key discoveries available: svc_backup_admin account, Sandra's anomalous login, data exfiltration to external endpoint, breadth of vishing campaign (4 compromised accounts, 1 failed). David and Nadia's accounts are dead ends but reveal campaign scale. Tom's MFA re-enrollment is noise. | Discoverable through investigation |
+| 09:15 | ~30:00 | right_0ff calling card discovered on internal file share (manifesto + data sample) | Yes (mid-session reveal, or earlier if students browse file shares) |
+| 09:30 | ~35:00 | Marcus forwards right_0ff ultimatum to SOC: "I need you to understand what they actually have" | Yes (critical reveal) |
+| 09:35 | ~37:00 | Journalist inquiry from *The Guardian* forwarded to SOC by PR: "They're asking for comment by 5pm today" | Yes (forwarded email) |
+| 09:45 | ~40:00 | Scheduled exfiltration task discovered — "system_maintenance_daily" set to run nightly, has already executed twice | Yes (critical discovery, or earlier if students investigate scheduled tasks) |
+| 09:50 | ~45:00 | **THE RECOMMENDATION**: Marcus messages SOC: "I'm going into an emergency board meeting in 10 minutes. The CEO wants to know: what do they have, is it still happening, and what should we do first? What do I tell them?" | Yes (decision moment) |
+| 10:00 | ~50:00 | Students present their recommendation to Marcus (via Priya) | Yes (team decision) |
+| 10:05 | ~52:00 | Consequence card delivered based on recommendation + Sandra Trap outcome | Yes (path-dependent) |
+| 10:15 | ~55:00 | 48-hour aftermath revealed | Yes (finale) |
+| 10:30 | ~60:00 | Session ends; students submit final incident report | — |
 
 ---
 
-## Part 5: Red Herrings & False Leads
+## Part 5: Session 2 Branching — The Triage Triangle
+
+Session 2's narrative arc builds to a single high-stakes decision point where three crises converge simultaneously and students must choose where to focus their limited remaining resources. The quality of this decision is influenced by a trust verification test earlier in the session.
+
+### The Sandra Trap (Soft Gate)
+
+At Session 2 opening, students receive a **Customer Impact Assessment** prepared overnight by James Okoro. James cross-referenced the 2,847 transaction records accessed via Liam's account against XYZ's PII database to identify affected customers by name. This document — marked **CONFIDENTIAL — IR USE ONLY, do not distribute without CISO approval** — is the only artefact that links the anonymised transaction data to real people.
+
+**Why the data is separated**: XYZ's transaction database stores purchase histories, late fees, and debt amounts using internal customer IDs — no names, no contact details. The PII database (names, emails, phone numbers, addresses) is stored separately with stricter access controls. This is standard practice in financial services under PCI DSS. Liam's Customer Support credentials gave the attacker access to transaction data, but not the PII vault.
+
+**The Trap**: At the session's midpoint, Sandra Leigh's compromised account emails the SOC:
+
+> *"I need the Customer Impact Assessment urgently. The CEO wants the full list with names before the emergency board call at 2pm. Send it to me directly — we need to move fast on this."*
+
+**Why the attacker wants it**: right_0ff has embarrassing transaction data (late fees, debt amounts, hardship request denials) but cannot tie it to named individuals. The impact assessment is the missing piece. Without it, right_0ff can publish aggregate statistics about XYZ's practices. With it, they can name individual customers, contact them directly, and publish a searchable database — turning a data access incident into a catastrophic personal data breach.
+
+| Student Response | Consequence |
+|---|---|
+| **Share the file** | The attacker obtains PII for 2,847 customers. Does not change the Triage Triangle decision, but **significantly worsens the consequences on every path** (see Sandra Trap Escalation below). |
+| **Verify Sandra first** | Discovers the compromise (anomalous login, calendar conflict, tone mismatch, handling restriction violation). The file remains secure. Students arrive at the Triage Triangle better informed and with the PII protected. |
+| **Refuse without verifying** | Correct instinct, file stays safe — but the team can't explain *why* they refused a CFO's direct request. Debrief discussion point about process vs. intuition vs. protocol. |
+
+**Detection opportunities** (students may notice any of these):
+- The impact assessment is marked "do not distribute without CISO approval" — Sandra is bypassing protocol
+- Sandra is requesting it via email rather than through the IR channel
+- Login logs show her account accessed from anomalous IPs (45.32.198.41 / 167.172.62.94) — **not** matching any known attacker IPs, making this harder to find via IP correlation alone
+- Her calendar shows she's in a board meeting — so who's sending emails?
+- James shared the assessment only with the SOC team — how does Sandra know it exists?
+- The right_0ff ultimatum (revealed later) taunts: *"Tell Sandra we said thanks for the access"*
+
+### The Decision Point (Hard Branch)
+
+At the ~45-minute mark, Marcus messages the SOC: *"I'm going into an emergency board meeting in 10 minutes. The CEO wants to know: what do they have, is it still happening, and what should we do first? What do I tell them?"*
+
+By this point, students are aware of three concurrent crises:
+
+1. **Technical crisis**: The attacker is still inside the network. A scheduled task has already exfiltrated two nights of data and will run again tonight. Sandra's account and the svc_backup_admin backdoor remain active.
+2. **Regulatory crisis**: Customer data has been accessed. The Notifiable Data Breaches scheme requires prompt notification. Forensic evidence needs preservation for law enforcement. Chain of custody matters.
+3. **Reputational crisis**: A journalist is asking for comment by 5pm today. right_0ff has tipped off the media. The CEO and board are about to learn the full scope.
+
+Students must synthesise everything they've discovered and **recommend a priority to Marcus** — the recommendation he carries into the board meeting. They cannot do all three well with the time and resources available. This is the SOC's role: providing the intelligence and recommendation that shapes the executive decision.
+
+### Path A: "CONTAIN FIRST" — Stop the Attacker
+
+**What students tell Marcus**: *"Tell the board we can stop the bleeding, but we need all hands on technical containment right now. The journalist and the regulator will have to wait."*
+
+**SOC focus**: Disable compromised accounts, kill the scheduled exfiltration task, isolate affected systems, eliminate backdoor access.
+
+**What is protected**: Customer data. The scheduled task is killed before tonight's run. Attacker access eliminated. No further data leaves the network.
+
+**What is sacrificed**: No public statement prepared — journalist publishes "sources say data breach at XYZ Pay." No regulatory notification — compliance risk under the NDB scheme. Board is briefed on the threat but given no communications plan.
+
+**48-Hour Aftermath**:
+> Customer data is secured. Zero records exfiltrated. But headlines read *"XYZ Pay silent on alleged data breach."* The Privacy Commissioner opens an investigation into late notification. Series C investors request an emergency board call. Internally, the board praises the SOC's technical response but demands to know why nobody told them what was happening.
+
+### Path B: "PRESERVE AND NOTIFY" — Protect the Evidence
+
+**What students tell Marcus**: *"Tell the board we need to preserve evidence and notify the regulator immediately. Containment continues but the priority is building a defensible legal position."*
+
+**SOC focus**: Forensic evidence capture, chain of custody documentation, regulatory notification under the Notifiable Data Breaches scheme, coordination with legal.
+
+**What is protected**: Legal and regulatory standing. Forensic evidence leads to identification of right_0ff members. Notification timeline is defensible.
+
+**What is sacrificed**: Attacker retains partial access during evidence preservation. ~12,000 additional customer records exfiltrated before containment completes. Journalist publishes without XYZ's side of the story.
+
+**48-Hour Aftermath**:
+> The Privacy Commissioner commends XYZ for prompt, thorough notification. Forensic evidence is shared with the AFP, leading to identification of two right_0ff members. But 12,000 customer records are now public. Class action lawyers are circling. The CEO asks: *"Why didn't we just pull the plug?"*
+
+### Path C: "GET AHEAD OF IT" — Control the Narrative
+
+**What students tell Marcus**: *"Tell the board they need to get ahead of this publicly. The journalist publishes today regardless — we need a statement and a customer notification plan before that happens."*
+
+**SOC focus**: Provide Marcus with full scope details for the board, help draft factual basis for public statement, prepare customer impact data for notification, support PR/legal coordination.
+
+**What is protected**: Public narrative. XYZ's proactive transparency is initially praised. Executive team is aligned and prepared. Customer notification is professional and empathetic.
+
+**What is sacrificed**: Technical containment is delayed. Attacker gets more time. ~25,000 additional records exfiltrated overnight. Evidence potentially corrupted by ongoing attacker activity.
+
+**48-Hour Aftermath**:
+> XYZ's proactive media statement is initially praised as *"refreshingly transparent."* But right_0ff releases 25,000 customer records the next morning. The "transparent" statement now looks incomplete — XYZ said *"we are containing the incident"* while the attacker was still inside. Customers ask: *"You knew and didn't stop it?"* The narrative flips from "responsible disclosure" to "negligent response."
+
+### Sandra Trap Escalation
+
+If students shared the Customer Impact Assessment with "Sandra," the attacker obtains the PII mapping for 2,847 customers. The Triage Triangle decision remains the same three pathways, but the consequences on every path are significantly amplified:
+
+| Path | Base Outcome (PII protected) | Escalated Outcome (PII shared with attacker) |
+|---|---|---|
+| **A: Contain** | Zero additional records exfiltrated. Headlines reference "anonymous data access" at XYZ Pay. | Zero additional records exfiltrated — but right_0ff publishes 2,847 named customer records with contact details. Affected customers receive taunting emails from right_0ff. Class action filed within 48 hours. |
+| **B: Preserve & Comply** | ~12,000 anonymised transaction records exfiltrated. Strong forensic and regulatory position. | ~12,000 transaction records exfiltrated PLUS 2,847 named customers published with full contact details. right_0ff emails affected customers directly: *"XYZ knew your data was accessed and didn't tell you."* |
+| **C: Communicate** | ~25,000 anonymised records leaked. PR statement says "no customer PII was compromised." | ~25,000 records leaked PLUS 2,847 named records with a searchable "look up your exposure" site. XYZ's PR statement — *"no personal information was compromised"* — is publicly proven false. |
+
+The escalation demonstrates that **data handling decisions during an incident carry their own consequences**, independent of the strategic response chosen. Protecting sensitive artefacts is as critical as the broader IR strategy.
+
+### The Lesson
+
+In real incident response, **containment, compliance, and communication must run in parallel**. The exercise forces an impossible choice to demonstrate:
+
+- Why incident response requires **coordinated teams** (the ICS/NIMS model)
+- Why organisations need an **Incident Response Plan** *before* the crisis hits
+- That **every choice has trade-offs** — there is no universally "right" answer
+- That **earlier investigation quality cascades** into decision quality — teams who fell for the Sandra Trap arrive here disadvantaged
+
+The debrief should explore: *"What would it take to do all three simultaneously?"* — leading to discussion of IR team structures, pre-planned playbooks, and the importance of organisational preparedness.
+
+---
+
+## Part 6: Red Herrings & False Leads
 
 To create realistic noise and reward careful analysis, the exercise includes deliberate false leads:
 
@@ -335,57 +580,71 @@ To create realistic noise and reward careful analysis, the exercise includes del
 
 ### False Lead 2: The Credential Stuffing "Attack"
 **What it looks like**: Hundreds of failed login attempts against the customer portal.
-**Reality**: This is real but *unrelated* to ClearDebt—it's background noise from automated botnets using leaked credential lists.
+**Reality**: This is real but *unrelated* to right_0ff—it's background noise from automated botnets using leaked credential lists.
 **Purpose**: Creates noise; students must distinguish between opportunistic attacks and the targeted campaign.
 
 ### False Lead 3: The Disgruntled Employee Rumour
 **What it looks like**: A chat log snippet mentions that "someone in Finance is unhappy and might be looking for a new job."
-**Reality**: Just office gossip; the employee (Anika) is a victim, not an insider threat.
+**Reality**: Just office gossip; the employee (Anika) was targeted by attackers but *resisted* the vishing attempt — she is neither a victim nor an insider threat.
 **Purpose**: Tests whether students jump to conclusions about insider threats without evidence.
 
 ---
 
-## Part 6: Key Artefacts (Overview)
+## Part 7: Key Artefacts (Overview)
 
 Detailed artefact content will be developed separately. This section lists what students will receive.
 
 ### Session 1 Artefacts
-- SIEM alert dashboard (credential stuffing alerts)
-- Service ticket from Liam Fitzgerald
+- Alex Anderson's overnight handover notes (mentions Anika's suspicious call report)
+- SIEM alert dashboard (overnight credential stuffing alerts as background noise)
+- Service ticket from Anika Patel (TKT-4471, submitted Sunday — suspicious call report)
+- Service ticket from Liam Fitzgerald (TKT-4472, appears at ~6 min — "weird call from IT")
 - Threat intelligence brief on credential stuffing trends
-- Employee directory (for context)
+- Employee directory / personnel lookup (for context)
 - SOC playbook excerpt (triage procedures)
-- *End-of-session*: Anomalous login alert
+- *Mid-session*: SIEM alert M-2489 — unusual login for Liam from Indonesia (~24 min)
+- *End-of-session*: **CRITICAL** SIEM alert H-0012 — 2,847 records accessed via Liam's account (~55 min, cliffhanger)
 
 ### Session 2 Artefacts
-- Updated SIEM dashboard (customer DB access)
-- Service ticket from Anika Patel
-- Active Directory change logs (if requested)
-- Network traffic summary (if requested)
-- Email from Sandra Leigh (compromised)
-- *Mid-session*: ClearDebt calling card
-- *End-of-session*: Ultimatum email, backup failure alert
 
-### Session 3 Artefacts
-- Leadership decision briefing
-- Journalist inquiry email
-- Scheduled task details
-- Second Sandra email (misdirection)
-- Recovery planning checklist
-- NIST CSF mapping template
+**Starting artefacts (free)**:
+- Overnight incident summary briefing (from Priya)
+- Updated SIEM dashboard (customer DB access, new admin account alerts)
+- Customer Impact Assessment from James Okoro (CONFIDENTIAL — IR USE ONLY)
+- Service ticket from David Chen — "I think I messed up" (vishing victim, account compromised but unused)
+- Comms message from Nadia Khoury — "Did I do something wrong?" (vishing victim, account compromised but unused)
+- MFA reset ticket from Tom Bradshaw — legitimate phone swap, not a compromise (noise)
+
+**Unlockable artefacts (token cost)**:
+- Active Directory change logs — reveals svc_backup_admin backdoor account
+- Network traffic summary — reveals data exfiltration to external cloud storage
+- Sandra Leigh login analysis — reveals account accessed from attacker IP
+- Anika Patel detailed interview — reveals the vishing call details; her suspicion prevented compromise, confirming the attackers targeted multiple employees
+
+**Timed/triggered artefacts**:
+- *Mid-session*: Email from "Sandra" requesting Customer Impact Assessment — the Sandra Trap
+- *Mid-session*: right_0ff calling card (discovered on file share)
+- *Late-session*: right_0ff ultimatum email (forwarded from Marcus)
+- *Late-session*: Journalist inquiry email (forwarded from PR)
+- *Late-session*: Scheduled task details (the "time bomb")
+
+**Path-specific artefacts (one set per branch, with Sandra Trap variant)**:
+- Path A (Contain): Technical containment consequence card + 48-hour aftermath (base or escalated)
+- Path B (Preserve & Comply): Compliance consequence card + 48-hour aftermath (base or escalated)
+- Path C (Communicate): Communications consequence card + 48-hour aftermath (base or escalated)
 
 ---
 
-## Part 7: Thematic Questions
+## Part 8: Thematic Questions
 
 These are the underlying questions the exercise is designed to surface in student discussions:
 
 1. **How do you find signal in noise?** (Session 1)
-2. **When do you act on incomplete information?** (Session 1-2)
+2. **When do you act on incomplete information?** (Sessions 1–2)
 3. **What's the cost of containment vs. the cost of inaction?** (Session 2)
-4. **How do you verify trust when authority is compromised?** (Session 2-3)
-5. **How do you communicate uncertainty to leadership?** (All sessions)
-6. **What does "good enough" look like in a crisis?** (Session 3)
+4. **How do you verify trust when authority is compromised?** (Session 2 — Sandra Trap)
+5. **How do you communicate uncertainty to leadership?** (Both sessions)
+6. **When you can't do everything, what do you prioritise — and what do you accept losing?** (Session 2 — Triage Triangle)
 
 ---
 
@@ -403,8 +662,11 @@ These are the underlying questions the exercise is designed to surface in studen
 | **Exfiltration** | Stealing data by copying it out of the organisation |
 | **Lateral movement** | When an attacker moves from one compromised system to others within the network |
 | **NIST CSF** | National Institute of Standards and Technology Cybersecurity Framework—a widely-used framework for organising security activities into functions: Identify, Protect, Detect, Respond, Recover |
+| **NDB Scheme** | Notifiable Data Breaches scheme—Australian law requiring organisations to notify the Privacy Commissioner and affected individuals of eligible data breaches |
+| **ICS/NIMS** | Incident Command System / National Incident Management System—a structured approach to incident management using defined roles and coordination across workstreams |
+| **AFP** | Australian Federal Police—law enforcement agency that investigates cybercrime |
 
 ---
 
-*Document version: 0.1 (Draft)*
-*Last updated: November 2025*
+*Document version: 0.2 (Revised for two-session structure)*
+*Last updated: January 2025*
