@@ -59,6 +59,12 @@ export const useTicketsStore = defineStore('tickets', () => {
     })
   }
 
+  function createTicket(ticket) {
+    // Dynamically create and immediately show a ticket (e.g., for spam/taunts)
+    allTickets.value.push(ticket)
+    showTicket(ticket.id)
+  }
+
   function triggerActionTickets(actionId) {
     // Find tickets triggered by this action and schedule them
     allTickets.value.forEach(ticket => {
@@ -209,6 +215,7 @@ export const useTicketsStore = defineStore('tickets', () => {
     selectedTicket,
     loadTickets,
     showTicket,
+    createTicket,
     checkScheduledTickets,
     selectTicket,
     addNote,

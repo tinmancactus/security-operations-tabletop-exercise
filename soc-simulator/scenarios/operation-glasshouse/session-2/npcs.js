@@ -576,7 +576,47 @@ Good work today. We'll regroup in the morning. Get some rest tonight.`
     available: false,
     messagingMode: 'busy',
     escalationCost: { first: 0, followUp: 0 },
-    
+
+    // Sandra Trap — attacker uses Sandra's compromised account to request sensitive files.
+    // Tone shift (no emojis, no "SL" sign-off, more demanding) is a detection opportunity.
+    autoReply: `Sandra is out of office right now while she reconsiders her life choices lol`,
+    cannedResponses: [
+      {
+        id: 'send-incident-report',
+        label: `Here you go — James's incident report and the customer impact assessment.\n📎 IR-2024-0847_incident_report.pdf\n📎 IR-2024-0847_customer_impact_full.xlsx`,
+        npcReply: `nice`,
+        additionalReplies: [
+          { content: `now THIS is juicy 😹`, delayMs: 3000 },
+          { content: `tell sandra we say thanks`, delayMs: 4000 }
+        ],
+        spamTickets: {
+          delayMs: 30000, // 30 seconds after final taunt
+          count: 32,
+          intervalMs: 1000,
+          subject: '😹😹😹',
+          content: 'pwned by right_0ff',
+          from: { name: 'Sandra Leigh', department: 'Finance' }
+        },
+        afterMode: 'auto-reply', // Goes offline permanently
+        delay: 2000
+      }
+    ],
+
+    scheduledMessages: [
+      {
+        id: 'sandra-trap-1',
+        triggerAt: 1080, // 18 minutes
+        switchMode: 'canned',
+        content: `Sorry to message you directly about this, but everyone else is busy or in a meeting. Could you send me a copy of the incident report? I need to read it before the board meeting but James forgot to attach it when he emailed me.`
+      },
+      {
+        id: 'sandra-trap-2',
+        triggerAt: 1260, // 21 minutes (3 min follow-up)
+        onlyIfMode: 'canned', // Only if player hasn't responded yet
+        content: `Sorry, but I need this file urgently. Could you send it to me ASAP?`
+      }
+    ],
+
     messageHistory: [
       // === Pre-Session 1 history — establishes Sandra's genuine voice ===
       {

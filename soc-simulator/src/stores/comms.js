@@ -2,6 +2,7 @@ import { defineStore } from 'pinia'
 import { ref, computed } from 'vue'
 import { useGameStore } from './game'
 import { useEvidenceStore } from './evidence'
+import { useTicketsStore } from './tickets'
 
 export const useCommsStore = defineStore('comms', () => {
   const gameStore = useGameStore()
@@ -88,6 +89,8 @@ export const useCommsStore = defineStore('comms', () => {
       if (npc.scheduledMessages) {
         npc.scheduledMessages.forEach(msg => {
           gameStore.scheduleCallback(`npc-msg-${msg.id}`, msg.triggerAt, () => {
+            // Skip if onlyIfMode is set and NPC is no longer in that mode
+            if (msg.onlyIfMode && npcs.value[npcId]?.messagingMode !== msg.onlyIfMode) return
             // Switch messaging mode if specified
             if (msg.switchMode) {
               setNpcMessagingMode(npcId, msg.switchMode)
@@ -208,6 +211,66 @@ export const useCommsStore = defineStore('comms', () => {
     setTimeout(() => {
       receiveMessage(npcId, response.npcReply)
 
+      // Send additional sequential replies if configured
+      if (response.additionalReplies) {
+        let cumulativeDelay = 0
+        response.additionalReplies.forEach((reply, idx) => {
+          cumulativeDelay += reply.delayMs || 3000
+          setTimeout(() => {
+            receiveMessage(npcId, reply.content)
+            // Apply afterMode after the final additional reply
+            if (idx === response.additionalReplies.length - 1 && response.afterMode) {
+              if (!npc.cannedResponses?.length) {
+                setNpcMessagingMode(npcId, response.afterMode)
+              }
+            }
+          }, cumulativeDelay)
+        })
+        // Schedule ticket spam after all additionalReplies + extra delay
+        if (response.spamTickets) {
+          const spamStartDelay = cumulativeDelay + (response.spamTickets.delayMs || 30000)
+          setTimeout(() => {
+            const ticketsStore = useTicketsStore()
+            const { count, intervalMs, subject, content, from } = response.spamTickets
+            for (let i = 0; i < count; i++) {
+              setTimeout(() => {
+                // Calculate in-game timestamp from elapsed session time.
+                // Build ISO string from raw components (no timezone conversion).
+                const config = gameStore.scenario?.config
+                const totalDuration = config?.duration || 3600
+                const elapsedSeconds = totalDuration - gameStore.timeRemaining
+                const startHour = config?.startTime?.hour ?? 8
+                const startMinute = config?.startTime?.minute ?? 0
+                const totalSecondsFromMidnight = startHour * 3600 + startMinute * 60 + elapsedSeconds
+                const hh = Math.floor(totalSecondsFromMidnight / 3600)
+                const mm = Math.floor((totalSecondsFromMidnight % 3600) / 60)
+                const ss = totalSecondsFromMidnight % 60
+                const pad = n => String(n).padStart(2, '0')
+                const submitted = `2024-10-15T${pad(hh)}:${pad(mm)}:${pad(ss)}` // e.g. '2024-10-15T08:22:14'
+
+                ticketsStore.createTicket({
+                  id: `TKT-54${String(i).padStart(2, '0')}`,
+                  subject,
+                  content,
+                  priority: 'high',
+                  status: 'open',
+                  category: 'Security',
+                  from: from || { name: 'Unknown', department: 'External' },
+                  submitted
+                })
+              }, i * (intervalMs || 1000))
+            }
+          }, spamStartDelay)
+        }
+      } else {
+        // Switch mode if configured (only when no canned responses remain)
+        if (response.afterMode) {
+          if (!npc.cannedResponses?.length) {
+            setNpcMessagingMode(npcId, response.afterMode)
+          }
+        }
+      }
+
       // Unlock evidence if configured (immediate)
       if (response.unlockEvidence) {
         const evidenceStore = useEvidenceStore()
@@ -222,7 +285,7 @@ export const useCommsStore = defineStore('comms', () => {
           evidenceStore.unlockEvidence(evidenceId)
         })
         const mins = Math.round(delaySeconds / 60)
-        gameStore.addNotification(`Investigation in progress \u2014 results in ~${mins} minute${mins !== 1 ? 's' : ''}`, 'info')
+        gameStore.addNotification(`Investigation in progress — results in ~${mins} minute${mins !== 1 ? 's' : ''}`, 'info')
       }
 
       // Schedule delayed NPC message (follow-up with findings)
@@ -233,13 +296,6 @@ export const useCommsStore = defineStore('comms', () => {
           receiveMessage(targetNpcId, msgContent)
           gameStore.addNotification(`New message from ${npcs.value[targetNpcId]?.name || targetNpcId}`, 'info', 'comms', { npcId: targetNpcId })
         })
-      }
-
-      // Switch mode if configured (only when no canned responses remain)
-      if (response.afterMode) {
-        if (!npc.cannedResponses?.length) {
-          setNpcMessagingMode(npcId, response.afterMode)
-        }
       }
     }, delay)
   }
