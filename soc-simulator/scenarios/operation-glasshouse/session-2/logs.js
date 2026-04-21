@@ -62,50 +62,54 @@ export default [
     message: 'User logged out', details: 'Session duration: 4m 56s' },
 
   // ============================================
-  // SANDRA LEIGH — Hidden compromise (different IPs, no overlap)
+  // SANDRA LEIGH — Hidden compromise
+  // All sessions use 103.2.117.8 (Adelaide, Superloop) — attacker deliberately
+  // uses Adelaide-based VPN for the high-value CFO to blend in with her
+  // expected location. International IPs are only used for expendable accounts
+  // (David, Nadia, Liam) as noise/distraction for the SOC.
   // ============================================
 
   // Sandra compromised ~1 week ago. Attacker uses her account for recon.
-  // IP: 45.32.198.41 (Singapore, Vultr) — used Oct 7–11
+  // IP: 103.2.117.8 (Adelaide, Superloop) — consistent across all sessions
   { id: 'LOG-2030', timestamp: '2024-10-07T22:14:33', system: 'internal-sso', type: 'auth', severity: 'info',
-    source: '45.32.198.41', user: 'sandra.leigh@xyzpay.com.au', action: 'login_success',
-    message: 'Successful authentication via SSO', details: 'MFA: SMS, Device: Unknown, Location: Singapore (Vultr)' },
+    source: '103.2.117.8', user: 'sandra.leigh@xyzpay.com.au', action: 'login_success',
+    message: 'Successful authentication via SSO', details: 'MFA: SMS, Device: Unknown, Location: Adelaide, AU (Superloop)' },
   { id: 'LOG-2031', timestamp: '2024-10-07T22:16:02', system: 'hr-portal', type: 'access', severity: 'info',
-    source: '45.32.198.41', user: 'sandra.leigh@xyzpay.com.au', action: 'page_view',
+    source: '103.2.117.8', user: 'sandra.leigh@xyzpay.com.au', action: 'page_view',
     message: 'Accessed Employee Directory', details: 'Viewed: /directory/all-employees' },
   { id: 'LOG-2032', timestamp: '2024-10-07T22:22:45', system: 'internal-wiki', type: 'access', severity: 'info',
-    source: '45.32.198.41', user: 'sandra.leigh@xyzpay.com.au', action: 'search',
+    source: '103.2.117.8', user: 'sandra.leigh@xyzpay.com.au', action: 'search',
     message: 'Wiki search performed', details: 'Query: "org chart executive team"' },
   { id: 'LOG-2033', timestamp: '2024-10-07T22:31:11', system: 'internal-sso', type: 'auth', severity: 'info',
-    source: '45.32.198.41', user: 'sandra.leigh@xyzpay.com.au', action: 'logout',
+    source: '103.2.117.8', user: 'sandra.leigh@xyzpay.com.au', action: 'logout',
     message: 'User logged out', details: 'Session duration: 16m 38s' },
 
   // Sandra — attacker exploration (Oct 9)
   { id: 'LOG-2034', timestamp: '2024-10-09T23:05:17', system: 'internal-sso', type: 'auth', severity: 'info',
-    source: '45.32.198.41', user: 'sandra.leigh@xyzpay.com.au', action: 'login_success',
-    message: 'Successful authentication via SSO', details: 'MFA: SMS, Device: Unknown, Location: Singapore (Vultr)' },
+    source: '103.2.117.8', user: 'sandra.leigh@xyzpay.com.au', action: 'login_success',
+    message: 'Successful authentication via SSO', details: 'MFA: SMS, Device: Unknown, Location: Adelaide, AU (Superloop)' },
   { id: 'LOG-2035', timestamp: '2024-10-09T23:07:44', system: 'finance-system', type: 'access', severity: 'info',
-    source: '45.32.198.41', user: 'sandra.leigh@xyzpay.com.au', action: 'report_view',
+    source: '103.2.117.8', user: 'sandra.leigh@xyzpay.com.au', action: 'report_view',
     message: 'Financial dashboard accessed', details: 'View: Budget Allocation — IT Security' },
   { id: 'LOG-2036', timestamp: '2024-10-09T23:12:33', system: 'internal-wiki', type: 'access', severity: 'info',
-    source: '45.32.198.41', user: 'sandra.leigh@xyzpay.com.au', action: 'page_view',
+    source: '103.2.117.8', user: 'sandra.leigh@xyzpay.com.au', action: 'page_view',
     message: 'Wiki page viewed', details: 'Page: /wiki/it-support/service-accounts' },
   { id: 'LOG-2037', timestamp: '2024-10-09T23:18:55', system: 'internal-sso', type: 'auth', severity: 'info',
-    source: '45.32.198.41', user: 'sandra.leigh@xyzpay.com.au', action: 'logout',
+    source: '103.2.117.8', user: 'sandra.leigh@xyzpay.com.au', action: 'logout',
     message: 'User logged out', details: 'Session duration: 13m 38s' },
 
   // Sandra — svc_backup_admin creation (Oct 11, Friday)
   { id: 'LOG-2038', timestamp: '2024-10-11T21:42:08', system: 'internal-sso', type: 'auth', severity: 'info',
-    source: '45.32.198.41', user: 'sandra.leigh@xyzpay.com.au', action: 'login_success',
-    message: 'Successful authentication via SSO', details: 'MFA: SMS, Device: Unknown, Location: Singapore (Vultr)' },
+    source: '103.2.117.8', user: 'sandra.leigh@xyzpay.com.au', action: 'login_success',
+    message: 'Successful authentication via SSO', details: 'MFA: SMS, Device: Unknown, Location: Adelaide, AU (Superloop)' },
   { id: 'LOG-2039', timestamp: '2024-10-11T21:44:22', system: 'ad-server', type: 'admin', severity: 'info',
-    source: '45.32.198.41', user: 'sandra.leigh@xyzpay.com.au', action: 'account_create',
+    source: '103.2.117.8', user: 'sandra.leigh@xyzpay.com.au', action: 'account_create',
     message: 'New service account created', details: 'Account: svc_backup_admin, Type: Service Account, OU: Service Accounts' },
   { id: 'LOG-2040', timestamp: '2024-10-11T21:46:15', system: 'ad-server', type: 'admin', severity: 'info',
-    source: '45.32.198.41', user: 'sandra.leigh@xyzpay.com.au', action: 'group_add',
+    source: '103.2.117.8', user: 'sandra.leigh@xyzpay.com.au', action: 'group_add',
     message: 'Account added to security group', details: 'Account: svc_backup_admin, Group: Database-Admins' },
   { id: 'LOG-2041', timestamp: '2024-10-11T21:50:33', system: 'internal-sso', type: 'auth', severity: 'info',
-    source: '45.32.198.41', user: 'sandra.leigh@xyzpay.com.au', action: 'logout',
+    source: '103.2.117.8', user: 'sandra.leigh@xyzpay.com.au', action: 'logout',
     message: 'User logged out', details: 'Session duration: 8m 25s' },
 
   // ============================================
@@ -143,57 +147,144 @@ export default [
     message: 'File uploaded', details: 'Path: /soc-shared/IR-2024-0847/Customer_Impact_Assessment_CONFIDENTIAL.pdf, Size: 2.4MB' },
 
   // ============================================
-  // MONDAY NIGHT — Sandra attacker activity (different IP)
-  // IP: 167.172.62.94 (US, DigitalOcean) — escalation phase
+  // MONDAY EVENING/NIGHT — C-suite & senior staff checking in from home
+  // Active incident → everyone logging in to check on things
   // ============================================
+
+  // David Whitmore (CEO) — quick email check from home
+  { id: 'LOG-2196', timestamp: '2024-10-14T20:45:11', system: 'vpn-gateway', type: 'network', severity: 'info',
+    source: '203.22.145.62', user: 'david.whitmore@xyzpay.com.au', action: 'vpn_connect',
+    message: 'VPN connection established', details: 'Location: Home, Assigned IP: 10.1.100.10' },
+  { id: 'LOG-2197', timestamp: '2024-10-14T20:46:33', system: 'internal-sso', type: 'auth', severity: 'info',
+    source: '10.1.100.10', user: 'david.whitmore@xyzpay.com.au', action: 'login_success',
+    message: 'Successful authentication via SSO', details: 'MFA: Authenticator App, Device: LAPTOP-DW001, Location: Adelaide, AU (Telstra residential)' },
+  { id: 'LOG-2198', timestamp: '2024-10-14T20:48:15', system: 'email-gateway', type: 'email', severity: 'info',
+    source: '10.1.100.10', user: 'david.whitmore@xyzpay.com.au', action: 'email_read',
+    message: 'Email folder accessed', details: 'Folder: Inbox, Messages read: 3' },
+  { id: 'LOG-2199', timestamp: '2024-10-14T21:05:44', system: 'internal-sso', type: 'auth', severity: 'info',
+    source: '10.1.100.10', user: 'david.whitmore@xyzpay.com.au', action: 'logout',
+    message: 'User logged out', details: 'Session duration: 19m' },
+  { id: 'LOG-2200', timestamp: '2024-10-14T21:05:55', system: 'vpn-gateway', type: 'network', severity: 'info',
+    source: '203.22.145.62', user: 'david.whitmore@xyzpay.com.au', action: 'vpn_disconnect',
+    message: 'VPN connection terminated', details: 'Duration: 20m 44s' },
+
+  // Karen Lee (General Counsel) — checking board comms from home
+  { id: 'LOG-2201', timestamp: '2024-10-14T21:12:08', system: 'vpn-gateway', type: 'network', severity: 'info',
+    source: '1.136.92.44', user: 'karen.lee@xyzpay.com.au', action: 'vpn_connect',
+    message: 'VPN connection established', details: 'Location: Home, Assigned IP: 10.1.100.22' },
+  { id: 'LOG-2202', timestamp: '2024-10-14T21:13:30', system: 'internal-sso', type: 'auth', severity: 'info',
+    source: '10.1.100.22', user: 'karen.lee@xyzpay.com.au', action: 'login_success',
+    message: 'Successful authentication via SSO', details: 'MFA: Authenticator App, Device: LAPTOP-KL001, Location: Adelaide, AU (Optus residential)' },
+  { id: 'LOG-2203', timestamp: '2024-10-14T21:15:45', system: 'email-gateway', type: 'email', severity: 'info',
+    source: '10.1.100.22', user: 'karen.lee@xyzpay.com.au', action: 'email_read',
+    message: 'Email folder accessed', details: 'Folder: Legal/Board, Messages read: 5' },
+  { id: 'LOG-2204', timestamp: '2024-10-14T21:28:33', system: 'internal-sso', type: 'auth', severity: 'info',
+    source: '10.1.100.22', user: 'karen.lee@xyzpay.com.au', action: 'logout',
+    message: 'User logged out', details: 'Session duration: 15m' },
+  { id: 'LOG-2205', timestamp: '2024-10-14T21:28:44', system: 'vpn-gateway', type: 'network', severity: 'info',
+    source: '1.136.92.44', user: 'karen.lee@xyzpay.com.au', action: 'vpn_disconnect',
+    message: 'VPN connection terminated', details: 'Duration: 16m 36s' },
+
+  // Sandra legitimate evening session (CFO checking in from home during incident)
+  // This creates CONCURRENT SESSIONS with the attacker at 22:04–22:08
+  { id: 'LOG-2190', timestamp: '2024-10-14T21:30:44', system: 'vpn-gateway', type: 'network', severity: 'info',
+    source: '121.44.88.15', user: 'sandra.leigh@xyzpay.com.au', action: 'vpn_connect',
+    message: 'VPN connection established', details: 'Location: Home, Assigned IP: 10.1.100.20' },
+  { id: 'LOG-2191', timestamp: '2024-10-14T21:32:08', system: 'internal-sso', type: 'auth', severity: 'info',
+    source: '10.1.100.20', user: 'sandra.leigh@xyzpay.com.au', action: 'login_success',
+    message: 'Successful authentication via SSO', details: 'MFA: Authenticator App, Device: LAPTOP-SL001, Location: Adelaide, AU (TPG residential)' },
+  { id: 'LOG-2192', timestamp: '2024-10-14T21:35:22', system: 'email-gateway', type: 'email', severity: 'info',
+    source: '10.1.100.20', user: 'sandra.leigh@xyzpay.com.au', action: 'email_read',
+    message: 'Email folder accessed', details: 'Folder: Inbox, Messages read: 6' },
+  { id: 'LOG-2193', timestamp: '2024-10-14T21:42:15', system: 'finance-system', type: 'access', severity: 'info',
+    source: '10.1.100.20', user: 'sandra.leigh@xyzpay.com.au', action: 'report_view',
+    message: 'Financial dashboard accessed', details: 'View: Incident Cost Tracker' },
 
   // Alex Anderson arrives for night shift
   { id: 'LOG-2070', timestamp: '2024-10-14T22:00:15', system: 'internal-sso', type: 'auth', severity: 'info',
     source: '10.1.50.101', user: 'alex.anderson@xyzpay.com.au', action: 'login_success',
     message: 'Successful authentication via SSO', details: 'MFA: Authenticator App, Device: DESKTOP-AA001, Location: Adelaide Office' },
 
-  // Sandra attacker — places right_0ff calling card on file share
+  // Sandra attacker — checking they still have access via Adelaide VPN
+  // NOTE: Sandra's LEGITIMATE session (10.1.100.20) is still active at this point
+  // The attacker uses an Adelaide-based VPN to blend in geographically
   { id: 'LOG-2071', timestamp: '2024-10-14T22:04:11', system: 'internal-sso', type: 'auth', severity: 'info',
-    source: '167.172.62.94', user: 'sandra.leigh@xyzpay.com.au', action: 'login_success',
-    message: 'Successful authentication via SSO', details: 'MFA: SMS, Device: Unknown, Location: New York, US (DigitalOcean)' },
-  { id: 'LOG-2072', timestamp: '2024-10-14T22:06:33', system: 'file-share', type: 'access', severity: 'info',
-    source: '167.172.62.94', user: 'sandra.leigh@xyzpay.com.au', action: 'file_upload',
-    message: 'File uploaded', details: 'Path: /company-shared/right_0ff_manifesto.txt, Size: 14KB' },
-  { id: 'LOG-2073', timestamp: '2024-10-14T22:08:45', system: 'file-share', type: 'access', severity: 'info',
-    source: '167.172.62.94', user: 'sandra.leigh@xyzpay.com.au', action: 'file_upload',
-    message: 'File uploaded', details: 'Path: /company-shared/right_0ff_data_sample.csv, Size: 847KB' },
-  { id: 'LOG-2074', timestamp: '2024-10-14T22:12:00', system: 'internal-sso', type: 'auth', severity: 'info',
-    source: '167.172.62.94', user: 'sandra.leigh@xyzpay.com.au', action: 'logout',
-    message: 'User logged out', details: 'Session duration: 7m 49s' },
+    source: '103.2.117.8', user: 'sandra.leigh@xyzpay.com.au', action: 'login_success',
+    message: 'Successful authentication via SSO', details: 'MFA: SMS, Device: Unknown, Location: Adelaide, AU (Superloop)' },
+  { id: 'LOG-2072', timestamp: '2024-10-14T22:06:03', system: 'email-gateway', type: 'email', severity: 'info',
+    source: '103.2.117.8', user: 'sandra.leigh@xyzpay.com.au', action: 'email_read',
+    message: 'Email folder accessed', details: 'Folder: Inbox, Messages read: 0 (browsed only)' },
+  { id: 'LOG-2074', timestamp: '2024-10-14T22:08:22', system: 'internal-sso', type: 'auth', severity: 'info',
+    source: '103.2.117.8', user: 'sandra.leigh@xyzpay.com.au', action: 'logout',
+    message: 'User logged out', details: 'Session duration: 4m 11s' },
+
+  // Monday night — key staff overtime (incident-related)
+  // Multiple senior staff checking in from home makes Sandra's attacker session less conspicuous
+
+  // Marcus Chen (CISO) — checking in from home
+  { id: 'LOG-2170', timestamp: '2024-10-14T22:08:33', system: 'vpn-gateway', type: 'network', severity: 'info',
+    source: '203.45.67.89', user: 'marcus.chen@xyzpay.com.au', action: 'vpn_connect',
+    message: 'VPN connection established', details: 'Location: Home Office, Assigned IP: 10.1.100.12' },
+  { id: 'LOG-2171', timestamp: '2024-10-14T22:09:15', system: 'internal-sso', type: 'auth', severity: 'info',
+    source: '10.1.100.12', user: 'marcus.chen@xyzpay.com.au', action: 'login_success',
+    message: 'Successful authentication via SSO', details: 'MFA: Authenticator App, Device: LAPTOP-MC001' },
+  { id: 'LOG-2172', timestamp: '2024-10-14T22:11:44', system: 'email-gateway', type: 'email', severity: 'info',
+    source: '10.1.100.12', user: 'marcus.chen@xyzpay.com.au', action: 'email_read',
+    message: 'Email folder accessed', details: 'Folder: IR-2024-0847, Messages read: 4' },
+  { id: 'LOG-2173', timestamp: '2024-10-14T22:22:01', system: 'internal-sso', type: 'auth', severity: 'info',
+    source: '10.1.100.12', user: 'marcus.chen@xyzpay.com.au', action: 'logout',
+    message: 'User logged out', details: 'Session duration: 13m' },
+
+  // Priya Sharma (SOC Manager) — quick SIEM check from home
+  { id: 'LOG-2174', timestamp: '2024-10-14T22:14:22', system: 'vpn-gateway', type: 'network', severity: 'info',
+    source: '14.203.88.45', user: 'priya.sharma@xyzpay.com.au', action: 'vpn_connect',
+    message: 'VPN connection established', details: 'Location: Home, Assigned IP: 10.1.100.15' },
+  { id: 'LOG-2175', timestamp: '2024-10-14T22:15:01', system: 'siem', type: 'access', severity: 'info',
+    source: '10.1.100.15', user: 'priya.sharma@xyzpay.com.au', action: 'dashboard_view',
+    message: 'SIEM dashboard accessed', details: 'View: IR-2024-0847 Status' },
+  { id: 'LOG-2176', timestamp: '2024-10-14T22:24:33', system: 'internal-sso', type: 'auth', severity: 'info',
+    source: '10.1.100.15', user: 'priya.sharma@xyzpay.com.au', action: 'logout',
+    message: 'User logged out', details: 'Session duration: 10m' },
+
+  // Rachel Torres (Infrastructure Lead) — checking system health
+  { id: 'LOG-2177', timestamp: '2024-10-14T22:32:08', system: 'vpn-gateway', type: 'network', severity: 'info',
+    source: '101.164.22.73', user: 'rachel.torres@xyzpay.com.au', action: 'vpn_connect',
+    message: 'VPN connection established', details: 'Location: Home, Assigned IP: 10.1.100.18' },
+  { id: 'LOG-2178', timestamp: '2024-10-14T22:33:45', system: 'monitoring', type: 'access', severity: 'info',
+    source: '10.1.100.18', user: 'rachel.torres@xyzpay.com.au', action: 'dashboard_view',
+    message: 'Infrastructure monitoring accessed', details: 'View: System Health Overview' },
+  { id: 'LOG-2179', timestamp: '2024-10-14T22:48:11', system: 'internal-sso', type: 'auth', severity: 'info',
+    source: '10.1.100.18', user: 'rachel.torres@xyzpay.com.au', action: 'logout',
+    message: 'User logged out', details: 'Session duration: 16m' },
+
+  // Sandra legitimate session ends (she goes to bed)
+  { id: 'LOG-2194', timestamp: '2024-10-14T22:47:33', system: 'internal-sso', type: 'auth', severity: 'info',
+    source: '10.1.100.20', user: 'sandra.leigh@xyzpay.com.au', action: 'logout',
+    message: 'User logged out', details: 'Session duration: 1h 15m' },
+  { id: 'LOG-2195', timestamp: '2024-10-14T22:47:45', system: 'vpn-gateway', type: 'network', severity: 'info',
+    source: '121.44.88.15', user: 'sandra.leigh@xyzpay.com.au', action: 'vpn_disconnect',
+    message: 'VPN connection terminated', details: 'Duration: 1h 17m' },
 
   // ============================================
   // TUESDAY 15th October — Early hours (attacker activity)
   // ============================================
 
   // Sandra attacker — PII database recon (01:00)
+  // Attacker continues using Adelaide Superloop VPN to blend in geographically
   { id: 'LOG-2080', timestamp: '2024-10-15T01:02:33', system: 'internal-sso', type: 'auth', severity: 'info',
-    source: '167.172.62.94', user: 'sandra.leigh@xyzpay.com.au', action: 'login_success',
-    message: 'Successful authentication via SSO', details: 'MFA: SMS, Device: Unknown, Location: New York, US (DigitalOcean)' },
+    source: '103.2.117.8', user: 'sandra.leigh@xyzpay.com.au', action: 'login_success',
+    message: 'Successful authentication via SSO', details: 'MFA: SMS, Device: Unknown, Location: Adelaide, AU (Superloop)' },
   { id: 'LOG-2081', timestamp: '2024-10-15T01:04:15', system: 'customer-db', type: 'access', severity: 'info',
-    source: '167.172.62.94', user: 'sandra.leigh@xyzpay.com.au', action: 'access_denied',
+    source: '103.2.117.8', user: 'sandra.leigh@xyzpay.com.au', action: 'access_denied',
     message: 'Database access denied — insufficient privileges', details: 'Database: pii_vault, Action: SELECT, Reason: Role not authorised' },
   { id: 'LOG-2082', timestamp: '2024-10-15T01:06:44', system: 'ad-server', type: 'access', severity: 'info',
-    source: '167.172.62.94', user: 'sandra.leigh@xyzpay.com.au', action: 'group_query',
+    source: '103.2.117.8', user: 'sandra.leigh@xyzpay.com.au', action: 'group_query',
     message: 'Security group membership queried', details: 'Group: PII-Database-Access, Members returned: 4' },
   { id: 'LOG-2083', timestamp: '2024-10-15T01:12:22', system: 'internal-sso', type: 'auth', severity: 'info',
-    source: '167.172.62.94', user: 'sandra.leigh@xyzpay.com.au', action: 'logout',
+    source: '103.2.117.8', user: 'sandra.leigh@xyzpay.com.au', action: 'logout',
     message: 'User logged out', details: 'Session duration: 9m 49s' },
 
-  // svc_backup_admin — scheduled task creation (02:00)
-  { id: 'LOG-2085', timestamp: '2024-10-15T02:00:08', system: 'internal-sso', type: 'auth', severity: 'info',
-    source: '167.172.62.94', user: 'svc_backup_admin@xyzpay.com.au', action: 'login_success',
-    message: 'Successful authentication via SSO', details: 'Service account login, Location: New York, US (DigitalOcean)' },
-  { id: 'LOG-2086', timestamp: '2024-10-15T02:02:15', system: 'customer-db', type: 'admin', severity: 'info',
-    source: '167.172.62.94', user: 'svc_backup_admin@xyzpay.com.au', action: 'task_create',
-    message: 'Scheduled task created', details: 'Task: system_maintenance_daily, Schedule: Daily 02:00, Target: db-srv-01' },
-  { id: 'LOG-2087', timestamp: '2024-10-15T02:04:33', system: 'internal-sso', type: 'auth', severity: 'info',
-    source: '167.172.62.94', user: 'svc_backup_admin@xyzpay.com.au', action: 'logout',
-    message: 'User logged out', details: 'Session duration: 4m 25s' },
+  // svc_backup_admin — REMOVED: 02:00 task creation moved to 06:05 (see below)
 
   // ============================================
   // TUESDAY MORNING — Legitimate activity (noise)
@@ -221,6 +312,20 @@ export default [
   { id: 'LOG-2096', timestamp: '2024-10-15T06:00:00', system: 'antivirus', type: 'system', severity: 'info',
     source: 'av-mgmt-01', user: 'SYSTEM', action: 'signature_update',
     message: 'Antivirus signatures updated', details: 'Version: 2024.10.15.001' },
+
+  // svc_backup_admin — exfiltration task creation (06:05)
+  // Timed to coincide with backup completion noise. Task scheduled for 17:00 (same as right_0ff ultimatum deadline).
+  // The right_0ff ultimatum email was also sent at 06:03 — attacker making final moves before the company wakes up.
+  // Same Adelaide Superloop IP as Sandra attacker sessions — key correlation point for students.
+  { id: 'LOG-2180', timestamp: '2024-10-15T06:05:22', system: 'internal-sso', type: 'auth', severity: 'info',
+    source: '103.2.117.8', user: 'svc_backup_admin@xyzpay.com.au', action: 'login_success',
+    message: 'Successful authentication via SSO', details: 'Service account login, Location: Adelaide, AU (Superloop)' },
+  { id: 'LOG-2181', timestamp: '2024-10-15T06:07:14', system: 'customer-db', type: 'admin', severity: 'info',
+    source: '103.2.117.8', user: 'svc_backup_admin@xyzpay.com.au', action: 'task_create',
+    message: 'Scheduled task created', details: 'Task: system_maintenance_daily, Schedule: Daily 17:00, Command: db_export --source=pii_vault --dest=s3://xyzpay-db-dr-replica-au/vault-export --compress --encrypt, Target: db-srv-01' },
+  { id: 'LOG-2182', timestamp: '2024-10-15T06:09:01', system: 'internal-sso', type: 'auth', severity: 'info',
+    source: '103.2.117.8', user: 'svc_backup_admin@xyzpay.com.au', action: 'logout',
+    message: 'User logged out', details: 'Session duration: 3m 39s' },
 
   // Tuesday morning — staff logins
   { id: 'LOG-2100', timestamp: '2024-10-15T07:30:05', system: 'internal-sso', type: 'auth', severity: 'info',

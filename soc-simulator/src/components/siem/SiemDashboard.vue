@@ -59,6 +59,32 @@ function handleAction(action) {
       gameStore.addNotification(`IP block request sent to Infrastructure: ${action.ip}`, 'success')
       gameStore.logAction(`Requested IP block: ${action.ip}`, 'containment')
     }
+    
+    // Send immediate NPC message (e.g., "we're looking into it")
+    if (action.immediateMessage) {
+      const { npcId, content } = action.immediateMessage
+      commsStore.receiveMessage(npcId, content)
+      gameStore.addNotification(`New message from ${commsStore.npcs[npcId]?.name || npcId}`, 'info', 'comms', { npcId })
+    }
+    
+    // Schedule delayed evidence unlock (investigation takes time)
+    if (action.delayedUnlocksEvidence) {
+      const { evidenceId, delaySeconds } = action.delayedUnlocksEvidence
+      gameStore.scheduleCallback(`evidence-${evidenceId}`, delaySeconds, () => {
+        evidenceStore.unlockEvidence(evidenceId)
+      })
+      const mins = Math.round(delaySeconds / 60)
+      gameStore.addNotification(`Investigation in progress — results in ~${mins} minute${mins !== 1 ? 's' : ''}`, 'info')
+    }
+    
+    // Schedule delayed NPC message (follow-up with findings)
+    if (action.delayedMessage) {
+      const { npcId, content, delaySeconds } = action.delayedMessage
+      gameStore.scheduleCallback(`delayed-msg-${action.id}`, delaySeconds, () => {
+        commsStore.receiveMessage(npcId, content)
+        gameStore.addNotification(`New message from ${commsStore.npcs[npcId]?.name || npcId}`, 'info', 'comms', { npcId })
+      })
+    }
   }
 }
 </script>
@@ -90,13 +116,17 @@ function handleAction(action) {
           <span class="w-3 h-3 rounded-full bg-blue-500"></span>
           <span>Low: {{ alertsStore.alertCounts.low }}</span>
         </div>
+        <div class="flex items-center gap-2">
+          <span class="w-3 h-3 rounded-full bg-soc-muted"></span>
+          <span>Info: {{ alertsStore.alertCounts.info }}</span>
+        </div>
       </div>
     </div>
     
     <!-- Filter Bar -->
     <div class="flex gap-2 mb-4">
       <button
-        v-for="f in ['all', 'critical', 'high', 'medium', 'low']"
+        v-for="f in ['all', 'critical', 'high', 'medium', 'low', 'info']"
         :key="f"
         @click="alertsStore.setFilter(f)"
         class="px-3 py-1 rounded text-sm capitalize transition"

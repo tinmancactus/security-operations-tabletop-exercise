@@ -20,7 +20,7 @@ export const useAlertsStore = defineStore('alerts', () => {
       .filter(a => visibleAlertIds.value.includes(a.id))
       .filter(a => filter.value === 'all' || a.severity === filter.value)
       .sort((a, b) => {
-        const severityOrder = { critical: 0, high: 1, medium: 2, low: 3 }
+        const severityOrder = { critical: 0, high: 1, medium: 2, low: 3, info: 4 }
         return severityOrder[a.severity] - severityOrder[b.severity]
       })
   })
@@ -36,6 +36,7 @@ export const useAlertsStore = defineStore('alerts', () => {
       high: visible.filter(a => a.severity === 'high').length,
       medium: visible.filter(a => a.severity === 'medium').length,
       low: visible.filter(a => a.severity === 'low').length,
+      info: visible.filter(a => a.severity === 'info').length,
       total: visible.length
     }
   })

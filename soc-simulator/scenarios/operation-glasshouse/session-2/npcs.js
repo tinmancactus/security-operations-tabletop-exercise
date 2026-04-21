@@ -25,9 +25,9 @@ At 6:03 this morning, David Whitmore received an email from a group calling them
 ---
 "Rise and shine, Mr. Whitmore. Rise and shine.
 
-We have your customers' dirty laundry. Every late fee. Every hardship case. Every payment plan you've been squeezing people with. We're going to show the world what XYZ Pay really does to vulnerable people.
+We have your dirty laundry. Every late fee. Every hardship case. Every payment plan you've been squeezing people with. We're going to show the world what XYZ Pay really does to vulnerable people.
 
-You have until 5pm today to write off all customer debt. Every single customer's balance must be $0.
+You have until 5pm today to write off ALL customer debt. Every single customer's balance must be $0.
 
 If you don't comply, we publish everything.
 
@@ -35,16 +35,75 @@ Sincerely,
 right_0ff"
 ---
 
-Marcus is in with DW and the board now.
-
-Here's what we need to figure out:
-\u2022 Is this threat real? Do they actually have the data they claim?
-\u2022 How did they get in? Is Liam's compromise the full picture or is there more?
-\u2022 Are they still inside our systems right now?
-
-You've got the overnight handover from Alex \u2014 start there. Check the alerts he flagged, review James's report, and follow whatever threads look most promising.
+At this stage the main thing I need to know is whether the attackers still have access to our systems. You've got the overnight handover from Alex \u2014 start there. Check the alerts he flagged, review James's report, and follow whatever threads look most promising.
 
 I'll be here if you need to escalate anything. Good luck.`
+      }
+    ],
+
+    specialInteractions: [
+      {
+        triggeredByAction: 'investigate-vpn-sandra',
+        type: 'canned-handoff',
+        delaySeconds: 8,
+        promptMessage: `On it. Can you send me the VPN session logs for Sandra? I want to cross-reference against her device enrollment and MFA records.`,
+        cannedResponses: [{
+          id: 'send-sandra-vpn-logs',
+          label: `Here are Sandra's VPN session logs and auth records.
+📎 L-2010.txt 📎 vpn-sandra-leigh.log 📎 mfa-auth.log`,
+          npcReply: `Thanks, pulling these apart now. Give me a few minutes.`,
+          delayedUnlockEvidence: {
+            evidenceId: 'EV-25',
+            delaySeconds: 300
+          },
+          delayedNpcMessage: {
+            content: `Something's a bit odd with Sandra's session.\n\nShe had two concurrent sessions last night:\n\n1. Home VPN (121.44.88.15, TPG) — logged in at 21:30, LAPTOP-SL001, Authenticator App — totally normal\n2. A second session from 103.2.117.8 (Superloop) — logged in at 22:04, unknown device, SMS MFA\n\nBoth IPs are Adelaide, so it's not a geo impossibility. But a few things don't add up:\n• Why would she have two sessions at the same time from different IPs?\n• The second session used SMS for MFA — Sandra's enrolled device uses Authenticator App\n• The device on the second session isn't in our asset inventory\n• The second session was very short — logged in, browsed her inbox without reading anything, then logged out after 4 minutes\n\nCould be nothing — maybe she jumped on her phone or something. But with everything going on, I'd recommend we look into it further.\n\nFull analysis sent to Evidence.`,
+            delaySeconds: 300
+          },
+          afterMode: 'escalation'
+        }]
+      },
+      {
+        triggeredByAction: 'investigate-vpn-marcus',
+        type: 'canned-handoff',
+        delaySeconds: 6,
+        promptMessage: `Sure, I'll check Marcus's session. Can you send me the logs?`,
+        cannedResponses: [{
+          id: 'send-marcus-vpn-logs',
+          label: `Here are Marcus's VPN session logs.
+📎 L-2011.txt 📎 vpn-marcus-chen.log`,
+          npcReply: `Got them, thanks. Reviewing now.`,
+          delayedUnlockEvidence: {
+            evidenceId: 'EV-22',
+            delaySeconds: 300
+          },
+          delayedNpcMessage: {
+            content: `Marcus's session checks out. Known home IP, enrolled device, Authenticator App MFA. He was reading incident emails for about 13 minutes. I've confirmed with him directly — he was reviewing the IR updates before bed. All clear.\n\nFull analysis sent to Evidence.`,
+            delaySeconds: 300
+          },
+          afterMode: 'escalation'
+        }]
+      },
+      {
+        triggeredByAction: 'investigate-vpn-rachel',
+        type: 'canned-handoff',
+        delaySeconds: 7,
+        promptMessage: `I'll review Rachel's session — send me the logs and I'll cross-check.`,
+        cannedResponses: [{
+          id: 'send-rachel-vpn-logs',
+          label: `Here are Rachel's VPN session logs.
+📎 L-2013.txt 📎 vpn-rachel-torres.log`,
+          npcReply: `Thanks. Checking now.`,
+          delayedUnlockEvidence: {
+            evidenceId: 'EV-24',
+            delaySeconds: 300
+          },
+          delayedNpcMessage: {
+            content: `Rachel's session is fine. Known home IP, enrolled device, standard infrastructure monitoring activity. She was checking system health for about 16 minutes — exactly the kind of thing she'd do during an active incident. Confirmed with her team. All clear.\n\nAnalysis sent to Evidence.`,
+            delaySeconds: 300
+          },
+          afterMode: 'escalation'
+        }]
       }
     ],
     
@@ -417,6 +476,30 @@ James`
     available: false,
     messagingMode: 'busy',
     escalationCost: { first: 3, followUp: 1 },
+
+    specialInteractions: [
+      {
+        triggeredByAction: 'investigate-vpn-priya',
+        type: 'canned-handoff',
+        delaySeconds: 10,
+        promptMessage: `I'll look into Priya's session myself — can't have her reviewing her own logs. Send me what you've got.`,
+        cannedResponses: [{
+          id: 'send-priya-vpn-logs',
+          label: `Here are Priya's VPN session logs.
+📎 L-2012.txt 📎 vpn-priya-sharma.log`,
+          npcReply: `Received. I'll review this between meetings and get back to you.`,
+          delayedUnlockEvidence: {
+            evidenceId: 'EV-23',
+            delaySeconds: 300
+          },
+          delayedNpcMessage: {
+            content: `Priya's session is clean. Known home IP, enrolled device, Authenticator App. She was on the SIEM dashboard for about 10 minutes checking IR status. That's exactly what I'd expect her to do given the active incident. No concerns.\n\nAnalysis sent to Evidence.`,
+            delaySeconds: 300
+          },
+          afterMode: 'busy'
+        }]
+      }
+    ],
     
     messageHistory: [
       // === Pre-Session 1 history ===
@@ -465,22 +548,23 @@ I'll handle the executive comms. Don't discuss this outside the SOC team until I
 Good work today. We'll regroup in the morning. Get some rest tonight.`
       },
       // === Tuesday morning ===
-      {
-        id: 'marcus-tue-1',
-        timestamp: '2024-10-15T07:30:00',
-        gameTime: 'Tue 7:30am',
-        from: 'npc',
-        content: `[[[TC NOTE: Do we need this message? Do we need it now? Priya shares all the same information...]]]
-        Team, the situation has escalated. We received a direct threat from a group calling themselves "right_0ff" at 6am this morning. I've briefed the CEO.
+      // Disabled for now until I decide whether we need this.
+//       {
+//         id: 'marcus-tue-1',
+//         timestamp: '2024-10-15T07:30:00',
+//         gameTime: 'Tue 7:30am',
+//         from: 'npc',
+//         content: `[[[TC NOTE: Do we need this message? Do we need it now? Priya shares all the same information...]]]
+//         Team, the situation has escalated. We received a direct threat from a group calling themselves "right_0ff" at 6am this morning. I've briefed the CEO.
 
-I'll be in emergency meetings with the board most of today. Priya is your point of contact. I need the SOC to focus on:
+// I'll be in emergency meetings with the board most of today. Priya is your point of contact. I need the SOC to focus on:
 
-1. Understanding the full scope of the compromise
-2. Identifying any ongoing attacker access
-3. Preparing a clear picture of what they have and what they can do with it
+// 1. Understanding the full scope of the compromise
+// 2. Identifying any ongoing attacker access
+// 3. Preparing a clear picture of what they have and what they can do with it
 
-I will need a recommendation from you before my board meeting. More on that later.`
-      }
+// I will need a recommendation from you before my board meeting. More on that later.`
+//       }
     ]
   },
 
@@ -617,7 +701,31 @@ Let me know if you need any other firewall changes or account actions.`
         from: 'npc',
         content: `No worries. Ping me anytime - my team's standing by in case this escalates.`
       }
-    ]
+    ],
+
+    specialInteractions: [{
+      triggeredByAction: 'investigate-scheduled-task',
+      type: 'canned-handoff',
+      delaySeconds: 10,
+      promptMessage: `Hey, got your request about that scheduled task on DB-PROD-01. Can you send me the alert details and whatever logs you've got? I want to see exactly what was registered before I start pulling things apart.`,
+      cannedResponses: [
+        {
+          id: 'send-task-logs',
+          label: `Sure, here are the alert details, task config, and associated logs.
+📎 M-2520.txt 📎 config.yml 📎 1510240822.log`,
+          npcReply: `Thanks, got it. Let me take a look.\n\nOK so the task is called "system_maintenance_daily", registered by svc_backup_admin at 06:07 this morning. I don't recognise that service account off the top of my head, and the task name doesn't match anything in our runbooks.\n\nBut I don't want to jump to conclusions, it could be something one of the other infra teams set up that I'm not across. Let me check with my team and dig into the task configuration properly. I'll get back to you as soon as I know more.`,
+          delayedUnlockEvidence: {
+            evidenceId: 'EV-26',
+            delaySeconds: 600
+          },
+          delayedNpcMessage: {
+            content: `Right. We've finished our investigation. This is bad.\n\nHere's what that task actually does:\n\nTask: system_maintenance_daily\nCommand: db_export --source=pii_vault --dest=s3://xyzpay-db-dr-replica-au/vault-export --compress --encrypt\nSchedule: Daily at 17:00\n\nThat S3 bucket is NOT in our approved backup destinations. This task would have exported our entire PII vault — customer names, addresses, financial details — to an external location at 5pm today.\n\nMy team has deactivated the svc_backup_admin account and suspended the task. The export will NOT run.\n\nBut we need to know who created this account. It was added to the Database-Admins security group, which gave it full access to DB-PROD-01. This wasn't us — someone with admin privileges set this up. You should check the AD change logs to trace who created it.\n\nFull details sent to Evidence.`,
+            delaySeconds: 600
+          },
+          afterMode: 'busy'
+        }
+      ]
+    }]
   },
 
   alex: {
@@ -646,13 +754,15 @@ HANDOVER FROM JAMES (22:00)
 James briefed me when I came on. He's been working since 9am and has completed the Customer Impact Assessment — 2,847 customers identified. He's sent you a copy. He's heading home to sleep and will be in late tomorrow (probably 10-11am).
 
 OVERNIGHT ACTIVITY
-- SIEM: 18 alerts overnight. Mostly credential stuffing continuation from Tor exits (same pattern as Sunday night). Nothing that looks related to the Liam compromise, but I've flagged a couple of unusual ones for your review:
-  • Alert at 01:17 — internal file share access from sandra.leigh, seemed odd for that time of night but she's CFO so maybe working late?
-  • Alert at 02:14 — new scheduled task created on DB-PROD-01 ("system_maintenance_daily"). Could be legit from Rachel's infra team but I couldn't confirm overnight.
-  [[[TC NOTE: Do we explicity mention these alerts and direct students to follow up on them at this stage? Or is that too much?]]]
+- SIEM: 20 alerts overnight. Mostly credential stuffing continuation from Tor exits (same pattern as Sunday night). Nothing that looks related to the Liam compromise.
+  • Alert at 06:07 — new scheduled task registered on DB-PROD-01 ("system_maintenance_daily"). Came in right as the morning backups were finishing so it's probably a backup job, but I don't recognise it. Could be something Rachel's team set up.
+- Lots of after-hours VPN activity from senior staff overnight. David Whitmore, Karen Lee, Sandra, Marcus, Priya, and Rachel all checked in from home between about 8:45 and 11pm. Not unusual given the incident but worth noting. I closed the CEO and General Counsel ones.
 - Liam's account: remains disabled. No further access attempts.
 - Attacker IP 103.42.91.17: blocked at firewall. No hits overnight.
-- Company-wide advisory: Marcus sent it yesterday arvo. No responses to the SOC overnight.
+- Company-wide advisory: Marcus sent it late yesterday arvo (~4:40pm). Two vishing report tickets came through afterwards:
+  • TKT-4475 (Linda Park, HR) — got a call Mon ~2:30pm, hung up. No compromise.
+  • TKT-4476 (Mei Zhang, Finance) — got a call last Thursday, hung up. No compromise. Note the early date — that's before Liam's compromise.
+  Both are low priority but worth reviewing for campaign intel.
 
 INCOMING
 - Marcus sent an urgent message this morning. Sounds like something's just happened that's escalated things significantly. Priya's coming in early. I don't have any further details at this stage, sorry.

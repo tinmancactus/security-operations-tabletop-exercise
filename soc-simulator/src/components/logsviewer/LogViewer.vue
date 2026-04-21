@@ -7,24 +7,32 @@ const gameStore = useGameStore()
 
 const allLogs = computed(() => gameStore.scenario?.logs || [])
 
-// Filter logs to only show those at or before current in-game time
+// Filter logs to only show those at or before current in-game datetime
 const logs = computed(() => {
   const totalDuration = gameStore.scenario?.config?.duration || 3600
   const elapsedSeconds = totalDuration - gameStore.timeRemaining
-  const elapsedMinutes = Math.floor(elapsedSeconds / 60)
   
-  // Start time from config (default 8:00am = 480 minutes from midnight)
+  // Build the current in-game datetime from the briefing date + start time + elapsed
+  const briefingDate = gameStore.scenario?.config?.briefing?.date
   const startHour = gameStore.scenario?.config?.startTime?.hour ?? 8
   const startMinute = gameStore.scenario?.config?.startTime?.minute ?? 0
-  const currentGameMinutes = (startHour * 60 + startMinute) + elapsedMinutes
+  
+  // Parse game date from briefing (e.g. "Tuesday, 15 October 2024") or use first log's date
+  let gameStart
+  if (briefingDate) {
+    gameStart = new Date(briefingDate)
+  }
+  if (!gameStart || isNaN(gameStart.getTime())) {
+    // Fallback: use the latest log timestamp's date with the configured start time
+    const lastLog = allLogs.value[allLogs.value.length - 1]
+    gameStart = lastLog ? new Date(lastLog.timestamp) : new Date()
+  }
+  gameStart.setHours(startHour, startMinute, 0, 0)
+  
+  const currentGameTime = new Date(gameStart.getTime() + elapsedSeconds * 1000)
   
   return allLogs.value.filter(log => {
-    // Parse the log timestamp to get minutes from midnight
-    const logDate = new Date(log.timestamp)
-    const logMinutes = logDate.getHours() * 60 + logDate.getMinutes()
-    
-    // Only show logs at or before current in-game time
-    return logMinutes <= currentGameMinutes
+    return new Date(log.timestamp) <= currentGameTime
   })
 })
 

@@ -200,20 +200,46 @@ export const useCommsStore = defineStore('comms', () => {
     sendMessage(npcId, response.label)
     gameStore.logAction(`Responded to ${npc.name}`, 'comms', { content: response.label })
 
+    // Remove this response from the list (consumed)
+    npc.cannedResponses = (npc.cannedResponses || []).filter(r => r.id !== responseId)
+
     // NPC replies after delay
     const delay = response.delay || 2000
     setTimeout(() => {
       receiveMessage(npcId, response.npcReply)
 
-      // Unlock evidence if configured
+      // Unlock evidence if configured (immediate)
       if (response.unlockEvidence) {
         const evidenceStore = useEvidenceStore()
         response.unlockEvidence.forEach(id => evidenceStore.unlockEvidence(id))
       }
 
-      // Switch mode if configured
+      // Schedule delayed evidence unlock (investigation takes time)
+      if (response.delayedUnlockEvidence) {
+        const { evidenceId, delaySeconds } = response.delayedUnlockEvidence
+        const evidenceStore = useEvidenceStore()
+        gameStore.scheduleCallback(`evidence-${evidenceId}`, delaySeconds, () => {
+          evidenceStore.unlockEvidence(evidenceId)
+        })
+        const mins = Math.round(delaySeconds / 60)
+        gameStore.addNotification(`Investigation in progress \u2014 results in ~${mins} minute${mins !== 1 ? 's' : ''}`, 'info')
+      }
+
+      // Schedule delayed NPC message (follow-up with findings)
+      if (response.delayedNpcMessage) {
+        const { content: msgContent, delaySeconds } = response.delayedNpcMessage
+        const targetNpcId = response.delayedNpcMessage.npcId || npcId
+        gameStore.scheduleCallback(`delayed-canned-msg-${npcId}-${responseId}`, delaySeconds, () => {
+          receiveMessage(targetNpcId, msgContent)
+          gameStore.addNotification(`New message from ${npcs.value[targetNpcId]?.name || targetNpcId}`, 'info', 'comms', { npcId: targetNpcId })
+        })
+      }
+
+      // Switch mode if configured (only when no canned responses remain)
       if (response.afterMode) {
-        setNpcMessagingMode(npcId, response.afterMode)
+        if (!npc.cannedResponses?.length) {
+          setNpcMessagingMode(npcId, response.afterMode)
+        }
       }
     }, delay)
   }
@@ -307,16 +333,41 @@ export const useCommsStore = defineStore('comms', () => {
     return npcs.value[npcId]?.available ?? true
   }
 
+  // Resolve specialInteractions array from NPC (supports both singular and plural keys)
+  function getInteractionsArray(npc) {
+    if (npc.specialInteractions) return npc.specialInteractions
+    if (npc.specialInteraction) return [npc.specialInteraction]
+    return []
+  }
+
   // Trigger special interaction for an NPC based on action ID
   function triggerSpecialInteraction(actionId) {
     // Find any NPC with a specialInteraction triggered by this action
     Object.entries(npcs.value).forEach(([npcId, npc]) => {
-      if (npc.specialInteraction?.triggeredByAction === actionId) {
-        const interaction = npc.specialInteraction
-        const delaySeconds = interaction.delaySeconds || 60
-        
-        gameStore.scheduleCallback(`special-interaction-${npcId}`, delaySeconds, () => {
-          // Set status to awaiting-response so player can reply
+      const interactions = getInteractionsArray(npc)
+      const interaction = interactions.find(i => i.triggeredByAction === actionId)
+      if (!interaction) return
+
+      const delaySeconds = interaction.delaySeconds || 60
+      
+      if (interaction.type === 'canned-handoff') {
+        // Canned handoff: after delay, NPC sends message then switches to canned mode
+        // so the player can respond via pre-written options
+        gameStore.scheduleCallback(`special-interaction-${npcId}-${actionId}`, delaySeconds, () => {
+          receiveMessage(npcId, interaction.promptMessage, false)
+          // Append canned responses (don't overwrite — multiple interactions may stack)
+          if (interaction.cannedResponses) {
+            const existing = (npc.cannedResponses || []).filter(
+              r => !interaction.cannedResponses.find(cr => cr.id === r.id)
+            )
+            npc.cannedResponses = [...existing, ...interaction.cannedResponses]
+            setNpcMessagingMode(npcId, 'canned')
+          }
+        })
+      } else {
+        // Default: awaiting-response (free-text reply with confirmation modal)
+        npc._activeInteraction = interaction
+        gameStore.scheduleCallback(`special-interaction-${npcId}-${actionId}`, delaySeconds, () => {
           setNpcStatus(npcId, 'awaiting-response')
           receiveMessage(npcId, interaction.promptMessage, false)
         })
@@ -327,9 +378,10 @@ export const useCommsStore = defineStore('comms', () => {
   // Handle player response to a special interaction
   function handleSpecialInteractionResponse(npcId, playerMessage) {
     const npc = npcs.value[npcId]
-    if (!npc?.specialInteraction) return
-    
-    const interaction = npc.specialInteraction
+    // Find the active one-time-response interaction
+    const interaction = npc?._activeInteraction || 
+      getInteractionsArray(npc).find(i => i.type === 'one-time-response')
+    if (!interaction) return
     
     // Send player's message
     sendMessage(npcId, playerMessage)
@@ -340,18 +392,23 @@ export const useCommsStore = defineStore('comms', () => {
       receiveMessage(npcId, interaction.responseMessage)
       // Set status back to resolved
       setNpcStatus(npcId, 'resolved')
+      delete npc._activeInteraction
     }, 2000)
   }
   
-  // Check if an NPC has a pending special interaction
+  // Check if an NPC has a pending special interaction (one-time-response type)
   function hasSpecialInteraction(npcId) {
     const npc = npcs.value[npcId]
-    return npc?.specialInteraction?.type === 'one-time-response'
+    if (!npc) return false
+    return getInteractionsArray(npc).some(i => i.type === 'one-time-response')
   }
   
-  // Get special interaction config for an NPC
+  // Get special interaction config for an NPC (returns active or first one-time-response)
   function getSpecialInteraction(npcId) {
-    return npcs.value[npcId]?.specialInteraction
+    const npc = npcs.value[npcId]
+    if (!npc) return null
+    return npc._activeInteraction || 
+      getInteractionsArray(npc).find(i => i.type === 'one-time-response')
   }
 
   return {

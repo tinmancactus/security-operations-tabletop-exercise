@@ -5,7 +5,7 @@ export default [
     category: 'Internal Communication',
     content: `FROM:    Marcus Chen (CISO)
 TO:      all-staff@xyzpay.com.au
-DATE:    Monday 14 October 2024, 2:00 PM ACDT
+DATE:    Monday 14 October 2024, 4:40 PM ACDT
 SUBJECT: IMPORTANT: Security Alert — Suspicious IT Calls
 
 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
@@ -285,5 +285,268 @@ Prepared by: James Okoro
 Reviewed by: [Pending — to be reviewed by Priya Sharma]
 Approved by: [Pending — CISO approval required before
               distribution]`
+  },
+
+  // ============================================
+  // VPN Session Reviews — unlocked via SIEM alert investigation
+  // ============================================
+  {
+    id: 'EV-22',
+    title: 'VPN Session Review — Marcus Chen',
+    category: 'Session Analysis',
+    content: `VPN SESSION ANALYSIS
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+User: marcus.chen@xyzpay.com.au (CISO)
+Session: 2024-10-14 22:08–22:22 ACDT
+
+Source IP:   203.45.67.89 (Adelaide, AU — Telstra residential)
+VPN Assigned: 10.1.100.12
+Device:      LAPTOP-MC001 (enrolled, corporate-owned)
+MFA:         Authenticator App ✓
+
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+ACTIVITY LOG
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+22:08  VPN connection established
+22:09  SSO login — MFA: Authenticator App
+22:11  Email folder accessed: IR-2024-0847
+       Messages read: 4
+22:22  Logout (session duration: 13m)
+
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+ASSESSMENT: ✅ LEGITIMATE
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+Known device, known home IP, Authenticator App MFA.
+Activity consistent with CISO checking incident status
+from home during active IR.
+
+Confirmed by: Priya Sharma (SOC Manager)
+"I confirmed with Marcus — he was reviewing the IR
+updates before bed. Normal activity."`
+  },
+  {
+    id: 'EV-23',
+    title: 'VPN Session Review — Priya Sharma',
+    category: 'Session Analysis',
+    content: `VPN SESSION ANALYSIS
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+User: priya.sharma@xyzpay.com.au (SOC Manager)
+Session: 2024-10-14 22:14–22:24 ACDT
+
+Source IP:   14.203.88.45 (Adelaide, AU — Optus residential)
+VPN Assigned: 10.1.100.15
+Device:      LAPTOP-PS002 (enrolled, corporate-owned)
+MFA:         Authenticator App ✓
+
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+ACTIVITY LOG
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+22:14  VPN connection established
+22:15  SIEM dashboard accessed: IR-2024-0847 Status
+22:24  Logout (session duration: 10m)
+
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+ASSESSMENT: ✅ LEGITIMATE
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+Known device, known home IP, Authenticator App MFA.
+Activity consistent with SOC Manager monitoring incident
+status from home.
+
+Confirmed by: Marcus Chen (CISO)
+"Priya was doing a quick SIEM check from home — exactly
+what I'd expect given the active incident. No concerns."`
+  },
+  {
+    id: 'EV-24',
+    title: 'VPN Session Review — Rachel Torres',
+    category: 'Session Analysis',
+    content: `VPN SESSION ANALYSIS
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+User: rachel.torres@xyzpay.com.au (Infrastructure Lead)
+Session: 2024-10-14 22:32–22:48 ACDT
+
+Source IP:   101.164.22.73 (Adelaide, AU — Internode)
+VPN Assigned: 10.1.100.18
+Device:      LAPTOP-RT001 (enrolled, corporate-owned)
+MFA:         Authenticator App ✓
+
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+ACTIVITY LOG
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+22:32  VPN connection established
+22:33  Infrastructure monitoring accessed:
+       System Health Overview
+22:48  Logout (session duration: 16m)
+
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+ASSESSMENT: ✅ LEGITIMATE
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+Known device, known home IP, Authenticator App MFA.
+Rachel Torres is on the approved after-hours access list
+for infrastructure systems. Activity consistent with
+checking system health during an active incident.
+
+Confirmed by: Priya Sharma (SOC Manager)
+"Confirmed with Rachel's team — she was checking system
+health. Standard activity during an IR."`
+  },
+  {
+    id: 'EV-25',
+    title: 'VPN Session Review — Sandra Leigh ⚠️',
+    category: 'Session Analysis',
+    content: `VPN SESSION ANALYSIS
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+User: sandra.leigh@xyzpay.com.au (CFO)
+
+⚠️  ANOMALY DETECTED: CONCURRENT SESSIONS
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+SESSION 1 — Legitimate (Home VPN)
+─────────────────────────────────
+Source IP:    121.44.88.15 (Adelaide, AU — TPG residential)
+VPN Assigned: 10.1.100.20
+Device:       LAPTOP-SL001 (enrolled, corporate-owned)
+MFA:          Authenticator App ✓
+Connected:    21:30 — Disconnected: 22:47
+Activity:     Email access (6 messages), Finance dashboard
+              (Incident Cost Tracker)
+
+SESSION 2 — ⚠️ ANOMALOUS (Different IP, no VPN)
+───────────────────────────────────────────────
+Source IP:    103.2.117.8 (Adelaide, AU — Superloop)
+Device:       Unknown (NOT in asset inventory)
+MFA:          SMS ✓ (Sandra's enrolled device uses
+              Authenticator App — why SMS?)
+Connected:    22:04 — Disconnected: 22:08
+Activity:     Email inbox browsed (0 messages read),
+              then logged out
+
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+CONCURRENT SESSION OVERLAP: 22:04 – 22:08 (4 minutes)
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+During this window, sandra.leigh@xyzpay.com.au had TWO
+active authenticated sessions from different source IPs.
+
+⚠️ Two concurrent sessions from different IPs
+⚠️ Session 2 used SMS MFA (enrolled device uses App)
+⚠️ Session 2 device is not in asset inventory
+⚠️ Session 2 was very short with no meaningful activity
+   (inbox browsed, nothing read, quick logout)
+
+Both IPs geolocate to Adelaide, so this is not a
+geographic impossibility. However, the combination of
+a different IP, different MFA method, unknown device,
+and a brief session with no real activity is unusual.
+
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+ASSESSMENT: � SUSPICIOUS — WARRANTS FURTHER INVESTIGATION
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+This could be innocent (e.g., Sandra switched to a
+personal device or phone), but the anomalies warrant
+further investigation given the active incident.
+
+RECOMMENDED ACTIONS:
+1. Confirm with Sandra whether she used a second device
+   on Monday evening
+2. Check for any other sessions from 103.2.117.8
+3. Review sandra.leigh activity across all systems
+   for the past 72 hours
+4. Check whether 103.2.117.8 appears in any other
+   user sessions or threat intelligence feeds`
+  },
+  {
+    id: 'EV-26',
+    title: 'Scheduled Task Audit — system_maintenance_daily',
+    category: 'Infrastructure Investigation',
+    content: `SCHEDULED TASK AUDIT — DB-PROD-01
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+Investigation requested by SOC team.
+Conducted by: Rachel Torres, Infrastructure Lead
+
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+TASK DETAILS
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+Task Name:   system_maintenance_daily
+Server:      db-srv-01 (DB-PROD-01)
+Created:     2024-10-15 06:07:14 ACDT
+Created By:  svc_backup_admin@xyzpay.com.au
+Source IP:   103.2.117.8 (Adelaide, AU — Superloop)
+
+Schedule:    Daily at 17:00 ACDT
+Status:      ⏳ PENDING — Has not yet executed
+Next run:    Today, 17:00 ACDT
+
+Command:
+  db_export --source=pii_vault
+            --dest=s3://xyzpay-db-dr-replica-au/vault-export
+            --compress --encrypt
+
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+⚠️  FINDINGS
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+1. svc_backup_admin is NOT a recognized infrastructure
+   service account. It does not appear in our service
+   account inventory.
+
+2. The S3 bucket "xyzpay-db-dr-replica-au" is NOT in
+   the approved backup destination list. Our legitimate
+   backup destinations use Azure Blob (au-east).
+
+3. The task targets pii_vault — the customer PII
+   database containing names, addresses, DOBs, and
+   financial details for all customers.
+
+4. Source IP 103.2.117.8 (Adelaide, Superloop) is NOT
+   associated with any XYZ Pay infrastructure or
+   any known employee home connection.
+
+5. The task was created at 06:07, immediately after the
+   06:00 backup completion — timed to blend in with
+   legitimate backup activity.
+
+6. svc_backup_admin was added to the Database-Admins
+   security group, granting it full access to DB-PROD-01.
+
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+ACTION TAKEN
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+✅ svc_backup_admin account DEACTIVATED
+✅ system_maintenance_daily task SUSPENDED
+✅ The PII vault export will NOT execute at 17:00
+
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+RECOMMENDED FOLLOW-UP
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+1. Check Active Directory change logs to determine WHO
+   created the svc_backup_admin account and WHEN
+
+2. Investigate all activity from source IP 103.2.117.8
+   across all systems
+
+3. Verify no other unauthorized scheduled tasks exist
+   on production database servers
+
+4. Review Database-Admins group membership for any
+   other unauthorized accounts
+
+Conducted by: Rachel Torres, Infrastructure Lead
+Date: Tuesday 15 October 2024, 08:17 ACDT`
   }
 ]
