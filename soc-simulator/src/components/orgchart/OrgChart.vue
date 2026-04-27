@@ -33,7 +33,7 @@ const departments = computed(() => {
   return groups
 })
 
-const departmentOrder = ['Executive', 'Security', 'IT Operations', 'Finance', 'Customer Support']
+const departmentOrder = ['Executive', 'Security', 'IT Operations', 'Finance', 'Customer Support', 'Marketing']
 
 const sortedDepartments = computed(() => {
   return departmentOrder.filter(d => departments.value[d])

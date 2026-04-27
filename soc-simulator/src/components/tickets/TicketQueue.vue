@@ -2,12 +2,14 @@
 import { useTicketsStore } from '../../stores/tickets'
 import { useGameStore } from '../../stores/game'
 import { useEvidenceStore } from '../../stores/evidence'
+import { useCommsStore } from '../../stores/comms'
 import TicketCard from './TicketCard.vue'
 import TicketDetail from './TicketDetail.vue'
 
 const ticketsStore = useTicketsStore()
 const gameStore = useGameStore()
 const evidenceStore = useEvidenceStore()
+const commsStore = useCommsStore()
 
 function handleAction(action) {
   // Check if time has expired
@@ -33,7 +35,13 @@ function handleAction(action) {
     if (action.unlocksEvidence) {
       evidenceStore.unlockEvidence(action.unlocksEvidence)
     }
-    
+
+    // Trigger any special NPC interactions linked to this action
+    commsStore.triggerSpecialInteraction(action.id)
+
+    // Trigger any tickets associated with this action
+    ticketsStore.triggerActionTickets(action.id)
+
     if (action.closesTicket) {
       const ticket = ticketsStore.selectedTicket
       if (ticket) {

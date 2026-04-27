@@ -232,6 +232,13 @@ function scrollToBottom() {
 
 watch(() => commsStore.activeChannel?.messages.length, scrollToBottom)
 
+// Also scroll to bottom when switching channels (e.g., via notification click)
+watch(() => commsStore.activeChannelId, (newId, oldId) => {
+  if (newId && newId !== oldId) {
+    scrollToBottom()
+  }
+})
+
 // Get self-assessment criteria from NPC data (falls back to generic if not defined)
 const assessmentCriteria = computed(() => {
   const npc = commsStore.npcs[commsStore.activeChannelId]

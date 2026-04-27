@@ -218,10 +218,18 @@ export const useCommsStore = defineStore('comms', () => {
           cumulativeDelay += reply.delayMs || 3000
           setTimeout(() => {
             receiveMessage(npcId, reply.content)
-            // Apply afterMode after the final additional reply
-            if (idx === response.additionalReplies.length - 1 && response.afterMode) {
-              if (!npc.cannedResponses?.length) {
-                setNpcMessagingMode(npcId, response.afterMode)
+            // On the final additional reply, handle appendCannedResponses + afterMode
+            if (idx === response.additionalReplies.length - 1) {
+              if (response.appendCannedResponses) {
+                const existing = (npc.cannedResponses || []).filter(
+                  r => !response.appendCannedResponses.find(cr => cr.id === r.id)
+                )
+                npc.cannedResponses = [...existing, ...response.appendCannedResponses]
+                setNpcMessagingMode(npcId, 'canned')
+              } else if (response.afterMode) {
+                if (!npc.cannedResponses?.length) {
+                  setNpcMessagingMode(npcId, response.afterMode)
+                }
               }
             }
           }, cumulativeDelay)
@@ -260,6 +268,10 @@ export const useCommsStore = defineStore('comms', () => {
                 })
               }, i * (intervalMs || 1000))
             }
+            // Trigger Priya's aftermath investigation after spam completes (~4s buffer)
+            setTimeout(() => {
+              triggerSpecialInteraction('sandra-trap-aftermath')
+            }, count * (intervalMs || 1000) + 4000)
           }, spamStartDelay)
         }
       } else {
@@ -442,29 +454,36 @@ export const useCommsStore = defineStore('comms', () => {
     // Send player's message
     sendMessage(npcId, playerMessage)
     gameStore.logAction(`Responded to ${npc.name}`, 'comms', { content: playerMessage })
-    
-    // NPC responds after a short delay
+
+    // Mark the interaction as completed so it's not matched again
+    interaction._completed = true
+
+    // NPC responds after a short delay (configurable, default 3s)
+    const responseDelay = interaction.responseDelay || 3000
     setTimeout(() => {
       receiveMessage(npcId, interaction.responseMessage)
-      // Set status back to resolved
+      // Set status back to resolved, and switch to specified mode if configured
       setNpcStatus(npcId, 'resolved')
+      if (interaction.afterMode) {
+        setNpcMessagingMode(npcId, interaction.afterMode)
+      }
       delete npc._activeInteraction
-    }, 2000)
+    }, responseDelay)
   }
   
-  // Check if an NPC has a pending special interaction (one-time-response type)
+  // Check if an NPC has a pending special interaction (one-time-response type, not completed)
   function hasSpecialInteraction(npcId) {
     const npc = npcs.value[npcId]
     if (!npc) return false
-    return getInteractionsArray(npc).some(i => i.type === 'one-time-response')
+    return getInteractionsArray(npc).some(i => i.type === 'one-time-response' && !i._completed)
   }
-  
-  // Get special interaction config for an NPC (returns active or first one-time-response)
+
+  // Get special interaction config for an NPC (returns active or first pending one-time-response)
   function getSpecialInteraction(npcId) {
     const npc = npcs.value[npcId]
     if (!npc) return null
-    return npc._activeInteraction || 
-      getInteractionsArray(npc).find(i => i.type === 'one-time-response')
+    return npc._activeInteraction ||
+      getInteractionsArray(npc).find(i => i.type === 'one-time-response' && !i._completed)
   }
 
   return {

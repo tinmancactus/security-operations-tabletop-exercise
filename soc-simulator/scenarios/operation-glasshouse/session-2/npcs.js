@@ -16,7 +16,7 @@ export default {
         id: 'caught-up',
         label: "OK, I'm all caught up on my messages and the report.",
         delay: 3000,
-        afterMode: 'escalation',
+        afterMode: 'dnd',
         unlockEvidence: ['EV-21'],
         npcReply: `Right. Here's where we are.
 
@@ -104,9 +104,19 @@ I'll be here if you need to escalate anything. Good luck.`
           },
           afterMode: 'escalation'
         }]
+      },
+      {
+        // Sandra Trap Aftermath — only triggers if player fell for the trap
+        type: 'one-time-response',
+        triggeredByAction: 'sandra-trap-aftermath',
+        delaySeconds: 12, // Spam finishes at ~71s, this fires at ~75s
+        promptMessage: `Well this is not good. I take it you've seen all those tickets that just came through from Sandra? Do you know anything about this?`,
+        responseMessage: `OK.... Obviously this is a terrible development in an already terrible situation. We've disabled SL's account to prevent any further activity there. I need to go talk to Sandra. Please investigate everything you can in relation to compromised accounts. I need the full picture of who has been contacted, when, and how many accounts have been accessed. Check tickets, logs, everything. I'll be back soon with a few more questions before Marcus heads into the board meeting. We need to make sure he's informed of all the latest developments.`,
+        responseDelay: 4000, // 4 seconds after player responds
+        afterMode: 'busy'
       }
     ],
-    
+
     messageHistory: [
       // === Pre-Session 1 history ===
       {
@@ -218,7 +228,9 @@ Go home, get some rest. I have a feeling tomorrow is going to be a long day.`
     ],
     
     initialMessage: {
-      delay: 120,
+      // delay: 120,
+      delay: 5,
+      // 5 seconds just for testing and debugging. 120s is good for production.
       timestamp: '2024-10-15T08:02:00',
       gameTime: 'Tue 8:02am',
       content: `Morning. Hope you've rested well. 
