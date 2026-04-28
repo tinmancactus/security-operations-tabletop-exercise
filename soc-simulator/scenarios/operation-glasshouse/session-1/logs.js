@@ -35,7 +35,7 @@ export default [
     message: 'Scheduled ETL job executed', details: 'Table: transactions, Rows processed: 45,221' },
   { id: 'LOG-1011', timestamp: '2024-10-13T14:05:33', system: 'customer-db', type: 'database', severity: 'info',
     source: 'db-srv-01', user: 'svc_reporting', action: 'query_executed',
-    message: 'Weekly report query executed', details: 'Report: Customer Activity Summary, Rows: 12,847' },
+    message: 'Weekly report query executed', details: 'Report: Customer Activity Summary, Rows: 12,633' },
   { id: 'LOG-1012', timestamp: '2024-10-13T15:30:00', system: 'antivirus', type: 'system', severity: 'info',
     source: 'av-mgmt-01', user: 'SYSTEM', action: 'scan_complete',
     message: 'Scheduled full scan completed', details: 'Scanned: 1,247,832 files, Threats: 0' },
@@ -49,7 +49,7 @@ export default [
     message: 'Database backup completed', details: 'Size: 45.2GB, Duration: 45m 22s' },
   { id: 'LOG-1022', timestamp: '2024-10-13T19:00:00', system: 'email-gateway', type: 'system', severity: 'info',
     source: 'mail-gw-01', user: 'SYSTEM', action: 'maintenance',
-    message: 'Email queue maintenance completed', details: 'Purged: 2,847 expired messages' },
+    message: 'Email queue maintenance completed', details: 'Purged: 1,063 expired messages' },
   
   // Sunday night - maintenance window
   { id: 'LOG-1030', timestamp: '2024-10-13T22:00:00', system: 'backup-server', type: 'system', severity: 'info',
@@ -404,7 +404,7 @@ export default [
     message: 'Memory usage returned to normal', details: 'Usage: 72%, Threshold: 85%' },
   { id: 'LOG-0307', timestamp: '2024-10-14T08:45:00', system: 'payment-api', type: 'application', severity: 'info',
     source: 'api-srv-01', user: 'SYSTEM', action: 'transaction_processed',
-    message: 'Transaction batch processed', details: 'Count: 1,456, Total: $112,847.25' },
+    message: 'Transaction batch processed', details: 'Count: 1,456, Total: $114,847.25' },
     
   // ============================================
   // DATABASE ACTIVITY (service accounts - normal)
@@ -471,7 +471,7 @@ export default [
     message: 'Wiki page viewed', details: 'Page: /wiki/it/server-maintenance-schedule' },
   { id: 'LOG-0508', timestamp: '2024-10-14T08:48:55', system: 'finance-system', type: 'access', severity: 'info',
     source: '10.1.50.112', user: 'anika.patel@xyzpay.com.au', action: 'invoice_approved',
-    message: 'Invoice approved', details: 'Vendor: Office Supplies Co, Amount: $2,847.50' },
+    message: 'Invoice approved', details: 'Vendor: Office Supplies Co, Amount: $985.50' },
   { id: 'LOG-0509', timestamp: '2024-10-14T08:55:00', system: 'hr-portal', type: 'access', severity: 'info',
     source: '10.1.50.45', user: 'rachel.torres@xyzpay.com.au', action: 'page_view',
     message: 'Accessed HR Portal', details: 'Viewed: /team-calendar' },
@@ -508,7 +508,7 @@ export default [
   
   { id: 'LOG-0700', timestamp: '2024-10-14T08:05:00', system: 'antivirus', type: 'security', severity: 'info',
     source: 'DESKTOP-JM001', user: 'jenny.marcos@xyzpay.com.au', action: 'scan_complete',
-    message: 'Quick scan completed', details: 'Scanned: 12,847 files, Threats: 0' },
+    message: 'Quick scan completed', details: 'Scanned: 11,547 files, Threats: 0' },
   { id: 'LOG-0701', timestamp: '2024-10-14T08:15:33', system: 'edr', type: 'security', severity: 'low',
     source: 'DESKTOP-KS001', user: 'kevin.smith@xyzpay.com.au', action: 'process_blocked',
     message: 'Potentially unwanted application blocked', details: 'Process: toolbar_installer.exe, Action: Quarantined' },

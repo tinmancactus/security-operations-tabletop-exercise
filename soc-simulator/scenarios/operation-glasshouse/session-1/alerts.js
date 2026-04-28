@@ -351,7 +351,7 @@ Low priority - redundant service.`,
 User: svc-tableau@xyzpay.com.au (service account)
 Source: 10.50.21.45 (TABLEAU-PROD-01)
 Database: reporting-db
-Queries: 2,847 in last hour (normal: ~500/hour)
+Queries: 2,119 in last hour (normal: ~500/hour)
 
 Finance team confirmed month-end reporting cycle is running. Tableau dashboards are refreshing with October data.
 
